@@ -168,6 +168,15 @@ th hr		{	display: none;			}
 			margin-bottom: 20px;
 		}
 
+.success	{
+			background: #D0FFD0;
+			border: 5px solid;
+			border-color: #00C000;
+			text-align: center;
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
 .red_frame	{
 			border: 5px solid;
 			border-color: #FF0000
@@ -180,26 +189,19 @@ th hr		{	display: none;			}
 			margin-right: 25%;
 			width: 50%;
 			padding: 5px;
-			text-align: center;
-		}
-
-.div_par_name	{
-			text-align: right;
-			/*width: 50%;*/
 		}
 
 .par_name	{
-			text-align: right;
 			width: 50%;
-			/*padding-left: 50%;*/
-		}
-
-.div_par_value	{
-			text-align: left;
+			float: left;
+			text-align: right;
+			line-height: 150%;
 		}
 
 .par_value	{
+			width: 50%;
 			text-align: left;
+			padding-left: 5px;
 		}
 
 .vert_mid	{
@@ -221,8 +223,13 @@ th hr		{	display: none;			}
 			font-weight: bold;
 		}
 
-.missing	{
+.noready	{
 			color: #808080;
+		}
+
+.nopieces	{
+			font-weight: bold;
+			color: red;
 		}
 
 /* =============================================================== */

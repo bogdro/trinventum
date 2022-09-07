@@ -80,12 +80,14 @@
 					$_POST[TRIN_DB_PROD_INST_FIELD_COST],
 					$_POST[TRIN_DB_PROD_INST_FIELD_VERSION]))
 				{
-					$error = 'Cannot update product instance in the database: '
-						. trin_db_get_last_error ();
+					$error = 'Cannot update product piece in the database: '
+						. trin_db_get_last_error ($db);
 				}
 				else
 				{
+					trin_set_success_msg('Product piece updated successfully');
 					header ("Location: $return_link");
+					exit;
 				}
 			}
 		}
@@ -149,7 +151,7 @@
 			else
 			{
 				$error = 'Cannot read product instance details from the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -171,7 +173,7 @@
 Update product piece details (warning - this updates ALL the given details):
 </p>
 
-<div class="login_box">
+<div class="login_box c">
 <form action="<?php echo trin_get_self_action (); ?>" method="POST">
 <?php
 		// if the product piece failed to be upated,
@@ -257,7 +259,7 @@ Cost:
 			{
 				while (TRUE)
 				{
-					$next_his = trin_db_get_next_product_instance_hist_entry ($product_his);
+					$next_his = trin_db_get_next_product_instance_hist_entry ($db, $product_his);
 					if ($next_his === FALSE)
 					{
 						break;
@@ -274,7 +276,7 @@ Cost:
 			else
 			{
 				$error = 'Cannot read product database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else

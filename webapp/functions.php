@@ -430,46 +430,66 @@ Cost of each piece:
 <form action="<?php echo $action; ?>" method="POST">
 
 <p>
+<span class="par_name">
 Buyer name:
+</span>
+<span class="par_value">
 <?php
 		trin_create_text_input('text', '20', $param_buyer_name,
 			$param_buyer_name_value, $validation_failed_fields);
 ?>
+</span>
 </p>
 
 <p>
+<span class="par_name">
 Buyer postal address:
+</span>
+<span class="par_value">
 <?php
 		trin_create_text_input('text', '20', $param_buyer_address,
 			$param_buyer_address_value, $validation_failed_fields);
 ?>
+</span>
 </p>
 
 <p>
+<span class="par_name">
 Buyer login (ID):
+</span>
+<span class="par_value">
 <?php
 		trin_create_text_input('text', '20', $param_buyer_login,
 			$param_buyer_login_value, $validation_failed_fields);
 ?>
+</span>
 </p>
 
 <p>
+<span class="par_name">
 Buyer e-mail address:
+</span>
+<span class="par_value">
 <?php
 		trin_create_text_input('text', '20', $param_buyer_email,
 			$param_buyer_email_value, $validation_failed_fields);
 ?>
+</span>
 </p>
 
 <p>
+<span class="par_name">
 Buyer comment:
+</span>
+<span class="par_value">
 <?php
 		trin_create_text_textarea('5', '20', $param_buyer_comment,
 			$param_buyer_comment_value, $validation_failed_fields)
 ?>
+</span>
 </p>
 
-<p>
+<p class="c">
 <?php
 		trin_create_text_input('hidden', '', $param_version_name,
 			$param_version_value, $validation_failed_fields);
@@ -493,14 +513,18 @@ Buyer comment:
 <form action="<?php echo $action; ?>" method="POST">
 
 <p>
+<span class="par_name">
 Seller name:
+</span>
+<span class="par_value">
 <?php
 		trin_create_text_input('text', '20', $param_seller_name,
 			$param_seller_name_value, $validation_failed_fields);
 ?>
+</span>
 </p>
 
-<p>
+<p class="c">
 <?php
 		trin_create_text_input('hidden', '', $param_version_name,
 			$param_version_value, $validation_failed_fields);
@@ -530,6 +554,16 @@ Seller name:
 		if (isset ($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
 		{
 			$action .= '?' . str_replace ('&', '&amp;', $_SERVER['QUERY_STRING']);
+		}
+		return $action;
+	}
+
+	function trin_get_self_location ()
+	{
+		$action = $_SERVER['PHP_SELF'];
+		if (isset ($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
+		{
+			$action .= '?' . $_SERVER['QUERY_STRING'];
 		}
 		return $action;
 	}
@@ -570,6 +604,17 @@ Seller name:
 						$failed_fields[] = $field_name;
 					}
 				}
+				if ($field_type == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
+				{
+					if (strlen ($values[$field_name]) == 0)
+					{
+						$failed_fields[] = $field_name;
+					}
+				}
+			}
+			else if ($field_type == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
+			{
+				$failed_fields[] = $field_name;
 			}
 		}
 		return $failed_fields;
@@ -581,9 +626,37 @@ Seller name:
 		{
 ?>
 <div class="error">
-Error: <?php echo $message ?>
+Error: <?php echo $message; ?>
 </div>
 <?php
 		}
+	}
+
+	function trin_set_success_msg ($message)
+	{
+		$_SESSION[TRIN_SESS_LAST_SUCCESS] = $message;
+	}
+
+	function trin_display_success ($message = '')
+	{
+		$msg = '';
+		if ($message !== '')
+		{
+			$msg = $message;
+		}
+		if (isset ($_SESSION[TRIN_SESS_LAST_SUCCESS])
+			&& $_SESSION[TRIN_SESS_LAST_SUCCESS] != '')
+		{
+			$msg = $_SESSION[TRIN_SESS_LAST_SUCCESS];
+		}
+		if ($msg != '')
+		{
+?>
+<div class="success">
+<?php echo $msg; ?>
+</div>
+<?php
+		}
+		unset ($_SESSION[TRIN_SESS_LAST_SUCCESS]);
 	}
 ?>

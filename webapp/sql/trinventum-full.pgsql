@@ -26,7 +26,9 @@ createdb trinventum
 create schema trinventum;
 comment on schema trinventum is 'The main schema for the Trinventum application';
 
---create language plpgsql; installed by default in new database versions, causing an error
+/* Depends on the database version, seems enabled by default on some:
+create language plpgsql;
+*/
 set schema 'trinventum';
 
 create type trinventum.t_gender as enum ('M', 'F', 'C', '-');
@@ -209,6 +211,9 @@ create table trinventum.sellers
 	s_version integer not null default 1 check (s_version >= 1)
 );
 
+alter table trinventum.sellers add constraint seller_name_unique unique (s_name);
+alter table trinventum.sellers add constraint seller_name_nonempty check (length(s_name) > 0);
+
 comment on table trinventum.sellers is 'The table for product sellers';
 comment on column trinventum.sellers.s_id is 'Seller ID (assigned automatically)';
 comment on column trinventum.sellers.s_name is 'Seller name';
@@ -269,6 +274,8 @@ create table trinventum.buyers
 	b_comment text,
 	b_version integer not null default 1 check (b_version >= 1)
 );
+
+alter table trinventum.buyers add constraint buyer_login_unique unique (b_login);
 
 comment on table trinventum.buyers is 'The table for product buyers';
 comment on column trinventum.buyers.b_id is 'Buyer ID (assigned automatically)';
@@ -444,6 +451,19 @@ $months_ago$ language plpgsql;
 
 comment on function trinventum.months_ago(m integer) is 'Returns the month number (1-12) that was ''m'' months ago';
 
+create or replace function trinventum.year_months_ago(m integer)
+returns integer as
+$year_months_ago$
+declare
+	c integer;
+begin
+	execute 'select extract (year from (current_date - interval ''' || m || ' months''))' into c;
+	return c;
+end;
+$year_months_ago$ language plpgsql;
+
+comment on function trinventum.year_months_ago(m integer) is 'Returns the year that was ''m'' months ago';
+
 create table trinventum.versions
 (
 	db_version text not null
@@ -452,4 +472,4 @@ create table trinventum.versions
 comment on table trinventum.versions is 'The table containing the database version';
 comment on column trinventum.versions.db_version is 'The current database version';
 
-insert into trinventum.versions (db_version) values ('2');
+insert into trinventum.versions (db_version) values ('3');

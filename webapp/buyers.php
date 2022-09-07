@@ -65,7 +65,13 @@
 				$_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
 			{
 				$error = 'Cannot add buyer to the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				trin_set_success_msg('Buyer added successfully');
+				header ('Location: ' . trin_get_self_location ());
+				exit;
 			}
 		}
 ?>
@@ -96,6 +102,7 @@
 		include ('menu.php');
 
 		trin_display_error($error);
+		trin_display_success();
 
 		$param_buyer_name = '';
 		$param_buyer_address = '';
@@ -104,27 +111,32 @@
 		$param_buyer_comment = '';
 		$param_buyer_version = 0;
 
-		if (isset ($_POST[TRIN_DB_BUYER_PARAM_NAME]))
+		// reset the form on success, leave the values on error
+		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_NAME]))
 		{
 			$param_buyer_name = $_POST[TRIN_DB_BUYER_PARAM_NAME];
 		}
 
-		if (isset ($_POST[TRIN_DB_BUYER_PARAM_ADDRESS]))
+		// reset the form on success, leave the values on error
+		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_ADDRESS]))
 		{
 			$param_buyer_address = $_POST[TRIN_DB_BUYER_PARAM_ADDRESS];
 		}
 
-		if (isset ($_POST[TRIN_DB_BUYER_PARAM_LOGIN]))
+		// reset the form on success, leave the values on error
+		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_LOGIN]))
 		{
 			$param_buyer_login = $_POST[TRIN_DB_BUYER_PARAM_LOGIN];
 		}
 
-		if (isset ($_POST[TRIN_DB_BUYER_PARAM_EMAIL]))
+		// reset the form on success, leave the values on error
+		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_EMAIL]))
 		{
 			$param_buyer_email = $_POST[TRIN_DB_BUYER_PARAM_EMAIL];
 		}
 
-		if (isset ($_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
+		// reset the form on success, leave the values on error
+		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
 		{
 			$param_buyer_comment = $_POST[TRIN_DB_BUYER_PARAM_COMMENT];
 		}
@@ -166,7 +178,7 @@
 			{
 				while (TRUE)
 				{
-					$next_buyer = trin_db_get_next_buyer ($buyers);
+					$next_buyer = trin_db_get_next_buyer ($db, $buyers);
 					if ($next_buyer === FALSE)
 					{
 						break;
@@ -192,7 +204,7 @@
 			else
 			{
 				$error = 'Cannot read buyer database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -234,7 +246,7 @@
 			{
 				while (TRUE)
 				{
-					$next_sale = trin_db_get_next_buyer_transaction ($sales);
+					$next_sale = trin_db_get_next_buyer_transaction ($db, $sales);
 					if ($next_sale === FALSE)
 					{
 						break;
@@ -253,7 +265,7 @@
 			else
 			{
 				$error = 'Cannot read product sale database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else

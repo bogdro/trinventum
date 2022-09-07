@@ -37,7 +37,9 @@ update trinventum.sellers set s_version = 1;
 update trinventum.buyers set b_version = 1;
 update trinventum.transactions set t_version = 1;
 
---create language plpgsql; installed by default in new database versions, causing an error
+/* Depends on the database version, seems enabled by default on some:
+create language plpgsql;
+*/
 set schema 'trinventum';
 
 create table trinventum.product_definitions_hist

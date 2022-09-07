@@ -124,12 +124,14 @@
 						{
 							$display_form = TRUE;
 							$error = 'Cannot update transaction in the database: '
-								. trin_db_get_last_error ();
+								. trin_db_get_last_error ($db);
 						}
 					}
 					if (! $display_form)
 					{
+						trin_set_success_msg('Transaction updated successfully');
 						header ("Location: $return_link");
+						exit;
 					}
 				}
 				else
@@ -284,7 +286,7 @@
 				else
 				{
 					$error = 'Cannot read transaction database: '
-						. trin_db_get_last_error ();
+						. trin_db_get_last_error ($db);
 				}
 			}
 			else
@@ -303,7 +305,7 @@
 <p class="c">
 Update details (warning - this updates ALL the given details):
 </p>
-<div class="login_box">
+<div class="login_box c">
 <form action="<?php echo trin_get_self_action (); ?>" method="POST">
 <?php
 			$error = '';
@@ -346,7 +348,7 @@ Update details (warning - this updates ALL the given details):
 					else
 					{
 						$error = 'Cannot read product database: '
-							. trin_db_get_last_error ();
+							. trin_db_get_last_error ($db);
 					}
 				}
 				else
@@ -380,7 +382,7 @@ Update details (warning - this updates ALL the given details):
 							while (TRUE)
 							{
 								$next_prod = trin_db_get_next_product_instance
-									($products);
+									($db, $products);
 								if ($next_prod === FALSE)
 								{
 									break;
@@ -398,7 +400,7 @@ Update details (warning - this updates ALL the given details):
 						else
 						{
 							$error = 'Cannot read product instance database: '
-								. trin_db_get_last_error ();
+								. trin_db_get_last_error ($db);
 						}
 					}
 					else if (!$db)
@@ -433,7 +435,7 @@ Update details (warning - this updates ALL the given details):
 						$buyer_values = array();
 						while (TRUE)
 						{
-							$next_buyer = trin_db_get_next_buyer ($buyers);
+							$next_buyer = trin_db_get_next_buyer ($db, $buyers);
 							if ($next_buyer === FALSE)
 							{
 								break;
@@ -444,7 +446,7 @@ Update details (warning - this updates ALL the given details):
 								$next_buyer[TRIN_DB_BUYER_PARAM_ID];
 						}
 						trin_create_select(TRIN_DB_BUYER_PARAM_ID,
-							'',
+							$param_trans_buyer,
 							$buyer_names,
 							$buyer_values,
 							$validation_failed_fields);
@@ -452,7 +454,7 @@ Update details (warning - this updates ALL the given details):
 					else
 					{
 						$error = 'Cannot read buyer database: '
-							. trin_db_get_last_error ();
+							. trin_db_get_last_error ($db);
 					}
 				}
 				else
@@ -471,7 +473,7 @@ Update details (warning - this updates ALL the given details):
 						$seller_values = array();
 						while (TRUE)
 						{
-							$next_seller = trin_db_get_next_seller ($sellers);
+							$next_seller = trin_db_get_next_seller ($db, $sellers);
 							if ($next_seller === FALSE)
 							{
 								break;
@@ -482,7 +484,7 @@ Update details (warning - this updates ALL the given details):
 								$next_seller[TRIN_DB_SELLER_PARAM_ID];
 						}
 						trin_create_select(TRIN_DB_SELLER_PARAM_ID,
-							'',
+							$param_trans_seller,
 							$seller_names,
 							$seller_values,
 							$validation_failed_fields);
@@ -490,7 +492,7 @@ Update details (warning - this updates ALL the given details):
 					else
 					{
 						$error = 'Cannot read seller database: '
-							. trin_db_get_last_error ();
+							. trin_db_get_last_error ($db);
 					}
 				}
 				else
@@ -674,7 +676,7 @@ Send cost:
 					$no = '<span class="nok">NO</span>';
 					while (TRUE)
 					{
-						$next_tran = trin_db_get_next_transaction_hist_entry ($trans);
+						$next_tran = trin_db_get_next_transaction_hist_entry ($db, $trans);
 						if ($next_tran === FALSE)
 						{
 							break;
@@ -718,7 +720,7 @@ Send cost:
 				else
 				{
 					$error = 'Cannot read transaction database: '
-						. trin_db_get_last_error ();
+						. trin_db_get_last_error ($db);
 				}
 			}
 			else

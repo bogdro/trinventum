@@ -61,7 +61,10 @@
 <?php
 		include ('header.php');
 		include ('menu.php');
+
+		trin_display_success();
 ?>
+
 <table>
 <caption>Products</caption>
 <thead><tr>
@@ -100,7 +103,14 @@
 					$rowclass = 'c';
 					if ((!isset ($counts['READY'])) || ($counts['READY'] == 0))
 					{
-						$rowclass .= ' missing';
+						if ((!isset ($counts['SELLING'])) || ($counts['SELLING'] == 0))
+						{
+							$rowclass .= ' nopieces';
+						}
+						else
+						{
+							$rowclass .= ' noready';
+						}
 					}
 					$prod_det_link = 'details.php?' . TRIN_PROD_DETAIL_PARAM
 						. '=' . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
@@ -119,7 +129,7 @@
 			}
 			else
 			{
-				$error = 'Cannot read product database: ' . trin_db_get_last_error ();
+				$error = 'Cannot read product database: ' . trin_db_get_last_error ($db);
 			}
 		}
 		else

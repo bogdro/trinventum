@@ -81,6 +81,8 @@
 		include ('header.php');
 		include ('menu.php');
 
+		trin_display_success();
+
 		$offset = 0;
 		$limit = 1000000000;
 
@@ -176,7 +178,7 @@ OR
 					$no = '<span class="nok">NO</span>';
 					while (TRUE)
 					{
-						$next_tran = trin_db_get_next_transaction ($trans);
+						$next_tran = trin_db_get_next_transaction ($db, $trans);
 						if ($next_tran === FALSE)
 						{
 							break;
@@ -243,7 +245,7 @@ OR
 				else
 				{
 					$error = 'Cannot read transaction database: '
-						. trin_db_get_last_error ();
+						. trin_db_get_last_error ($db);
 				}
 			}
 			else
@@ -267,8 +269,106 @@ OR
 </tbody>
 </table>
 
+<table>
+<caption>Deleted transactions with history</caption>
+<thead><tr>
+ <th>ID</th>
+ <th>Product type</th>
+ <th>Product piece</th>
+ <th>Seller</th>
+ <th>Buyer</th>
+ <th>Price</th>
+ <th>Paid</th>
+ <th>Sent</th>
+ <th>Sell date</th>
+ <th>Send price</th>
+ <th>Send cost</th>
+</tr></thead>
+<tbody>
 <?php
-		}
+			$error = '';
+			$have_trans = FALSE;
+			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
+				$_SESSION[TRIN_SESS_DB_PASS],
+				$_SESSION[TRIN_SESS_DB_DBNAME],
+				$_SESSION[TRIN_SESS_DB_HOST]);
+			if ($db)
+			{
+				$trans = trin_db_get_deleted_transactions ($db, $offset, $limit);
+				if ($trans !== FALSE)
+				{
+					$yes = '<span class="ok">YES</span>';
+					$no = '<span class="nok">NO</span>';
+					while (TRUE)
+					{
+						$next_tran = trin_db_get_next_transaction ($db, $trans);
+						if ($next_tran === FALSE)
+						{
+							break;
+						}
+						$have_trans = TRUE;
+
+						$paid = $yes;
+						if ($next_tran[TRIN_DB_TRANS_PARAM_PAID] === 'f')
+						{
+							$paid = $no;
+						}
+
+						$sent = $yes;
+						if ($next_tran[TRIN_DB_TRANS_PARAM_SENT] === 'f')
+						{
+							$sent = $no;
+						}
+
+						$product_def_link = 'details.php?' .
+							TRIN_PROD_DETAIL_PARAM . '=' .
+							$next_tran[TRIN_DB_PROD_DEF_FIELD_ID];
+						$product_link = 'ppdetails.php?' .
+							TRIN_DB_PROD_INST_FIELD_ID . '=' .
+							$next_tran[TRIN_DB_PROD_INST_FIELD_ID];
+						echo '<tr class="c">';
+						echo '<td>' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</td>';
+						echo '<td><a href="' . $product_def_link . '">' . $next_tran[TRIN_DB_PROD_DEF_FIELD_NAME] . '</a></td>' .
+							'<td><a href="' . $product_link . '">' . $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
+							'<td><a href="sellers.php">' . $next_tran[TRIN_DB_SELLER_PARAM_NAME] . '</a></td>' .
+							'<td><a href="buyers.php">' . $next_tran[TRIN_DB_BUYER_PARAM_NAME] . '</a></td>' .
+							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
+							'<td>' . $paid . '</td>' .
+							'<td>' . $sent . '</td>' .
+							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SELLDATE] . '</td>' .
+							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SEND_PRICE] . '</td>' .
+							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SEND_COST] . '</td>' .
+							"</tr>\n";
+					}
+				}
+				else
+				{
+					$error = 'Cannot read transaction history database: '
+						. trin_db_get_last_error ($db);
+				}
+			}
+			else
+			{
+				$error = 'Cannot connect to database';
+			}
+
+			if ($error)
+			{
+?>
+<tr><td colspan="11" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<?php
+			} // $error
+			if ((! $have_trans) && (! $error))
+			{
+?>
+<tr><td colspan="11" class="c">No deleted transactions found</td></tr>
+<?php
+			} // ! $have_trans
+?>
+</tbody>
+</table>
+<?php
+		} // parameters set
 ?>
 
 <div class="menu">

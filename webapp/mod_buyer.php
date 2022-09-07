@@ -75,11 +75,13 @@
 			{
 				$display_form = TRUE;
 				$error = 'Cannot update buyer in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 			if (! $display_form)
 			{
+				trin_set_success_msg('Buyer updated successfully');
 				header ('Location: buyers.php');
+				exit;
 			}
 		}
 		else
@@ -217,7 +219,7 @@
 			{
 				while (TRUE)
 				{
-					$next_his = trin_db_get_next_buyer_hist_entry ($buyer_his);
+					$next_his = trin_db_get_next_buyer_hist_entry ($db, $buyer_his);
 					if ($next_his === FALSE)
 					{
 						break;
@@ -242,7 +244,7 @@
 			else
 			{
 				$error = 'Cannot read buyer database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else

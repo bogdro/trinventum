@@ -20,7 +20,7 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	define ('TRIN_VERSION', '0.2');
+	define ('TRIN_VERSION', '0.3');
 
 	define ('TRIN_HTTP_DATE_FORMAT', 'D, j M Y G:i:s T');
 
@@ -30,8 +30,9 @@
 	define ('TRIN_SESS_DB_HOST', 'trin_sess_db_host');
 	define ('TRIN_SESS_DB_DBNAME', 'trin_sess_db_dbname');
 	define ('TRIN_SESS_DB_LAST_ERROR', 'trin_sess_db_last_error');
+	define ('TRIN_SESS_LAST_SUCCESS', 'trin_sess_last_success');
 
-	define ('TRIN_EXPECTED_DB_VERSION', '2');
+	define ('TRIN_EXPECTED_DB_VERSION', '3');
 
 	define ('TRIN_DB_PROD_DEF_FIELD_ID', 'id');
 	define ('TRIN_DB_PROD_DEF_FIELD_PHOTO', 'photo');
@@ -117,6 +118,7 @@
 	define ('TRIN_DB_TRANS_PARAM_COUNT', 'trans_count');
 
 	define ('TRIN_VALIDATION_FIELD_TYPE_NUMBER', 'number');
+	define ('TRIN_VALIDATION_FIELD_TYPE_REQUIRED', 'required');
 
 	define ('TRIN_FORM_FIELD_SUBMIT_PREFIX', 'submit_');
 	define ('TRIN_FORM_SUBMIT_DB_DUMP', 'trin_db_dump');

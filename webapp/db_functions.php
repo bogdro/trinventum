@@ -49,6 +49,8 @@
 		'select his_p_status as p_status, count(*) as p_count from trinventum.products_hist
 		where extract (month from his_p_record_timestamp)
 		= trinventum.months_ago($1)
+		and extract (year from his_p_record_timestamp)
+		= trinventum.year_months_ago($1)
 		group by p_status');
 //		= extract (month from (current_date - interval \'$1 months\'))
 
@@ -195,7 +197,41 @@
 		join trinventum.product_definitions pd on pd.pd_id = p.p_pd_id
 		join trinventum.buyers b on b.b_id  = t.t_buyer
 		join trinventum.sellers s on s.s_id  = t.t_seller
-		order by t_id desc offset $1 limit $2');
+		order by t.t_id desc offset $1 limit $2');
+	define ('TRIN_QUERY_GET_DELETED_TRANSACTIONS',
+		'select t.his_t_id as t_id,
+		coalesce (p.p_pd_id, ph.his_p_pd_id, -1) as p_pd_id,
+		t.his_t_product_id as t_product_id,
+		coalesce (pd.pd_name, pdh.his_pd_name, \'?\') as pd_name,
+		t.his_t_seller as t_seller,
+		coalesce (s.s_name, sh.his_s_name, \'?\') as s_name,
+		t.his_t_buyer as t_buyer,
+		coalesce (b.b_name, bh.his_b_name, \'?\') as b_name,
+		t.his_t_price as t_price,
+		t.his_t_paid as t_paid,
+		t.his_t_sent as t_sent,
+		t.his_t_sell_date as t_sell_date,
+		t.his_t_send_price as t_send_price,
+		t.his_t_send_cost as t_send_cost,
+		t.his_t_version as t_version,
+		t.his_t_user as t_user,
+		t.his_t_record_timestamp as t_record_timestamp
+		from trinventum.transactions_hist t
+		left join trinventum.products p on p.p_id = t.his_t_product_id
+		left join trinventum.products_hist ph on ph.his_p_id = t.his_t_product_id
+		 and ph.his_p_version = (select max(his_p_version) from trinventum.products_hist where his_p_id = t.his_t_product_id)
+		left join trinventum.product_definitions pd on pd.pd_id = p.p_pd_id
+		left join trinventum.product_definitions_hist pdh on pdh.his_pd_id = ph.his_p_pd_id
+		 and pdh.his_pd_version = (select max(his_pd_version) from trinventum.product_definitions_hist
+		 where his_pd_id = ph.his_p_pd_id)
+		left join trinventum.buyers b on b.b_id  = t.his_t_buyer
+		left join trinventum.buyers_hist bh on bh.his_b_id  = t.his_t_buyer
+		 and bh.his_b_version = (select max(his_b_version) from trinventum.buyers_hist where his_b_id = t.his_t_buyer)
+		left join trinventum.sellers s on s.s_id  = t.his_t_seller
+		left join trinventum.sellers_hist sh on sh.his_s_id  = t.his_t_seller
+		 and sh.his_s_version = (select max(his_s_version) from trinventum.sellers_hist where his_s_id = t.his_t_seller)
+		where t.his_t_id not in (select t_id from trinventum.transactions)
+		order by t.his_t_id desc, t.his_t_version desc offset $1 limit $2');
 	define ('TRIN_QUERY_ADD_TRANSACTION',
 		'insert into trinventum.transactions (t_product_id, t_seller, t_buyer,
 		t_price, t_paid, t_sent, t_sell_date, t_send_price, t_send_cost)
@@ -271,9 +307,9 @@
 
 	// ===============================================================
 
-	function trin_db_open ($login, $pass, $dbname, $host)
+	function trin_db_open ($login, $pass, $dbname, $host, $timeout=60)
 	{
-		return pg_connect ("host=$host dbname=$dbname user=$login password=$pass");
+		return pg_connect ("host=$host dbname=$dbname user=$login password=$pass connect_timeout=$timeout");
 	}
 
 	function trin_db_close ($conn)
@@ -285,7 +321,7 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query ($conn, $query);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
@@ -318,7 +354,7 @@
 	{
 		trin_db_clear_last_error();
 		$result = pg_query ($conn, TRIN_QUERY_DB_CHECK);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return ($result !== FALSE);
 	}
 
@@ -326,7 +362,7 @@
 	{
 		trin_db_clear_last_error();
 		$result = pg_query ($conn, TRIN_QUERY_DB_VERSION_CHECK);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($result !== FALSE)
 		{
 			$row = pg_fetch_assoc ($result);
@@ -344,7 +380,7 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query ($conn, TRIN_QUERY_GET_PRODUCT_DEFS);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
@@ -370,7 +406,7 @@
 		$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = '';
 
 		$product = pg_fetch_assoc ($products);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($product !== FALSE)
 		{
 			$pd_id = $product['pd_id'];
@@ -427,11 +463,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($db, TRIN_QUERY_GET_PRODUCT_HIST_BY_ID,
 			array ($id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $res;
 	}
 
-	function trin_db_get_next_product_history_entry ($product_his)
+	function trin_db_get_next_product_history_entry ($conn, $product_his)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -446,7 +482,7 @@
 		$result[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] = '';
 
 		$his_entry = pg_fetch_assoc ($product_his);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($his_entry !== FALSE)
 		{
 			$pd_id = $his_entry['his_pd_id'];
@@ -502,7 +538,7 @@
 	{
 		trin_db_clear_last_error();
 		$photo_result = pg_query_params ($db, TRIN_QUERY_GET_PRODUCT_PHOTO, array($id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		if ($photo_result !== FALSE)
 		{
 			if (! pg_field_is_null ($photo_result, 0, 'pd_photo'))
@@ -523,7 +559,7 @@
 		$photo_result = pg_query_params ($db,
 			TRIN_QUERY_GET_PRODUCT_HIST_PHOTO,
 			array($prod_id, $prod_ver));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		if ($photo_result !== FALSE)
 		{
 			if (! pg_field_is_null ($photo_result, 0, 'his_pd_photo'))
@@ -563,13 +599,13 @@
 		$nextseq_res = pg_query ($db, TRIN_QUERY_GET_PRODUCT_NEXT_ID);
 		if ($nextseq_res === FALSE)
 		{
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			return FALSE;
 		}
 		$nextseq_val = pg_fetch_row ($nextseq_res);
 		if ($nextseq_val === FALSE)
 		{
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			return FALSE;
 		}
 		$pd_id = $nextseq_val[0];
@@ -577,7 +613,7 @@
 		$res = pg_query ($db, 'begin');
 		if ($res === FALSE)
 		{
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			return FALSE;
 		}
 
@@ -599,26 +635,26 @@
 				if ($result === FALSE)
 				{
 					$success = FALSE;
-					trin_db_set_last_error();
+					trin_db_set_last_error($db);
 					break;
 				}
 			}
 			if ($success)
 			{
 				$res = pg_query ($db, 'commit');
-				trin_db_set_last_error();
+				trin_db_set_last_error($db);
 				return $res;
 			}
 			else
 			{
-				trin_db_set_last_error();
+				trin_db_set_last_error($db);
 				pg_query ($db, 'rollback');
 				return FALSE;
 			}
 		}
 		else
 		{
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			pg_query ($db, 'rollback');
 			return FALSE;
 		}
@@ -641,7 +677,7 @@
 
 		$product_res = pg_query_params ($db,
 			TRIN_QUERY_GET_PRODUCT_DET, array ($id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($product_res !== FALSE)
 		{
@@ -681,7 +717,7 @@
 			}
 			else
 			{
-				trin_db_set_last_error ('No data');
+				trin_db_set_last_error ($db, 'No data');
 			}
 		}
 		return FALSE;
@@ -692,12 +728,12 @@
 		$det = trin_db_get_product_details ($db, $pd_id);
 		if ($det === FALSE)
 		{
-			trin_db_set_last_error('Cannot read record before update');
+			trin_db_set_last_error($db, 'Cannot read record before update');
 			return FALSE;
 		}
 		else if ((int)$det[TRIN_DB_PROD_DEF_FIELD_VERSION] != (int)$param_pd_version)
 		{
-			trin_db_set_last_error("Record version doesn't match: expected: "
+			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_DEF_FIELD_VERSION]
 				. ', got: ' . $param_pd_version);
 			return FALSE;
@@ -716,7 +752,7 @@
 
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_NAME,
 			array($pd_id, $param_pd_name));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -742,7 +778,7 @@
 		}
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_PHOTO,
 			array($pd_id, $photo_data));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -757,7 +793,7 @@
 
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_SIZE,
 			array($pd_id, $param_pd_size));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -773,7 +809,7 @@
 		$param_pd_length = str_replace (',', '.', $param_pd_length);
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_LENGTH,
 			array($pd_id, $param_pd_length));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -789,7 +825,7 @@
 		$param_pd_width = str_replace (',', '.', $param_pd_width);
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_WIDTH,
 			array($pd_id, $param_pd_width));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -804,7 +840,7 @@
 
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_COLOUR,
 			array($pd_id, $param_pd_colour));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -846,7 +882,7 @@
 						$param_pd_cost));
 				if ($result === FALSE)
 				{
-					trin_db_set_last_error();
+					trin_db_set_last_error($db);
 					$success = FALSE;
 					break;
 				}
@@ -866,7 +902,7 @@
 
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_BRAND,
 			array($pd_id, $param_pd_brand));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -881,7 +917,7 @@
 
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_GENDER,
 			array($pd_id, $param_pd_gender));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -896,7 +932,7 @@
 
 		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_COMMENT,
 			array($pd_id, $param_pd_comment));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $result;
 	}
 
@@ -917,7 +953,7 @@
 			array ($pd_id, $param_pd_cost));
 		if ($result === FALSE)
 		{
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			return FALSE;
 		}
 		return $result;
@@ -939,7 +975,7 @@
 		$res = pg_query ($db, 'begin');
 		if ($res === FALSE)
 		{
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			return FALSE;
 		}
 
@@ -977,12 +1013,12 @@
 		if ($result !== FALSE)
 		{
 			$res = pg_query ($db, 'commit');
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			return $res;
 		}
 		else
 		{
-			trin_db_set_last_error();
+			trin_db_set_last_error($db);
 			pg_query ($db, 'rollback');
 			return FALSE;
 		}
@@ -994,7 +1030,7 @@
 		$result = array ();
 		$count_result = pg_query_params ($conn,
 			TRIN_QUERY_GET_PRODUCT_COUNTS, array ($id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 
 		if ($count_result !== FALSE)
 		{
@@ -1017,7 +1053,7 @@
 		$result = array ();
 		$count_result = pg_query ($conn,
 			TRIN_QUERY_GET_ALL_PRODUCT_COUNTS);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 
 		if ($count_result !== FALSE)
 		{
@@ -1041,7 +1077,7 @@
 		$count_result = pg_query_params ($conn,
 			TRIN_QUERY_GET_MONTH_HIST_PRODUCT_COUNTS,
 			array ($months_ago));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 
 		if ($count_result !== FALSE)
 		{
@@ -1066,7 +1102,7 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCES,
 			array ($pd_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
@@ -1075,7 +1111,7 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCES_WITH_STATUS,
 			array ($pd_id, $pd_status));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
@@ -1084,11 +1120,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_ALL_PRODUCT_INSTANCES,
 			array ($offset, $limit));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_product_instance ($product_insts)
+	function trin_db_get_next_product_instance ($conn, $product_insts)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1099,7 +1135,7 @@
 		$result[TRIN_DB_PROD_INST_FIELD_COST] = '';
 
 		$product = pg_fetch_assoc ($product_insts);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($product !== FALSE)
 		{
 			$result[TRIN_DB_PROD_INST_FIELD_ID] = $product['p_id'];
@@ -1130,7 +1166,7 @@
 
 		$pinst_res = pg_query_params ($db,
 			TRIN_QUERY_GET_PRODUCT_INSTANCE_DET, array ($p_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($pinst_res !== FALSE)
 		{
@@ -1145,7 +1181,7 @@
 			}
 			else
 			{
-				trin_db_set_last_error ('No data');
+				trin_db_set_last_error ($db, 'No data');
 			}
 		}
 		return FALSE;
@@ -1158,12 +1194,12 @@
 		$det = trin_db_get_product_instance_details ($db, $p_id);
 		if ($det === FALSE)
 		{
-			trin_db_set_last_error('Cannot read record before update');
+			trin_db_set_last_error($db, 'Cannot read record before update');
 			return FALSE;
 		}
 		else if ((int)$det[TRIN_DB_PROD_INST_FIELD_VERSION] != (int)$version)
 		{
-			trin_db_set_last_error("Record version doesn't match: expected: "
+			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_INST_FIELD_VERSION]
 				. ', got: ' . $version);
 			return FALSE;
@@ -1172,7 +1208,7 @@
 		$cost = str_replace (',', '.', $cost);
 		$res = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_INSTANCE,
 			array ($p_id, $status, $cost));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $res;
 	}
 
@@ -1181,11 +1217,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCE_HIST_BY_ID,
 			array ($pd_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_product_instance_hist_entry ($product_inst_his)
+	function trin_db_get_next_product_instance_hist_entry ($conn, $product_inst_his)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1195,7 +1231,7 @@
 		$result[TRIN_DB_PROD_INST_FIELD_TIMESTAMP] = '';
 
 		$product_his = pg_fetch_assoc ($product_inst_his);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($product_his !== FALSE)
 		{
 			$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $product_his['his_p_status'];
@@ -1214,11 +1250,11 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query ($conn, TRIN_QUERY_GET_SELLERS);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_seller ($sellers)
+	function trin_db_get_next_seller ($conn, $sellers)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1226,7 +1262,7 @@
 		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
 
 		$seller = pg_fetch_assoc ($sellers);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($seller !== FALSE)
 		{
 			$result[TRIN_DB_SELLER_PARAM_ID] = $seller['s_id'];
@@ -1241,7 +1277,7 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query_params ($db, TRIN_QUERY_ADD_SELLER, array ($name));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $res;
 	}
 
@@ -1255,7 +1291,7 @@
 
 		$seller_res = pg_query_params ($db,
 			TRIN_QUERY_GET_SELLER_DET, array ($id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($seller_res !== FALSE)
 		{
@@ -1269,7 +1305,7 @@
 			}
 			else
 			{
-				trin_db_set_last_error ('No data');
+				trin_db_set_last_error ($db, 'No data');
 			}
 		}
 		return FALSE;
@@ -1281,12 +1317,12 @@
 		$det = trin_db_get_seller_details ($db, $s_id);
 		if ($det === FALSE)
 		{
-			trin_db_set_last_error('Cannot read record before update');
+			trin_db_set_last_error($db, 'Cannot read record before update');
 			return FALSE;
 		}
 		else if ((int)$det[TRIN_DB_SELLER_PARAM_VERSION] != (int)$version)
 		{
-			trin_db_set_last_error("Record version doesn't match: expected: "
+			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_SELLER_PARAM_VERSION]
 				. ', got: ' . $version);
 			return FALSE;
@@ -1294,7 +1330,7 @@
 
 		$res = pg_query_params ($db, TRIN_QUERY_UPDATE_SELLER,
 			array ($s_id, $name));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $res;
 	}
 
@@ -1303,11 +1339,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_SELLER_HIST_BY_ID,
 			array ($s_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_seller_hist_entry ($seller_his)
+	function trin_db_get_next_seller_hist_entry ($conn, $seller_his)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1316,7 +1352,7 @@
 		$result[TRIN_DB_SELLER_PARAM_TIMESTAMP] = '';
 
 		$s_his = pg_fetch_assoc ($seller_his);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($s_his !== FALSE)
 		{
 			$result[TRIN_DB_SELLER_PARAM_NAME] = $s_his['his_s_name'];
@@ -1334,11 +1370,11 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query ($conn, TRIN_QUERY_GET_BUYERS);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_buyer ($buyers)
+	function trin_db_get_next_buyer ($conn, $buyers)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1350,7 +1386,7 @@
 		$result[TRIN_DB_BUYER_PARAM_COMMENT] = '';
 
 		$buyer = pg_fetch_assoc ($buyers);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($buyer !== FALSE)
 		{
 			$result[TRIN_DB_BUYER_PARAM_ID] = $buyer['b_id'];
@@ -1370,7 +1406,7 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($db, TRIN_QUERY_ADD_BUYER,
 			array ($name, $address, $login, $email, $comment));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $res;
 	}
 
@@ -1388,7 +1424,7 @@
 
 		$buyer_res = pg_query_params ($db,
 			TRIN_QUERY_GET_BUYER_DET, array ($id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($buyer_res !== FALSE)
 		{
@@ -1406,7 +1442,7 @@
 			}
 			else
 			{
-				trin_db_set_last_error ('No data');
+				trin_db_set_last_error ($db, 'No data');
 			}
 		}
 		return FALSE;
@@ -1419,12 +1455,12 @@
 		$det = trin_db_get_buyer_details ($db, $b_id);
 		if ($det === FALSE)
 		{
-			trin_db_set_last_error('Cannot read record before update');
+			trin_db_set_last_error($db, 'Cannot read record before update');
 			return FALSE;
 		}
 		else if ((int)$det[TRIN_DB_BUYER_PARAM_VERSION] != (int)$version)
 		{
-			trin_db_set_last_error("Record version doesn't match: expected: "
+			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_BUYER_PARAM_VERSION]
 				. ', got: ' . $version);
 			return FALSE;
@@ -1432,7 +1468,7 @@
 
 		$res = pg_query_params ($db, TRIN_QUERY_UPDATE_BUYER,
 			array ($b_id, $name, $address, $login, $email, $comment));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 		return $res;
 	}
 
@@ -1441,11 +1477,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_BUYER_HIST_BY_ID,
 			array ($b_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_buyer_hist_entry ($buyer_his)
+	function trin_db_get_next_buyer_hist_entry ($conn, $buyer_his)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1458,7 +1494,7 @@
 		$result[TRIN_DB_BUYER_PARAM_TIMESTAMP] = '';
 
 		$b_his = pg_fetch_assoc ($buyer_his);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($b_his !== FALSE)
 		{
 			$result[TRIN_DB_BUYER_PARAM_NAME] = $b_his['his_b_name'];
@@ -1481,11 +1517,20 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_TRANSACTIONS,
 			array ($offset, $limit));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_transaction ($trans)
+	function trin_db_get_deleted_transactions ($conn, $offset = 0, $limit = 1000000000)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_DELETED_TRANSACTIONS,
+			array ($offset, $limit));
+		trin_db_set_last_error($conn);
+		return $res;
+	}
+
+	function trin_db_get_next_transaction ($conn, $trans)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1505,7 +1550,7 @@
 		$result[TRIN_DB_TRANS_PARAM_SEND_COST] = '';
 
 		$tran = pg_fetch_assoc ($trans);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($tran !== FALSE)
 		{
 			$result[TRIN_DB_TRANS_PARAM_ID] = $tran['t_id'];
@@ -1533,7 +1578,7 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query ($db, 'begin');
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($res !== FALSE)
 		{
@@ -1553,19 +1598,19 @@
 				if ($res !== FALSE)
 				{
 					$res = pg_query ($db, 'commit');
-					trin_db_set_last_error();
+					trin_db_set_last_error($db);
 					return $res;
 				}
 				else
 				{
-					trin_db_set_last_error();
+					trin_db_set_last_error($db);
 					pg_query ($db, 'rollback');
 					return FALSE;
 				}
 			}
 			else
 			{
-				trin_db_set_last_error();
+				trin_db_set_last_error($db);
 				pg_query ($db, 'rollback');
 				return FALSE;
 			}
@@ -1595,7 +1640,7 @@
 
 		$trans_res = pg_query_params ($db,
 			TRIN_QUERY_GET_TRANSACTION_DET, array ($id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($trans_res !== FALSE)
 		{
@@ -1621,7 +1666,7 @@
 			}
 			else
 			{
-				trin_db_set_last_error ('No data');
+				trin_db_set_last_error ($db, 'No data');
 			}
 		}
 		return FALSE;
@@ -1633,20 +1678,20 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query ($db, 'begin');
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($res !== FALSE)
 		{
 			$trans = trin_db_get_transaction_details ($db, $trans_id);
 			if ($trans === FALSE)
 			{
-				trin_db_set_last_error('Cannot read record before update');
+				trin_db_set_last_error($db, 'Cannot read record before update');
 				pg_query ($db, 'rollback');
 				return FALSE;
 			}
 			else if ((int)$trans[TRIN_DB_TRANS_PARAM_VERSION] != (int)$t_version)
 			{
-				trin_db_set_last_error("Record version doesn't match: expected: "
+				trin_db_set_last_error($db, "Record version doesn't match: expected: "
 					. $trans[TRIN_DB_TRANS_PARAM_VERSION]
 					. ', got: ' . $t_version);
 				pg_query ($db, 'rollback');
@@ -1676,26 +1721,26 @@
 					if ($res !== FALSE)
 					{
 						$res = pg_query ($db, 'commit');
-						trin_db_set_last_error();
+						trin_db_set_last_error($db);
 						return $res;
 					}
 					else
 					{
-						trin_db_set_last_error();
+						trin_db_set_last_error($db);
 						pg_query ($db, 'rollback');
 						return FALSE;
 					}
 				}
 				else
 				{
-					trin_db_set_last_error();
+					trin_db_set_last_error($db);
 					pg_query ($db, 'rollback');
 					return FALSE;
 				}
 			}
 			else
 			{
-				trin_db_set_last_error();
+				trin_db_set_last_error($db);
 				pg_query ($db, 'rollback');
 				return FALSE;
 			}
@@ -1707,7 +1752,7 @@
 	{
 		trin_db_clear_last_error();
 		$res = pg_query ($db, 'begin');
-		trin_db_set_last_error();
+		trin_db_set_last_error($db);
 
 		if ($res !== FALSE)
 		{
@@ -1724,19 +1769,19 @@
 				if ($res !== FALSE)
 				{
 					$res = pg_query ($db, 'commit');
-					trin_db_set_last_error();
+					trin_db_set_last_error($db);
 					return $res;
 				}
 				else
 				{
-					trin_db_set_last_error();
+					trin_db_set_last_error($db);
 					pg_query ($db, 'rollback');
 					return FALSE;
 				}
 			}
 			else
 			{
-				trin_db_set_last_error();
+				trin_db_set_last_error($db);
 				pg_query ($db, 'rollback');
 				return FALSE;
 			}
@@ -1749,11 +1794,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_TRANS_HIST_BY_ID,
 			array ($t_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_transaction_hist_entry ($trans_his)
+	function trin_db_get_next_transaction_hist_entry ($conn, $trans_his)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1774,7 +1819,7 @@
 		$result[TRIN_DB_TRANS_PARAM_TIMESTAMP] = '';
 
 		$t_his = pg_fetch_assoc ($trans_his);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($t_his !== FALSE)
 		{
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $t_his['p_pd_id'];
@@ -1805,11 +1850,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_BUYS,
 			array ($pd_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_product_buy ($buys)
+	function trin_db_get_next_product_buy ($conn, $buys)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1818,7 +1863,7 @@
 		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
 
 		$buy = pg_fetch_assoc ($buys);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($buy !== FALSE)
 		{
 			$result[TRIN_DB_BUYER_PARAM_ID] = $buy['b_id'];
@@ -1835,11 +1880,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_SELLINGS,
 			array ($pd_id));
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_product_sale ($sales)
+	function trin_db_get_next_product_sale ($conn, $sales)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1848,7 +1893,7 @@
 		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
 
 		$sale = pg_fetch_assoc ($sales);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($sale !== FALSE)
 		{
 			$result[TRIN_DB_SELLER_PARAM_ID] = $sale['s_id'];
@@ -1865,11 +1910,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query ($conn,
 			TRIN_QUERY_GET_SELLER_TRANSACTIONS);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_seller_transaction ($seller_trans)
+	function trin_db_get_next_seller_transaction ($conn, $seller_trans)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1880,7 +1925,7 @@
 		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
 
 		$trans = pg_fetch_assoc ($seller_trans);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($trans !== FALSE)
 		{
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['pd_id'];
@@ -1899,11 +1944,11 @@
 		trin_db_clear_last_error();
 		$res = pg_query ($conn,
 			TRIN_QUERY_GET_BUYER_TRANSACTIONS);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
-	function trin_db_get_next_buyer_transaction ($buyer_trans)
+	function trin_db_get_next_buyer_transaction ($conn, $buyer_trans)
 	{
 		trin_db_clear_last_error();
 		$result = array ();
@@ -1914,7 +1959,7 @@
 		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
 
 		$trans = pg_fetch_assoc ($buyer_trans);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		if ($trans !== FALSE)
 		{
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['pd_id'];
@@ -1935,7 +1980,7 @@
 		trin_db_clear_last_error();
 		$res = pg_query ($conn,
 			TRIN_QUERY_DESTROY_DATABASE);
-		trin_db_set_last_error();
+		trin_db_set_last_error($conn);
 		return $res;
 	}
 
@@ -1944,7 +1989,7 @@
 		unset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]);
 	}
 
-	function trin_db_set_last_error($error = '')
+	function trin_db_set_last_error($conn, $error = '')
 	{
 		if (isset ($_SESSION[TRIN_SESS_DB_LAST_ERROR])
 			&& $_SESSION[TRIN_SESS_DB_LAST_ERROR] != '')
@@ -1952,7 +1997,7 @@
 			// error already set, don't overwrite it
 			return;
 		}
-		$last_error = pg_last_error ();
+		$last_error = pg_last_error ($conn);
 		if ($last_error === '' || $last_error === FALSE)
 		{
 			$last_error = $error;
@@ -1960,9 +2005,9 @@
 		$_SESSION[TRIN_SESS_DB_LAST_ERROR] = $last_error;
 	}
 
-	function trin_db_get_last_error()
+	function trin_db_get_last_error($conn)
 	{
-		$db_error = pg_last_error ();
+		$db_error = pg_last_error ($conn);
 		$db_sess_error = '';
 		if (!$db_error && isset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]))
 		{

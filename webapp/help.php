@@ -85,6 +85,12 @@ To use Trinventum, the following steps must be performed:
 	(for the specified user to be the database owner)
 	</li>
 
+ <li>the PL/pgSQL procedural language must be installed in the logical database.<br>
+	On PostgreSQL, you would do:
+	<pre>
+	createlang plpgsql trinventum</pre>
+	(don't wory if it says that the language already exists).
+
  <li>database access rules must be created within the database server.<br>
 	On PostgreSQL, you would do (change XXXX to the database username created earlier):
 	<pre>
@@ -100,6 +106,11 @@ To use Trinventum, the following steps must be performed:
 	 <li>firewall rules may need to be adjusted</li>
 	 <li>the <code>/etc/hosts.allow</code> file (tcpwrappers) may need to be adjusted</li>
 	</ul></li>
+
+ <li>after changing the access rules for the database server, restart it.<br>
+	On Linux with PostgreSQL, you would do (as root):
+	<pre>
+	service postgresql restart</pre>
 
 </ol>
 After having done all of this, point your browser to the Trinventum login page, like
@@ -152,25 +163,51 @@ Click the product ID or the photo (intentionally shrinked) to modify the product
 
 <p>
 You'll see the current product details (click the photo to see it in its full size)
-and a form to modify the details. Due to HTML/browser
-limitations, the photo field will be empty (so you need to upload the same photo each time when
-you want to update the details). The rest of the details will be pre-filled. Change the required
-fields and press "Update product". All the data (including the photo) will be modified by this
-operation. If you modify the cost, the cost of all product pieces will be modifed.
-You cannot decrease the number of product pieces, but you can increase it.
+and a form to modify the details.
+Depending on the settings, you can perform one of these operations:
 </p>
+<ol>
+ <li>Update all the product details at the same time.
+ 	<p>
+	Due to HTML/browser limitations, the photo field will be empty
+	(so you need to upload the same photo each time when
+	you want to update the details).
+	</p>
+	<p>
+	The rest of the details will be pre-filled. Change the required
+	fields and press "Update product". All the data (including the photo) will be modified by this
+	operation.
+	</p>
+	</li>
+ <li>Update the product details one by one.<br>
+	You can use the "Update" button in every field to change the value of
+	just that field in the product.
+	<br><br></li>
+</ol>
+<p>
+In both cases:
+</p>
+<ul>
+ <li>if you modify the cost, the cost of all product pieces will be modifed,</li>
+ <li>you cannot decrease the number of product pieces, but you can increase it.</li>
+</ul>
 
 <p>
 Below the product type details, you'll see a list of current product pieces of the given type.
 To modify a piece, click on its ID. You can only change the status between READY and SELLING
 (which means that the product is put for sale). When the piece is SOLD, you can't change it back
-to READY (unless the piece's transaction is modified to actually select another piece)
-or SELLING, you can update only the cost then.
+to READY or SELLING, you can update only the cost then,  unless:
 </p>
+<ul>
+ <li>the piece's transaction is modified to actually select another piece, or</li>
+ <li>the transaction is deleted, in which case the product piece's status is
+ changed automatically to READY.</li>
+</ul>
 
 <p>
 Below the list of product pieces you'll see a list of product sales, showing which buyers
-bought the pieces.
+bought the pieces and which sellers sold them. You can also see the history of the changes
+made to the product definition.
 </p>
 
 <p>
@@ -188,7 +225,8 @@ After clicking "Register a new transaction", you'll be presented with a transact
 </p>
 
 <p>
-First, you choose the product type. Next, you select a product piece. You can only select
+If modifying the product which took part in the transaction is allowed,
+first you choose the product type. Next, you select a product piece. You can only select
 products which are in the SELLING state (you have to set that state manually).
 </p>
 
@@ -207,10 +245,19 @@ Then you input the rest of the transaction parameters:
 </ul>
 
 <p>
-If you get "Record version doesn't match" errors, then someone must have updated the
-object you're working on. Refresh the page, double-check the values, re-enter your
-changes and retry the operation.
+If you get "Record version doesn't match" errors (anywhere, not just in transactions),
+then someone must have updated the object you're working on. Refresh the page,
+double-check the values, re-enter your changes and retry the operation.
 </p>
+
+<p>
+After finishing work, click the "Logout" link to cleanup the session on the server.
+Depending on the server settings, you may get logged-out automatically after some period
+of inactivity. See the <code>session.cookie_lifetime</code> entry in your php.ini
+file (/etc/php.ini on Linux) to see how long does the session cooie live for (in seconds).
+</p>
+
+<hr>
 
 <p>
 To backup the database, for PostgreSQL, you would do:

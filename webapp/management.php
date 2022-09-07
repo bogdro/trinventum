@@ -113,7 +113,7 @@
 			{
 				$display_form = TRUE;
 				$error = 'Cannot destroy the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 			else
 			{
@@ -292,7 +292,7 @@ Sample queries:
 				if (! $res)
 				{
 					$error = 'Error querying the database: '
-						. trin_db_get_last_error ();
+						. trin_db_get_last_error ($db);
 				}
 				trin_display_error($error);
 				if ($res)

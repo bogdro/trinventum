@@ -48,9 +48,15 @@
 			$_SESSION[TRIN_SESS_DB_PASS],
 			$_SESSION[TRIN_SESS_DB_DBNAME],
 			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_PROD_DETAIL_PARAM]))
+		$have_prod_detail_param =
+			isset ($_POST[TRIN_PROD_DETAIL_PARAM])
+			&& $_POST[TRIN_PROD_DETAIL_PARAM] != '-';
+		$have_prod_inst_param =
+			isset ($_POST[TRIN_DB_PROD_INST_FIELD_ID])
+			&& $_POST[TRIN_DB_PROD_INST_FIELD_ID] != '-';
+		if ($have_prod_detail_param)
 		{
-			if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_ID]))
+			if ($have_prod_inst_param)
 			{
 				if (isset ($_POST[TRIN_DB_SELLER_PARAM_ID])
 					&& isset ($_POST[TRIN_DB_BUYER_PARAM_ID])
@@ -95,12 +101,14 @@
 						{
 							$display_form = TRUE;
 							$error = 'Cannot add transaction to the database: '
-								. trin_db_get_last_error ();
+								. trin_db_get_last_error ($db);
 						}
 					}
 					if (! $display_form)
 					{
+						trin_set_success_msg('Transaction added successfully');
 						header ('Location: transactions.php');
+						exit;
 					}
 				}
 				else
@@ -153,14 +161,14 @@
 
 			trin_display_error($error);
 ?>
-<div class="login_box">
+<div class="login_box c">
 <form action="<?php echo trin_get_self_action (); ?>" method="POST">
 <?php
 			$error = '';
 
 			$display_trans_params = FALSE;
 
-			if (!isset ($_POST[TRIN_PROD_DETAIL_PARAM]))
+			if (! $have_prod_detail_param)
 			{
 				// display a list of product categories
 				if ($db)
@@ -196,7 +204,7 @@
 					else
 					{
 						$error = 'Cannot read product database: '
-							. trin_db_get_last_error ();
+							. trin_db_get_last_error ($db);
 					}
 				}
 				else
@@ -212,7 +220,7 @@
 					TRIN_PROD_DETAIL_PARAM,
 					$_POST[TRIN_PROD_DETAIL_PARAM],
 					$validation_failed_fields);
-				if (!isset ($_POST[TRIN_DB_PROD_INST_FIELD_ID]))
+				if (! $have_prod_inst_param)
 				{
 					// display a list of instances marked for selling of
 					// the given product category
@@ -230,7 +238,7 @@
 							while (TRUE)
 							{
 								$next_prod = trin_db_get_next_product_instance
-									($products);
+									($db, $products);
 								if ($next_prod === FALSE)
 								{
 									break;
@@ -247,7 +255,7 @@
 						else
 						{
 							$error = 'Cannot read product instance database: '
-								. trin_db_get_last_error ();
+								. trin_db_get_last_error ($db);
 						}
 					}
 					else if (!$db)
@@ -282,7 +290,7 @@
 						$buyer_values = array();
 						while (TRUE)
 						{
-							$next_buyer = trin_db_get_next_buyer ($buyers);
+							$next_buyer = trin_db_get_next_buyer ($db, $buyers);
 							if ($next_buyer === FALSE)
 							{
 								break;
@@ -301,7 +309,7 @@
 					else
 					{
 						$error = 'Cannot read buyer database: '
-							. trin_db_get_last_error ();
+							. trin_db_get_last_error ($db);
 					}
 				}
 				else
@@ -320,7 +328,7 @@
 						$seller_values = array();
 						while (TRUE)
 						{
-							$next_seller = trin_db_get_next_seller ($sellers);
+							$next_seller = trin_db_get_next_seller ($db, $sellers);
 							if ($next_seller === FALSE)
 							{
 								break;
@@ -339,7 +347,7 @@
 					else
 					{
 						$error = 'Cannot read seller database: '
-							. trin_db_get_last_error ();
+							. trin_db_get_last_error ($db);
 					}
 				}
 				else

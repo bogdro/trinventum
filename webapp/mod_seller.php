@@ -53,23 +53,41 @@
 			$_SESSION[TRIN_SESS_DB_HOST]);
 		if (isset ($_POST[TRIN_DB_SELLER_PARAM_NAME]))
 		{
-			if (!$db)
+			$form_validators = array(
+				TRIN_DB_SELLER_PARAM_NAME => TRIN_VALIDATION_FIELD_TYPE_REQUIRED
+				);
+			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
+			if (count($validation_failed_fields) != 0)
+ 			{
+ 				$display_form = TRUE;
+				$error = 'Form validation failed - check field values: '
+					. implode(', ', $validation_failed_fields);
+ 			}
+ 			else
 			{
-				$display_form = TRUE;
-				$error = 'Cannot connect to database';
-			}
-			if (! trin_db_update_seller ($db,
-				$_GET[TRIN_DB_SELLER_PARAM_ID],
-				$_POST[TRIN_DB_SELLER_PARAM_NAME],
-				$_POST[TRIN_DB_SELLER_PARAM_VERSION]))
-			{
-				$display_form = TRUE;
-				$error = 'Cannot update seller in the database: '
-					. trin_db_get_last_error ();
+				if (!$db)
+				{
+					$display_form = TRUE;
+					$error = 'Cannot connect to database';
+				}
+				if (! trin_db_update_seller ($db,
+					$_GET[TRIN_DB_SELLER_PARAM_ID],
+					$_POST[TRIN_DB_SELLER_PARAM_NAME],
+					$_POST[TRIN_DB_SELLER_PARAM_VERSION]))
+				{
+					$display_form = TRUE;
+					$error = 'Cannot update seller in the database: '
+						. trin_db_get_last_error ($db);
+				}
+				else
+				{
+					trin_set_success_msg('Seller updated successfully');
+				}
 			}
 			if (! $display_form)
 			{
 				header ('Location: sellers.php');
+				exit;
 			}
 		}
 		else
@@ -171,7 +189,7 @@
 			{
 				while (TRUE)
 				{
-					$next_his = trin_db_get_next_seller_hist_entry ($seller_his);
+					$next_his = trin_db_get_next_seller_hist_entry ($db, $seller_his);
 					if ($next_his === FALSE)
 					{
 						break;
@@ -187,7 +205,7 @@
 			else
 			{
 				$error = 'Cannot read seller database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else

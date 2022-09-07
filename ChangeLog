@@ -1,3 +1,61 @@
+2016-03-27	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
+
+	* Trinventum version 0.3:
+	  UI improvements: add sucess messages, pre-fill seller & buyer when
+	  modifying a transaction, allow the target page of an operation to
+	  be refreshed after the operation without performing the operation
+	  again, clearing the input fields after successfully adding a buyer
+	  or a seller, marking products with no pieces (ready or selling)
+	  in red on the main page, displaying deleted transactions (along
+	  with their history) on the transactions' page. Seller names must
+	  now be unique and non-empty. Fixed listing the historical status
+	  changes of product pieces during the last 12 months. Improved
+	  database version check performed after login.
+	* mod_transaction.php: pre-fill seller & buyer with the correct
+	  (original) values of the transaction.
+	* sellers.php: clearing the input form after successful seller
+	  creation. Disallowing empty seller names. Seller names must
+	  be unique.
+	* buyers.php: clearing the input form after successful seller
+	  creation.
+	* mod_seller.php: disallowing empty seller names. Seller names must
+	  be unique.
+	* pieces.php: when checking for historical status changes during the
+	  last 12 months, take the year into account.
+	* createdatabase.sh: added a simple script for creating the logical
+	  PostgreSQL database.
+	* help.php: added information that the PL/pgSQL procedural language
+	  must be installed in the logical PostgreSQL database. Added
+	  information about session timeout. Updated infomation about
+	  transaction and product modifying. Minor editorial corrections.
+	* db_check.php: stopping on first error, reading the error before
+	  rolling back the transaction, displaying a nice page in case of an
+	  error, logging the user out on error to prevent the application
+	  running when the database state is inconsistent, warning the user
+	  (but still allowing to continue) if the database version is newer
+	  than expected.
+	* main.php: in addition to making products with 0 pieces in the
+	  'READY' status greyed-out, mark products with 0 pieces in both the
+	  'READY' and 'SELLING' status in red (which means that there are
+	  totally no pieces present in the store).
+	* transactions.php: displaying deleted transactions at the same time
+	  and with the same filter as the current transactions
+	* add_product.php, main.php, details.php, ppdetails.php, buyers.php,
+	  mod_buyer.php, sellers.php, mod_seller.php, transactions.php,
+	  add_transaction.php, mod_transaction.php: added a success message
+	  to be displayed on the target page after the operation.
+	* details.php, ppdetails.php, buyers.php, mod_buyer.php, sellers.php,
+	  mod_seller.php, add_transaction.php, mod_transaction.php:
+	  implemented post-redirect-get on success path to allow the user to
+	  refresh the target page without sending the form again. Calling
+	  "exit" after sending the location header.
+	* db_functions.php (trin_db_open): setting a connection timeout to a
+	  default of 60 seconds.
+	* trinventum.css, login.php: improved form element alignment on the
+	  login page
+	* add_transaction.php: fixed the possiblity to continue when no
+	  product or product instance is selected
+
 2016-02-26	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 
 	* Trinventum version 0.2:
@@ -16,7 +74,7 @@
 	  which lists all product pieces, their statuses and counts of
 	  status changes per month during the last year. Better lynx support.
 	  Checking for concurrent database modifications and disallowing
-	  overwriting.
+	  overwriting. Compatibility improvements.
 	* functions.php: added function for converting male/female/child
 	  abbreviations to their full names.
 	* main.php, details.php: using full gender names instead of M/F/C/-.
@@ -39,7 +97,7 @@
 	  product sellings' list, displaying also product sellers, added a
 	  title to the photo. Allow editing product properties one by one.
 	  Displaying product definition history of changes.
-	* functions.php (cs_create_product_def_form), add_transaction.php,
+	* functions.php (trin_create_product_def_form), add_transaction.php,
 	  mod_transaction.php: added titles for some fields, describing what
 	  to enter in them
 	* details.php, add_product.php, add_transaction.php, ppdetails.php,
@@ -74,7 +132,7 @@
 	  add_transaction.php, ppdetails.php, mod_transaction.php: using the
 	  new form-generating functions.
 	* add_transaction.php: fixed sell date default value for months < 10.
-	* db_functions.php (cs_db_update_transaction): fixed marking the
+	* db_functions.php (trin_db_update_transaction): fixed marking the
 	  previous product instance as READY when changing the product
 	  instance during updating a transaction.
 	* sellers.php: display how many products have been sold by each
@@ -82,9 +140,9 @@
 	* trinventum-v1.pgsql: added comments for the schema, types and objects
 	* trinventum-v2.pgsql: added new schema objects
 	* trinventum-full.pgsql: added a file creating the full schema
-	* db_functions.php (cs_db_get_product_defs): products now listed from
+	* db_functions.php (trin_db_get_product_defs): products now listed from
 	  newest to oldest
-	* db_functions.php (cs_db_get_transactions): transactions now listed
+	* db_functions.php (trin_db_get_transactions): transactions now listed
 	  from newest to oldest
 	* management.php: a new page for DB management, currently destroying
 	  and querying.
@@ -92,7 +150,7 @@
 	  Support for selecting transactions by offset and limit.
 	* .htaccess: added a htaccess control file with some basic settings
 	* sql: a new directory for SQL files creating the database
-	* functions.php (cs_include_css): a new function for CSS inclusion
+	* functions.php (trin_include_css): a new function for CSS inclusion
 	* rsrc: a new directory for CSS stylesheets and other resources
 	* details.php, mod_seller.php, mod_buyer.php, ppdetails.php,
 	  mod_transaction.php: using database record version numbers to detect
@@ -100,6 +158,7 @@
 	  the object's details' page.
 	* pieces.php: a new page which lists all product pieces, their
 	  statuses and counts of status changes per month during the last year
+	* *.php: stop using the default connection when getting the last error
 
 2015-10-24	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 

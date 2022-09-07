@@ -33,6 +33,7 @@
 	trin_header_lastmod ($t_lastmod);
 	$error = '';
 	$validation_failed_fields = array();
+	$product_updated = FALSE;
 
 	if (! trin_validate_session ())
 	{
@@ -94,7 +95,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
@@ -107,7 +112,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
@@ -120,7 +129,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_SIZE])
@@ -133,7 +146,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH])
@@ -146,7 +163,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH])
@@ -159,7 +180,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR])
@@ -172,7 +197,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COUNT])
@@ -185,7 +214,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_BRAND])
@@ -198,7 +231,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_GENDER])
@@ -211,7 +248,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
@@ -224,7 +265,11 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
 			}
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COST])
@@ -237,8 +282,18 @@
 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
+			else
+			{
+				$product_updated = TRUE;
+			}
+		}
+		if ($product_updated)
+		{
+			trin_set_success_msg('Product updated successfully');
+			header ('Location: ' . trin_get_self_location ());
+			exit;
 		}
 		$update_error = $error;
 ?>
@@ -269,6 +324,7 @@
 		include ('menu.php');
 
 		trin_display_error($error);
+		trin_display_success();
 ?>
 
 <div class="menu">
@@ -337,7 +393,7 @@
 			else
 			{
 				$error = 'Cannot read product details from the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -359,7 +415,7 @@
 Update product details:
 </p>
 
-<div class="login_box">
+<div class="login_box c">
 <?php
 		// if the product failed to be upated,
 		// refresh it from the DB and make the user
@@ -460,7 +516,7 @@ Update product details:
 			{
 				while (TRUE)
 				{
-					$next_prod = trin_db_get_next_product_instance ($products);
+					$next_prod = trin_db_get_next_product_instance ($db, $products);
 					if ($next_prod === FALSE)
 					{
 						break;
@@ -481,7 +537,7 @@ Update product details:
 			else
 			{
 				$error = 'Cannot read product database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -522,7 +578,7 @@ Update product details:
 			{
 				while (TRUE)
 				{
-					$next_buy = trin_db_get_next_product_buy ($buys);
+					$next_buy = trin_db_get_next_product_buy ($db, $buys);
 					if ($next_buy === FALSE)
 					{
 						break;
@@ -540,7 +596,7 @@ Update product details:
 			else
 			{
 				$error = 'Cannot read product buyings\' database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -581,7 +637,7 @@ Update product details:
 			{
 				while (TRUE)
 				{
-					$next_sale = trin_db_get_next_product_sale ($sales);
+					$next_sale = trin_db_get_next_product_sale ($db, $sales);
 					if ($next_sale === FALSE)
 					{
 						break;
@@ -599,7 +655,7 @@ Update product details:
 			else
 			{
 				$error = 'Cannot read product sale database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -647,7 +703,7 @@ Update product details:
 			{
 				while (TRUE)
 				{
-					$next_his = trin_db_get_next_product_history_entry ($his);
+					$next_his = trin_db_get_next_product_history_entry ($db, $his);
 					if ($next_his === FALSE)
 					{
 						break;
@@ -669,7 +725,7 @@ Update product details:
 			else
 			{
 				$error = 'Cannot read product history database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else

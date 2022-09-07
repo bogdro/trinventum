@@ -48,15 +48,33 @@
 			$_SESSION[TRIN_SESS_DB_HOST]);
 		if (isset ($_POST[TRIN_DB_SELLER_PARAM_NAME]))
 		{
-			if (!$db)
+			$form_validators = array(
+				TRIN_DB_SELLER_PARAM_NAME => TRIN_VALIDATION_FIELD_TYPE_REQUIRED
+				);
+			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
+			if (count($validation_failed_fields) != 0)
+ 			{
+				$error = 'Form validation failed - check field values: '
+					. implode(', ', $validation_failed_fields);
+ 			}
+			else
 			{
-				$error = 'Cannot connect to database';
-			}
-			if (! trin_db_add_seller ($db,
-				$_POST[TRIN_DB_SELLER_PARAM_NAME]))
-			{
-				$error = 'Cannot add seller to the database: '
-					. trin_db_get_last_error ();
+				if (!$db)
+				{
+					$error = 'Cannot connect to database';
+				}
+				if (! trin_db_add_seller ($db,
+					$_POST[TRIN_DB_SELLER_PARAM_NAME]))
+				{
+					$error = 'Cannot add seller to the database: '
+						. trin_db_get_last_error ($db);
+				}
+				else
+				{
+					trin_set_success_msg('Seller added successfully');
+					header ('Location: ' . trin_get_self_location ());
+					exit;
+				}
 			}
 		}
 ?>
@@ -87,6 +105,7 @@
 		include ('menu.php');
 
 		trin_display_error($error);
+		trin_display_success();
 ?>
 <div class="login_box">
 <?php
@@ -94,7 +113,8 @@
 		$param_seller_name = '';
 		$param_seller_version = 0;
 
-		if (isset ($_POST[TRIN_DB_SELLER_PARAM_NAME]))
+		// reset the form on success, leave the values on error
+		if ($error && isset ($_POST[TRIN_DB_SELLER_PARAM_NAME]))
 		{
 			$param_seller_name = $_POST[TRIN_DB_SELLER_PARAM_NAME];
 		}
@@ -125,7 +145,7 @@
 			{
 				while (TRUE)
 				{
-					$next_seller = trin_db_get_next_seller ($sellers);
+					$next_seller = trin_db_get_next_seller ($db, $sellers);
 					if ($next_seller === FALSE)
 					{
 						break;
@@ -142,7 +162,7 @@
 			else
 			{
 				$error = 'Cannot read seller database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -184,7 +204,7 @@
 			{
 				while (TRUE)
 				{
-					$next_sale = trin_db_get_next_seller_transaction ($sales);
+					$next_sale = trin_db_get_next_seller_transaction ($db, $sales);
 					if ($next_sale === FALSE)
 					{
 						break;
@@ -203,7 +223,7 @@
 			else
 			{
 				$error = 'Cannot read product sale database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else

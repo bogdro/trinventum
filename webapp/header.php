@@ -22,7 +22,7 @@
 ?>
 <div>
 <span class="l">
-Trinventum e-commerce store management software
+Trinventum e-commerce management software
 </span>
 <span class="fright">
 <a href="help.php">Help</a>

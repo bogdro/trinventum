@@ -30,65 +30,157 @@
 	{
 		header ('Location: login.php');
 	}
+	$error_msg = '';
+	$warning_msg = '';
 
 	$conn = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
 			$_SESSION[TRIN_SESS_DB_PASS],
 			$_SESSION[TRIN_SESS_DB_DBNAME],
 			$_SESSION[TRIN_SESS_DB_HOST]);
-
-	$trin_db_ver = trin_db_get_version ($conn);
-	if ((int)$trin_db_ver == 0)
+	if ($conn)
 	{
-		// just run the full script
-		$file = file_get_contents ("sql/trinventum-full.pgsql");
-		if ($file !== FALSE)
+		$trin_db_ver = trin_db_get_version ($conn);
+		if ((int)$trin_db_ver == 0)
 		{
-			if (! trin_db_query ($conn, $file))
-			{
-				die ("Can't update DB version from $trin_db_ver to "
-					. TRIN_EXPECTED_DB_VERSION
-					. ': ' . trin_db_get_last_error ());
-			}
-		}
-		else
-		{
-			die ("Can't update DB version from $trin_db_ver to "
-				. TRIN_EXPECTED_DB_VERSION
-				. ": can't read file trinventum-full.pgsql");
-		}
-	}
-	else if ((int)$trin_db_ver < (int)TRIN_EXPECTED_DB_VERSION)
-	{
-		for ($i = (int)$trin_db_ver + 1; $i <= (int)TRIN_EXPECTED_DB_VERSION; $i++)
-		{
-			// run the missing scripts
-			$file = file_get_contents ("sql/trinventum-v$i.pgsql");
+			// just run the full script
+			$file = file_get_contents ("sql/trinventum-full.pgsql");
 			if ($file !== FALSE)
 			{
-				if (! trin_db_query ($conn, 'begin'))
-				{
-					die ("Can't update DB version from $trin_db_ver to "
-						. TRIN_EXPECTED_DB_VERSION
-						. ' - cannot start transaction: ' . trin_db_get_last_error ());
-				}
 				if (! trin_db_query ($conn, $file))
 				{
-					trin_db_query ($conn, 'rollback');
-					die ("Can't update DB version from $trin_db_ver to "
+					$error_msg = "Can't update database version from $trin_db_ver to "
 						. TRIN_EXPECTED_DB_VERSION
-						. ': ' . trin_db_get_last_error ());
+						. ': ' . trin_db_get_last_error ($db);
 				}
-				trin_db_query ($conn, 'commit');
 			}
 			else
 			{
-				die ("Can't update DB version from $trin_db_ver to "
+				$error_msg = "Can't update database version from $trin_db_ver to "
 					. TRIN_EXPECTED_DB_VERSION
-					. ": can't read file trinventum-v$i.pgsql");
+					. ": can't read file trinventum-full.pgsql";
 			}
 		}
+		else if ((int)$trin_db_ver < (int)TRIN_EXPECTED_DB_VERSION)
+		{
+			for ($i = (int)$trin_db_ver + 1; $i <= (int)TRIN_EXPECTED_DB_VERSION; $i++)
+			{
+				// run the missing scripts
+				$file = file_get_contents ("sql/trinventum-v$i.pgsql");
+				if ($file !== FALSE)
+				{
+					if (! trin_db_query ($conn, 'begin'))
+					{
+						$error_msg = "Can't update database version from $trin_db_ver to "
+							. TRIN_EXPECTED_DB_VERSION
+							. ' - cannot start transaction: '
+							. trin_db_get_last_error ($db);
+						break;
+					}
+					if (! trin_db_query ($conn, $file))
+					{
+						$error_msg = "Can't update database version from $trin_db_ver to "
+							. TRIN_EXPECTED_DB_VERSION
+							. ': ' . trin_db_get_last_error ($db);
+						trin_db_query ($conn, 'rollback');
+						break;
+					}
+					else
+					{
+						trin_db_query ($conn, 'commit');
+					}
+				}
+				else
+				{
+					$error_msg = "Can't update database version from $trin_db_ver to "
+						. TRIN_EXPECTED_DB_VERSION
+						. ": can't read file trinventum-v$i.pgsql";
+					break;
+				}
+			}
+		}
+		else if ((int)$trin_db_ver > (int)TRIN_EXPECTED_DB_VERSION)
+		{
+			$warning_msg = "Database version $trin_db_ver is newer than the expected version "
+				. TRIN_EXPECTED_DB_VERSION
+				. '.<br>The application may behave improperly.<br>'
+				. 'You can <a href="main.php">continue</a> or '
+				. '<a href="logout.php">logout and install the correct application version</a>.';
+		}
+		trin_db_close ($conn);
 	}
-	trin_db_close ($conn);
+	else
+	{
+		$error_msg = "Can't update database version from $trin_db_ver to "
+			. TRIN_EXPECTED_DB_VERSION
+			. ": can't conenct to database";
+	}
 
-	header ('Location: main.php');
+	if ($error_msg == '' && $warning_msg == '')
+	{
+		header ('Location: main.php');
+	}
+	else
+	{
+		if ($error_msg != '')
+		{
+			// Errors can't be skipped over. Make it impossible to continue
+			session_destroy ();
+		}
+
+		$t_lastmod = getlastmod ();
+		trin_header_lastmod ($t_lastmod);
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<HTML lang="en">
+<HEAD>
+<META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
+<META HTTP-EQUIV="Content-Language"   CONTENT="en">
+<?php
+		trin_meta_lastmod ($t_lastmod);
+		trin_include_css ();
+?>
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
+
+<TITLE> Trinventum - database prepare problem </TITLE>
+
+<META NAME="Author" CONTENT="Bogdan D.">
+<META NAME="Description" CONTENT="Trinventum e-commerce manager">
+<META NAME="Language" CONTENT="en">
+<META NAME="Generator" CONTENT="KWrite/Kate; www.kate-editor.org">
+
+</HEAD><BODY>
+<h1 class="c">Database prepare problem</h1>
+<?php
+		trin_display_error($error_msg);
+		if ($warning_msg != '')
+		{
+?>
+<p class="warning">
+<?php echo $warning_msg; ?>
+</p>
+
+<?php
+		}
+		if ($error_msg != '')
+		{
+?>
+
+<p>
+Can't continue, because the database would be inconsistent with what the application expects.
+You are logged-out now.
+</p>
+<p>
+Fix the problem and <a href="login.php" hreflang="en">log-in again</a>.
+</p>
+
+<?php
+		}
+		include ('footer.php');
+?>
+
+</BODY></HTML>
+<?php
+	}
 ?>

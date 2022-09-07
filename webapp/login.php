@@ -54,7 +54,7 @@
 		else if (! trin_db_check ($db))
 		{
 			$display_form = TRUE;
-			$error = 'Cannot check the database: ' . trin_db_get_last_error ();
+			$error = 'Cannot check the database: ' . trin_db_get_last_error ($db);
 			trin_db_close ($db);
 		}
 		if (! $display_form)
@@ -126,7 +126,7 @@
 ?>
 
 <div class="login_box c">
-Trinventum e-commerce store management software
+Trinventum e-commerce management software
 </div>
 
 <div class="login_box">
@@ -136,36 +136,52 @@ Trinventum e-commerce store management software
 Database connection parameters:
 </p>
 
-<p class="c">
+<p>
+<span class="par_name">
 Username:
+</span>
+<span class="par_value">
 <?php
 	trin_create_text_input('text', '20', TRIN_SESS_DB_LOGIN,
 		$param_db_login, $validation_failed_fields);
 ?>
+</span>
 </p>
 
-<p class="c">
+<p>
+<span class="par_name">
 Password:
+</span>
+<span class="par_value">
 <?php
 	trin_create_text_input('password', '20', TRIN_SESS_DB_PASS,
 		$param_db_pass, $validation_failed_fields);
 ?>
+</span>
 </p>
 
-<p class="c">
+<p>
+<span class="par_name">
 Server address:
+</span>
+<span class="par_value">
 <?php
 	trin_create_text_input('text', '20', TRIN_SESS_DB_HOST,
 		$param_db_host, $validation_failed_fields);
 ?>
+</span>
 </p>
 
-<p class="c">
+<p>
+<span class="par_name">
 Database name:
+</span>
+<span class="par_value">
 <?php
 	trin_create_text_input('text', '20', TRIN_SESS_DB_DBNAME,
 		$param_db_dbname, $validation_failed_fields);
 ?>
+</span>
 </p>
 
 <p class="c">

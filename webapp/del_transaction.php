@@ -59,12 +59,17 @@
 			{
 				$display_form = TRUE;
 				$error = 'Cannot delete transaction from the database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				trin_set_success_msg('Transaction deleted successfully');
 			}
 		}
 		if (! $display_form)
 		{
 			header ('Location: transactions.php?' . TRIN_DB_TRANS_PARAM_LIST . '=1');
+			exit;
 		}
 		else
 		{

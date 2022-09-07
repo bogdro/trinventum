@@ -94,11 +94,12 @@
 				{
 					$display_form = TRUE;
 					$error = 'Cannot add product to the database: '
-						. trin_db_get_last_error ();
+						. trin_db_get_last_error ($db);
 				}
 			}
 			if (! $display_form)
 			{
+				trin_set_success_msg('Product added successfully');
 				header ('Location: main.php');
 			}
 		}
@@ -138,7 +139,7 @@
 
 			trin_display_error($error);
 ?>
-<div class="login_box">
+<div class="login_box c">
 <?php
 			$param_pd_name = '';
 			$param_pd_photo = '';

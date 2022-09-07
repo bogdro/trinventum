@@ -129,7 +129,7 @@ OR
 				{
 					while (TRUE)
 					{
-						$next_prod = trin_db_get_next_product_instance ($products);
+						$next_prod = trin_db_get_next_product_instance ($db, $products);
 						if ($next_prod === FALSE)
 						{
 							break;
@@ -154,7 +154,7 @@ OR
 				else
 				{
 					$error = 'Cannot read product database: '
-						. trin_db_get_last_error ();
+						. trin_db_get_last_error ($db);
 				}
 			}
 			else
@@ -209,7 +209,7 @@ OR
 			else
 			{
 				$error = 'Cannot read product database: '
-					. trin_db_get_last_error ();
+					. trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -283,7 +283,7 @@ OR
 				else
 				{
 					$error = 'Cannot read product database: '
-						. trin_db_get_last_error ();
+						. trin_db_get_last_error ($db);
 				}
 			}
 			else
