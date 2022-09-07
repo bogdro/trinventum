@@ -1,0 +1,276 @@
+/*
+Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+
+This file is part of Trinventum (Transaction and Inventory Unified Manager),
+ a software that helps manage an e-commerce business.
+Trinventum homepage: https://trinventum.sourceforge.io/
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body		{
+			/*font-family: sans-serif, serif, arial;*/
+			background-color: #B7EBB7;
+			color: black;
+			text-align: justify;
+		}
+
+a:link		{
+			background-color: inherit;
+			color: blue;
+			text-transform: none;
+			text-decoration: underline;
+			font-weight: bold;
+		}
+
+a:visited	{
+			background-color: inherit;
+			color: #006000;
+			text-transform: none;
+			text-decoration: underline;
+			font-weight: bold;
+		}
+
+A:active	{
+			background-color: inherit;
+			color: brown;
+		}
+
+pre		{
+/* 			font-family: monospace, "courier new", courier; */
+			background-color: #D0FFFF;
+			color: black;
+		}
+
+code, kbd	{
+/* 			font-family: monospace, "courier new", courier; */
+			background-color: #A0EEEE;
+			color: black;
+		}
+
+/*
+img		{	border-style: none;		}
+img.frame	{
+			border-style: solid;
+			border-color: blue;
+		}
+*/
+
+img.prod_image	{
+			width: 75px;
+			height: 100px;
+		}
+
+acronym, abbr	{
+			border-bottom: 1px dotted black;
+			cursor:	help; 		/* CSS 2 */
+		}
+
+.important	{
+			/*text-transform: uppercase;*/
+			text-decoration: underline;
+			font-weight: bold;
+			font-style: normal;
+		}
+
+.b		{	font-weight: bold;		}
+
+.u		{	text-decoration: underline;	}
+
+.c		{	text-align: center;		}
+
+.r		{	text-align: right;		}
+
+.l		{	text-align: left;		}
+
+ul, ol, li	{	list-style-position: outside;	}
+
+ul		{	list-style-type: disc;		}
+ul ul		{	list-style-type: square;	}
+ul ul ul	{	list-style-type: circle;	}
+
+ol		{	list-style-type: decimal;	}
+
+ol.rom		{	list-style-type: upper-roman;	}
+
+ol.alfa		{	list-style-type: lower-alpha;	}
+
+.header		{
+			font-size: 200%;
+			text-align: center;
+			font-weight: normal;
+		}
+
+table		{
+ 			width: 100%;
+			border-style: solid;
+			border-width: 1px;
+			border-color: gray gray gray gray;
+		}
+
+caption		{
+			text-align: center;
+			font-weight: bold;
+			font-size: 150%;
+		}
+
+th		{
+			border-style: solid;
+			border-width: 1px;
+			border-color: gray gray gray gray;
+			text-align: center;
+		}
+
+td		{
+			border-style: solid;
+			border-width: 1px;
+			border-color: gray gray gray gray;
+		}
+
+td hr		{	display: none;			}
+
+
+.left		{	float: left;			}
+.right		{	float: right;			}
+
+.warn		{
+			background: #FFFF00;
+			border: 5px solid;
+			border-color: #FF0000;
+			font-size: 150%;
+		}
+
+.red_frame	{
+			border: 5px solid;
+			border-color: #FF0000
+		}
+
+.login_box	{
+			border: 2px solid;
+			border-color: #000000;
+			margin-left: 25%;
+			margin-right: 25%;
+			width: 50%;
+			padding: 5px;
+			text-align: center;
+		}
+
+.div_par_name	{
+			text-align: right;
+			/*width: 50%;*/
+		}
+
+.par_name	{
+			text-align: right;
+			width: 50%;
+			/*padding-left: 50%;*/
+		}
+
+.div_par_value	{
+			text-align: left;
+		}
+
+.par_value	{
+			text-align: left;
+		}
+
+.vert		{
+			vertical-align: middle;
+		}
+
+.menu		{
+			padding-top: 20px;
+			padding-bottom: 20px;
+		}
+
+/* =============================================================== */
+/* CSS 2 */
+@media print {
+
+  body		{
+			text-align: justify;
+			background-color: white;
+			color: black;
+		}
+
+  a:link, a:visited, a:active
+		{
+			background-color: white;
+			color: black;
+			text-transform: none;
+			text-decoration: underline;
+			font-weight: bold;
+		}
+
+  pre		{
+  			background-color: white;
+			color: black;
+  			border: solid 1px black;
+  		}
+
+  code, kbd	{
+/* 			font-family: monospace, "courier new", courier; */
+			background-color: white;
+			color: black;
+		}
+
+
+  .noprint	{	display: none;			}
+
+  acronym, abbr	{	border-bottom: none;		}
+
+  .header	{	page-break-after: avoid;	}
+
+  tr		{	page-break-inside: avoid;	}
+
+  td		{	page-break-inside: avoid;	}
+  hr		{	display: none;			}
+  img		{	display: none;			}
+
+}
+
+@media aural {
+
+  body		{
+  			pitch-range: 50;
+  			volume: soft;
+  			speak: normal;
+  			speech-rate: medium;
+  			pitch: medium;
+  			richness: 50;
+  			speak-punctuation: none;
+  			speak-numeral: continuous;
+  		}
+
+  acronym	{	speak: spell-out;		}
+
+  table, td	{	speak-header: always;		}
+
+  .important	{
+  			pitch: medium;
+  			stress: 90;
+  			richness: 90;
+  			volume: medium;
+		}
+
+  .header	{	volume: loud;			}
+
+  hr		{
+  			speak: none;
+  			display: none;
+  		}
+
+  pre,code,kbd	{	speak-punctuation: code;	}
+
+}

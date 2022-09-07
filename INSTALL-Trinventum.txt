@@ -1,0 +1,25 @@
+Trinventum e-commerce business manager installation instructions.
+
+To install:
+
+- create the database user to host the application's database,
+  e.g. run as 'postgres':
+  createuser -P trinventum
+
+- create the application's database, e.g. run as 'postgres':
+  createdb -O trinventum trinventum
+
+- copy the contents of the 'webapp' directory to a chosen location
+  reachable by the web server.
+
+To uninstall, if needed:
+
+- remove the contents of the 'webapp' directory from the location chosen
+  during installation,
+
+- delete the application's database - run as 'postgres':
+  dropdb trinventum
+
+- delete the application's database user - run as 'postgres':
+  dropuser trinventum
+
