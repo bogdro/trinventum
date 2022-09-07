@@ -129,8 +129,12 @@ needs to be upgraded, the required scripts are run.
 </p>
 
 <p>
-After logging in to the application, you're presented with the list of currently-existing product
-types (there will be none during the first run).
+After logging in to the application, you're presented with the list of currently-existing
+categories of product types (there will be one during the first run - Uncategorised products).
+</p>
+
+<p>
+Use the "Categories" link to add new product type categories (this is optional).
 </p>
 
 <p>

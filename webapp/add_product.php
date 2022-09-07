@@ -43,7 +43,16 @@
 	}
 	else
 	{
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
+		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
+			$_SESSION[TRIN_SESS_DB_PASS],
+			$_SESSION[TRIN_SESS_DB_DBNAME],
+			$_SESSION[TRIN_SESS_DB_HOST]);
+		if (!$db)
+		{
+			$display_form = TRUE;
+			$error = 'Cannot connect to database';
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
 			&& isset ($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_SIZE])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH])
@@ -53,13 +62,15 @@
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_BRAND])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_GENDER])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY])
+ 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
 		{
 			$form_validators = array(
 				TRIN_DB_PROD_PARAM_LENGTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
 				TRIN_DB_PROD_PARAM_WIDTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
 				TRIN_DB_PROD_PARAM_COUNT => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
-				TRIN_DB_PROD_PARAM_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER
+				TRIN_DB_PROD_PARAM_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+				TRIN_DB_PROD_PARAM_CATEGORY => TRIN_VALIDATION_FIELD_TYPE_NUMBER
 				);
 			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
 			if (count($validation_failed_fields) != 0)
@@ -70,18 +81,9 @@
 			}
 			else
 			{
-				$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-					$_SESSION[TRIN_SESS_DB_PASS],
-					$_SESSION[TRIN_SESS_DB_DBNAME],
-					$_SESSION[TRIN_SESS_DB_HOST]);
-				if (!$db)
-				{
-					$display_form = TRUE;
-					$error = 'Cannot connect to database';
-				}
 				if (! trin_db_add_product ($db,
 					$_POST[TRIN_DB_PROD_PARAM_NAME],
-					TRIN_DB_PROD_PARAM_PHOTO,
+			       		TRIN_DB_PROD_PARAM_PHOTO,
 					$_POST[TRIN_DB_PROD_PARAM_SIZE],
 					$_POST[TRIN_DB_PROD_PARAM_LENGTH],
 					$_POST[TRIN_DB_PROD_PARAM_WIDTH],
@@ -90,7 +92,8 @@
 					$_POST[TRIN_DB_PROD_PARAM_BRAND],
 					$_POST[TRIN_DB_PROD_PARAM_GENDER],
 					$_POST[TRIN_DB_PROD_PARAM_COMMENT],
-					$_POST[TRIN_DB_PROD_PARAM_COST]))
+					$_POST[TRIN_DB_PROD_PARAM_CATEGORY],
+ 					$_POST[TRIN_DB_PROD_PARAM_COST]))
 				{
 					$display_form = TRUE;
 					$error = 'Cannot add product to the database: '
@@ -152,6 +155,8 @@
 			$param_pd_gender = '-';
 			$param_pd_comment = '';
 			$param_pd_cost = '';
+			$param_pd_category = '';
+			$param_pd_category_id = '';
 			$param_pd_version = 0;
 
 			if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME]))
@@ -202,7 +207,20 @@
 			{
 				$param_pd_version = $_POST[TRIN_DB_PROD_PARAM_VERSION];
 			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY]))
+			{
+				$param_pd_category_id = $_POST[TRIN_DB_PROD_PARAM_CATEGORY];
+			}
 
+			if ($db)
+			{
+				$param_category_option_names_values =
+					trin_db_get_product_categories_as_options ($db);
+			}
+			else
+			{
+				$param_category_option_names_values = array();
+			}
 			trin_create_product_def_form (
 				trin_get_self_action (), 'Add product',
 				TRIN_DB_PROD_PARAM_NAME, $param_pd_name,
@@ -216,6 +234,8 @@
 				TRIN_DB_PROD_PARAM_GENDER, $param_pd_gender,
 				TRIN_DB_PROD_PARAM_COMMENT, $param_pd_comment,
 				TRIN_DB_PROD_PARAM_COST, $param_pd_cost,
+				TRIN_DB_PROD_PARAM_CATEGORY, $param_pd_category_id,
+				$param_category_option_names_values,
 				TRIN_DB_PROD_PARAM_VERSION, $param_pd_version,
 				$validation_failed_fields, FALSE
 			);

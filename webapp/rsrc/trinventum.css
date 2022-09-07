@@ -184,7 +184,7 @@ th hr		{	display: none;			}
 
 .login_box	{
 			border: 2px solid;
-			border-color: #000000;
+			border-color: black;
 			margin-left: 25%;
 			margin-right: 25%;
 			width: 50%;
@@ -275,6 +275,65 @@ th hr		{	display: none;			}
   td		{	page-break-inside: avoid;	}
   hr		{	display: none;			}
   img		{	display: none;			}
+
+  img.prod_image	{
+			display: inline;
+			width: 75px;
+			/*height: 100px;*/
+			height: auto;
+			vertical-align: middle;
+		}
+
+  .error	{
+			border: 5px solid;
+			border-color: black;
+			text-align: center;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			color: black;
+		}
+
+  .warning	{
+			border: 5px solid;
+			border-color: black;
+			text-align: center;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			color: black;
+		}
+
+  .success	{
+			border: 5px solid;
+			border-color: black;
+			text-align: center;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			color: black;
+		}
+
+  .red_frame	{
+			border: 5px solid;
+			border-color: black;
+		}
+
+  .ok		{
+			font-weight: bold;
+			color: black;
+		}
+
+  .nok		{
+			font-weight: bold;
+			color: black;
+		}
+
+  .noready	{
+			color: black;
+		}
+
+  .nopieces	{
+			font-weight: bold;
+			color: black;
+		}
 
 }
 

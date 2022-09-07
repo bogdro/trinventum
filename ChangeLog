@@ -1,3 +1,18 @@
+2016-09-04	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
+
+	* Trinventum version 0.4:
+	  Added support for product definition categories, for further
+	  grouping. Other small fixes and improvements.
+	* constants.php, db_functions.php, functions.php, main.php,
+	  details.php, add_product.php, all_products.php, categories.php,
+	  cat_products.php, mod_category.php, sql/trinventum-v4.pgsql,
+	  help.php: added support for product categories.
+	* db_functions.php, details.php: displaying the correct total number
+	  of product pieces now.
+	* management.php: added displaying database connection information.
+	* trinventum.css: removing colours from print, but enable
+	  product images
+
 2016-03-27	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 
 	* Trinventum version 0.3:
@@ -140,8 +155,8 @@
 	* trinventum-v1.pgsql: added comments for the schema, types and objects
 	* trinventum-v2.pgsql: added new schema objects
 	* trinventum-full.pgsql: added a file creating the full schema
-	* db_functions.php (trin_db_get_product_defs): products now listed from
-	  newest to oldest
+	* db_functions.php (trin_db_get_product_defs): products now listed
+	  from newest to oldest
 	* db_functions.php (trin_db_get_transactions): transactions now listed
 	  from newest to oldest
 	* management.php: a new page for DB management, currently destroying

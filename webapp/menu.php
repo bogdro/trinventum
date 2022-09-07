@@ -26,6 +26,8 @@
 |
 <a href="add_product.php">Add a new product</a>
 |
+<a href="categories.php">Categories</a>
+|
 <a href="pieces.php">All pieces</a>
 |
 <a href="sellers.php">Sellers</a>

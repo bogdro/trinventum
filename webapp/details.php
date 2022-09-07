@@ -54,7 +54,8 @@
 			TRIN_DB_PROD_PARAM_LENGTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
 			TRIN_DB_PROD_PARAM_WIDTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
 			TRIN_DB_PROD_PARAM_COUNT => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
-			TRIN_DB_PROD_PARAM_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER
+			TRIN_DB_PROD_PARAM_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+			TRIN_DB_PROD_PARAM_CATEGORY => TRIN_VALIDATION_FIELD_TYPE_NUMBER
 			);
 		$validation_failed_fields = trin_validate_form($_POST, $form_validators);
 		if (!$db)
@@ -77,7 +78,8 @@
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_GENDER])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY])
+ 			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product ($db,
 				$product_id,
@@ -92,7 +94,8 @@
 				$_POST[TRIN_DB_PROD_PARAM_GENDER],
 				$_POST[TRIN_DB_PROD_PARAM_COMMENT],
 				$_POST[TRIN_DB_PROD_PARAM_COST],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_CATEGORY],
+ 				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -289,6 +292,23 @@
 				$product_updated = TRUE;
 			}
 		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_CATEGORY])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_category ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_CATEGORY],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ($db);
+			}
+			else
+			{
+				$product_updated = TRUE;
+			}
+		}
 		if ($product_updated)
 		{
 			trin_set_success_msg('Product updated successfully');
@@ -340,10 +360,13 @@
 		$param_pd_width = '0';
 		$param_pd_colour = '';
 		$param_pd_count = '';
+		$param_pd_count_total = 0;
 		$param_pd_brand = '';
 		$param_pd_gender = '-';
 		$param_pd_comment = '';
 		$param_pd_cost = '';
+		$param_pd_category = '';
+		$param_pd_category_id = -1;
 		$param_pd_version = 0;
 
 		$error = '';
@@ -361,9 +384,12 @@
 				$param_pd_width = $product_det[TRIN_DB_PROD_DEF_FIELD_WIDTH];
 				$param_pd_colour = $product_det[TRIN_DB_PROD_DEF_FIELD_COLOUR];
 				$param_pd_count = $product_det[TRIN_DB_PROD_DEF_FIELD_COUNT];
+				$param_pd_count_total = $product_det[TRIN_DB_PROD_DEF_FIELD_COUNT_TOTAL];
 				$param_pd_brand = $product_det[TRIN_DB_PROD_DEF_FIELD_BRAND];
 				$param_pd_gender = $product_det[TRIN_DB_PROD_DEF_FIELD_GENDER];
 				$param_pd_comment = $product_det[TRIN_DB_PROD_DEF_FIELD_COMMENT];
+				$param_pd_category = $product_det[TRIN_DB_PROD_DEF_FIELD_CATEGORY];
+				$param_pd_category_id = $product_det[TRIN_DB_PROD_DEF_FIELD_CATEGORY_ID];
 				$param_pd_version = $product_det[TRIN_DB_PROD_DEF_FIELD_VERSION];
 				if ($product_det[TRIN_DB_PROD_DEF_FIELD_PHOTO] !== '-')
 				{
@@ -380,6 +406,7 @@
 
 				echo 	"<ul>\n <li><p>Photo: $photo</p></li>\n" .
 					' <li><p>Name: ' . $param_pd_name . "</p></li>\n" .
+					' <li><p>Category: ' . $param_pd_category . "</p></li>\n" .
 					' <li><p>Brand: ' . $param_pd_brand . "</p></li>\n" .
 					' <li><p>Size: ' . $param_pd_size . "</p></li>\n" .
 					' <li><p>Length: ' . $param_pd_length . "</p></li>\n" .
@@ -448,11 +475,7 @@ Update product details:
 			}
 			if (isset ($_POST[TRIN_DB_PROD_PARAM_COUNT]))
 			{
-				$param_pd_count = $_POST[TRIN_DB_PROD_PARAM_COUNT];
-			}
-			else
-			{
-				$param_pd_count = 0; // $param_pd_count is an HTML string hard to parse now
+				$param_pd_count_total = $_POST[TRIN_DB_PROD_PARAM_COUNT];
 			}
 			if (isset ($_POST[TRIN_DB_PROD_PARAM_BRAND]))
 			{
@@ -470,6 +493,10 @@ Update product details:
 			{
 				$param_pd_cost = $_POST[TRIN_DB_PROD_PARAM_COST];
 			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY]))
+			{
+				$param_pd_category_id = $_POST[TRIN_DB_PROD_PARAM_CATEGORY];
+			}
 			/*
 			always take the current version value
 			if (isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
@@ -479,6 +506,15 @@ Update product details:
 			*/
 		}
 
+		if ($db)
+		{
+			$param_category_option_names_values =
+				trin_db_get_product_categories_as_options ($db);
+		}
+		else
+		{
+			$param_category_option_names_values = array();
+		}
 		trin_create_product_def_form (
 			trin_get_self_action (), 'Update product',
 			TRIN_DB_PROD_PARAM_NAME, $param_pd_name,
@@ -487,11 +523,13 @@ Update product details:
 			TRIN_DB_PROD_PARAM_LENGTH, $param_pd_length,
 			TRIN_DB_PROD_PARAM_WIDTH, $param_pd_width,
 			TRIN_DB_PROD_PARAM_COLOUR, $param_pd_colour,
-			TRIN_DB_PROD_PARAM_COUNT, $param_pd_count,
+			TRIN_DB_PROD_PARAM_COUNT, $param_pd_count_total,
 			TRIN_DB_PROD_PARAM_BRAND, $param_pd_brand,
 			TRIN_DB_PROD_PARAM_GENDER, $param_pd_gender,
 			TRIN_DB_PROD_PARAM_COMMENT, $param_pd_comment,
 			TRIN_DB_PROD_PARAM_COST, $param_pd_cost,
+			TRIN_DB_PROD_PARAM_CATEGORY, $param_pd_category_id,
+			$param_category_option_names_values,
 			TRIN_DB_PROD_PARAM_VERSION, $param_pd_version,
 			$validation_failed_fields, TRUE
 		);
@@ -689,6 +727,7 @@ Update product details:
  <th>Gender was</th>
  <th>Colour was</th>
  <th>Comment was</th>
+ <th>Category was</th>
  <th>Change user</th>
  <th>Change time</th>
 </tr></thead>
@@ -717,6 +756,7 @@ Update product details:
 						'<td>' . trin_get_gender_name($next_his[TRIN_DB_PROD_DEF_FIELD_GENDER]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_COLOUR] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_COMMENT] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_CATEGORY] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] . '<hr></td></tr>'
 						. "\n";
@@ -736,13 +776,13 @@ Update product details:
 		if ($error)
 		{
 ?>
-<tr><td colspan="9" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="10" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_his) && (! $error))
 		{
 ?>
-<tr><td colspan="9" class="c">No product history found</td></tr>
+<tr><td colspan="10" class="c">No product history found</td></tr>
 <?php
 		} // ! $have_sale
 ?>

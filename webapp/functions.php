@@ -170,9 +170,10 @@
 		$param_gender_name, $param_gender_value,
 		$param_comment_name, $param_comment_value,
 		$param_cost_name, $param_cost_value,
+		$param_category_name, $param_category_value,
+		$param_category_option_names_values,
 		$param_version_name, $param_version_value,
-		$validation_failed_fields,
-		$separate_forms
+		$validation_failed_fields, $separate_forms
 		)
 	{
 ?>
@@ -191,6 +192,34 @@ Product name:
 			trin_create_text_input('hidden', '', $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_name_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
+<p>
+Product category:
+</p>
+<?php
+		$param_category_option_names = array();
+		$param_category_option_values = array();
+		foreach ($param_category_option_names_values as $k => $o)
+		{
+			$param_category_option_names[] = $o;
+			$param_category_option_values[] = $k;
+		}
+		trin_create_select($param_category_name, $param_category_value,
+			$param_category_option_names, $param_category_option_values,
+			$validation_failed_fields);
+
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_category_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -520,6 +549,41 @@ Seller name:
 <?php
 		trin_create_text_input('text', '20', $param_seller_name,
 			$param_seller_name_value, $validation_failed_fields);
+?>
+</span>
+</p>
+
+<p class="c">
+<?php
+		trin_create_text_input('hidden', '', $param_version_name,
+			$param_version_value, $validation_failed_fields);
+?>
+<input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
+</p>
+
+</form>
+
+<?php
+	}
+
+	function trin_create_category_form (
+		$action, $button_title,
+		$param_category_name, $param_category_name_value,
+		$param_version_name, $param_version_value,
+		$validation_failed_fields
+		)
+	{
+?>
+<form action="<?php echo $action; ?>" method="POST">
+
+<p>
+<span class="par_name">
+Category name:
+</span>
+<span class="par_value">
+<?php
+		trin_create_text_input('text', '20', $param_category_name,
+			$param_category_name_value, $validation_failed_fields);
 ?>
 </span>
 </p>

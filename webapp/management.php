@@ -163,6 +163,7 @@ Use this form to perform generic database queries.
 </p>
 
 <p class="warning">
+WARNING<br><br>
 Anything you type is sent directly to the database.<br> No validation is done,
 no syntax checking is performed.<br> Some statements can cause damage to the database.
 <br>
@@ -386,11 +387,55 @@ Sample queries:
 <hr>*/
 ?>
 
+<!-- ========================== Connection parameters =========================== -->
+
+<h1 class="c">Connection parameters</h1>
+
+<?php
+	$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
+		$_SESSION[TRIN_SESS_DB_PASS],
+		$_SESSION[TRIN_SESS_DB_DBNAME],
+		$_SESSION[TRIN_SESS_DB_HOST]);
+
+	echo '<p>Database login: ' . $_SESSION[TRIN_SESS_DB_LOGIN] . "</p>\n";
+
+	echo '<p>Database name: ' . $_SESSION[TRIN_SESS_DB_DBNAME] . "</p>\n";
+
+	echo '<p>Database host: ' . $_SESSION[TRIN_SESS_DB_HOST] . "</p>\n";
+
+	echo '<p>Connection options, if any: ' . pg_options ($db) . "</p>\n";
+
+	echo '<p>Backend PID for this call: ' . pg_get_pid ($db) . "</p>\n";
+
+	echo "<p>Parameters:</p>\n<ul>\n";
+	echo ' <li>server_version = ' . pg_parameter_status ($db, 'server_version') . "</li>\n";
+	echo ' <li>server_encoding = ' . pg_parameter_status ($db, 'server_encoding') . "</li>\n";
+	echo ' <li>client_encoding = ' . pg_parameter_status ($db, 'client_encoding') . "</li>\n";
+	echo ' <li>is_superuser = ' . pg_parameter_status ($db, 'is_superuser') . "</li>\n";
+	echo ' <li>session_authorization = ' . pg_parameter_status ($db, 'session_authorization') . "</li>\n";
+	echo ' <li>DateStyle = ' . pg_parameter_status ($db, 'DateStyle') . "</li>\n";
+	echo ' <li>TimeZone = ' . pg_parameter_status ($db, 'TimeZone') . "</li>\n";
+	echo ' <li>integer_datetimes = ' . pg_parameter_status ($db, 'integer_datetimes') . "</li>\n";
+	echo "</ul>\n";
+
+	echo '<p>Host and port (if applicable): ' . pg_host ($db)
+		. ':' . pg_port ($db) . "</p>\n";
+
+	echo "<p>Version information:</p>\n<pre>";
+	print_r (pg_version ($db));
+	echo "</pre>\n";
+
+	//echo '<p>Client encoding: ' . pg_client_encoding ($db) . "</p>\n"; // same as in "Parameters"
+?>
+
+<!-- ========================== Database destroy =========================== -->
+
+<hr>
+
 <?php
 		if (! isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY]))
 		{
 ?>
-<!-- ========================== Database destroy =========================== -->
 
 <h1 class="c nok">Database destroy</h1>
 

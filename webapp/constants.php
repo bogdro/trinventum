@@ -20,7 +20,7 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	define ('TRIN_VERSION', '0.3');
+	define ('TRIN_VERSION', '0.4');
 
 	define ('TRIN_HTTP_DATE_FORMAT', 'D, j M Y G:i:s T');
 
@@ -32,7 +32,7 @@
 	define ('TRIN_SESS_DB_LAST_ERROR', 'trin_sess_db_last_error');
 	define ('TRIN_SESS_LAST_SUCCESS', 'trin_sess_last_success');
 
-	define ('TRIN_EXPECTED_DB_VERSION', '3');
+	define ('TRIN_EXPECTED_DB_VERSION', '4');
 
 	define ('TRIN_DB_PROD_DEF_FIELD_ID', 'id');
 	define ('TRIN_DB_PROD_DEF_FIELD_PHOTO', 'photo');
@@ -43,9 +43,12 @@
 	define ('TRIN_DB_PROD_DEF_FIELD_GENDER', 'gender');
 	define ('TRIN_DB_PROD_DEF_FIELD_COLOUR', 'colour');
 	define ('TRIN_DB_PROD_DEF_FIELD_COUNT', 'count');
-	define ('TRIN_DB_PROD_DEF_FIELD_COMMENT', 'comment');
+	define ('TRIN_DB_PROD_DEF_FIELD_COUNT_TOTAL', 'count_total');
+ 	define ('TRIN_DB_PROD_DEF_FIELD_COMMENT', 'comment');
 	define ('TRIN_DB_PROD_DEF_FIELD_BRAND', 'brand');
-	define ('TRIN_DB_PROD_DEF_FIELD_VERSION', 'version');
+	define ('TRIN_DB_PROD_DEF_FIELD_CATEGORY', 'category');
+	define ('TRIN_DB_PROD_DEF_FIELD_CATEGORY_ID', 'category_id');
+ 	define ('TRIN_DB_PROD_DEF_FIELD_VERSION', 'version');
 	define ('TRIN_DB_PROD_DEF_FIELD_USER', 'user');
 	define ('TRIN_DB_PROD_DEF_FIELD_TIMESTAMP', 'timestamp');
 
@@ -71,7 +74,8 @@
 	define ('TRIN_DB_PROD_PARAM_GENDER', 'prod_param_gender');
 	define ('TRIN_DB_PROD_PARAM_COMMENT', 'prod_param_comment');
 	define ('TRIN_DB_PROD_PARAM_COST', 'prod_param_cost');
-	define ('TRIN_DB_PROD_PARAM_VERSION', 'prod_param_vesion');
+	define ('TRIN_DB_PROD_PARAM_CATEGORY', 'prod_param_category');
+ 	define ('TRIN_DB_PROD_PARAM_VERSION', 'prod_param_vesion');
 
 	define ('TRIN_DB_PROD_INST_FIELD_ID', 'pid');
 	define ('TRIN_DB_PROD_INST_FIELD_STATUS', 'status');
@@ -128,4 +132,11 @@
 	define ('TRIN_FORM_SUBMIT_DB_DESTROY2', 'trin_db_destroy2');
 
 	define ('TRIN_FORM_PARAM_DB_QUERY', 'trin_db_query');
+
+	define ('TRIN_CAT_DETAIL_PARAM', 'id');
+	define ('TRIN_DB_PROD_CAT_FIELD_ID', 'cat_param_id');
+	define ('TRIN_DB_PROD_CAT_FIELD_NAME', 'cat_param_name');
+	define ('TRIN_DB_PROD_CAT_FIELD_VERSION', 'cat_param_version');
+	define ('TRIN_DB_PROD_CAT_FIELD_USER', 'cat_user');
+	define ('TRIN_DB_PROD_CAT_FIELD_TIMESTAMP', 'cat_timestamp');
 ?>

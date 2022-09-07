@@ -49,7 +49,7 @@
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
 
-<TITLE> Trinventum - main </TITLE>
+<TITLE> Trinventum - all product definitions </TITLE>
 
 <META NAME="Author" CONTENT="Bogdan D.">
 <META NAME="Description" CONTENT="Trinventum e-commerce manager">
@@ -65,41 +65,73 @@
 		trin_display_success();
 ?>
 
-<p>Choose a product category to view:</p>
+<table>
+<caption>Products</caption>
+<thead><tr>
+ <th>ID</th>
+ <th>Photo</th>
+ <th>Name</th>
+ <th>Category</th>
+ <th>Brand</th>
+ <th>Size</th>
+ <th>Gender</th>
+ <th>Colour</th>
+ <th>Count</th>
+ <th>Comment</th>
+</tr></thead>
+<tbody>
 <?php
 		$error = '';
-		$have_cat = FALSE;
+		$have_prod = FALSE;
 		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
 			$_SESSION[TRIN_SESS_DB_PASS],
 			$_SESSION[TRIN_SESS_DB_DBNAME],
 			$_SESSION[TRIN_SESS_DB_HOST]);
 		if ($db)
 		{
-			$categories = trin_db_get_product_categories ($db);
-			if ($categories !== FALSE)
+			$products = trin_db_get_product_defs ($db);
+			if ($products !== FALSE)
 			{
-				echo "<ul>\n";
-				//$cat_det_link = 'cat_products.php?' . TRIN_CAT_DETAIL_PARAM . '=0';
-				//echo "<li><a href=\"$cat_det_link\">Uncategorised</a></li>\n";
 				while (TRUE)
 				{
-					$next_cat = trin_db_get_next_product_category ($db, $categories);
-					if ($next_cat === FALSE)
+					$next_prod = trin_db_get_next_product ($db, $products);
+					if ($next_prod === FALSE)
 					{
 						break;
 					}
-					$have_cat = TRUE;
-					$cat_det_link = 'cat_products.php?' . TRIN_CAT_DETAIL_PARAM
-						. '=' . $next_cat[TRIN_DB_PROD_CAT_FIELD_ID];
-					echo "<li><a href=\"$cat_det_link\">"
-						. $next_cat[TRIN_DB_PROD_CAT_FIELD_NAME]
-						. "</a></li>\n";
+					$have_prod = TRUE;
+					$counts = trin_db_count_products($db, $next_prod[TRIN_DB_PROD_DEF_FIELD_ID]);
+					$rowclass = 'c';
+					if ((!isset ($counts['READY'])) || ($counts['READY'] == 0))
+					{
+						if ((!isset ($counts['SELLING'])) || ($counts['SELLING'] == 0))
+						{
+							$rowclass .= ' nopieces';
+						}
+						else
+						{
+							$rowclass .= ' noready';
+						}
+					}
+					$prod_det_link = 'details.php?' . TRIN_PROD_DETAIL_PARAM
+						. '=' . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
+					echo "<tr class=\"$rowclass\">" .
+						"<td><a href=\"$prod_det_link\">" . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID] . '</a></td>' .
+						"<td><a href=\"$prod_det_link\">" . $next_prod[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</a></td>' .
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME] . '</td>' .
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_CATEGORY] . '</td>' .
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_BRAND] . '</td>' .
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_SIZE] . '</td>' .
+						'<td>' . trin_get_gender_name($next_prod[TRIN_DB_PROD_DEF_FIELD_GENDER]) . '</td>' .
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COLOUR] . '</td>' .
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COUNT] . '</td>' .
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COMMENT] . '<hr></td></tr>'
+						. "\n";
 				}
-				echo "</ul>\n";
 			}
 			else
 			{
-				$error = 'Cannot read category database: ' . trin_db_get_last_error ($db);
+				$error = 'Cannot read product database: ' . trin_db_get_last_error ($db);
 			}
 		}
 		else
@@ -109,11 +141,19 @@
 
 		if ($error)
 		{
-			trin_display_error($error);
-		}
 ?>
-
-or <a href="all_products.php">view all product types</a>.
+<tr><td colspan="10" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<?php
+		} // $error
+		if ((! $have_prod) && (! $error))
+		{
+?>
+<tr><td colspan="10" class="c">No products defined</td></tr>
+<?php
+		} // ! $have_prod
+?>
+</tbody>
+</table>
 
 <?php
 		include ('menu.php');

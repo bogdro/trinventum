@@ -26,16 +26,38 @@
 	define ('TRIN_QUERY_DB_VERSION_CHECK',
 		'select db_version from trinventum.versions');
 
+	define ('TRIN_QUERY_GET_PRODUCT_CATEGORIES',
+		'select pc_id, pc_name
+		from trinventum.product_categories order by pc_id desc');
+	define ('TRIN_QUERY_GET_PRODUCT_CATEGORY_HIST_BY_ID',
+		'select his_pc_id, his_pc_name, his_pc_version, his_pc_user, his_pc_record_timestamp
+		from trinventum.product_categories_hist where his_pc_id = $1
+		order by his_pc_version desc');
+	define ('TRIN_QUERY_GET_PRODUCT_CATEGORY_DET',
+		'select pc_id, pc_name
+		from trinventum.product_categories where pc_id = $1');
+	define ('TRIN_QUERY_ADD_PRODUCT_CATEGORY',
+		'insert into trinventum.product_categories (pc_name) values ($1)');
+	define ('TRIN_QUERY_UPDATE_PRODUCT_CATEGORY',
+		"update trinventum.product_categories set pc_name = $2,
+		pc_version = pc_version+1 where pc_id = $1");
+
 	define ('TRIN_QUERY_GET_PRODUCT_DEFS',
 		'select pd_id, pd_photo, pd_name, pd_size, pd_length, pd_width, pd_gender,
-		pd_colour, pd_comment, pd_brand
-		from trinventum.product_definitions order by pd_id desc');
+		pd_colour, pd_comment, pd_brand, pc_name
+		from trinventum.product_definitions
+		left join trinventum.product_categories on pc_id = pd_pc_id
+		order by pd_id desc');
 	define ('TRIN_QUERY_GET_PRODUCT_PHOTO',
 		'select pd_photo from trinventum.product_definitions where pd_id = $1');
 	define ('TRIN_QUERY_GET_PRODUCT_DET',
 		'select pd_id, pd_photo, pd_name, pd_size, pd_length, pd_width, pd_gender,
-		pd_colour, pd_comment, pd_brand, pd_version
-		from trinventum.product_definitions where pd_id = $1');
+		pd_colour, pd_comment, pd_brand, pd_version,
+		coalesce (pc_name, \'?\') as pc_name,
+		coalesce (pc_id, -1) as pc_id
+		from trinventum.product_definitions
+		left join trinventum.product_categories on pc_id = pd_pc_id
+		where pd_id = $1');
 	define ('TRIN_QUERY_GET_PRODUCT_COUNTS',
 		'select p_status::text as p_status, count(*) as p_count from trinventum.products
 		where p_pd_id = $1 group by p_status
@@ -53,6 +75,12 @@
 		= trinventum.year_months_ago($1)
 		group by p_status');
 //		= extract (month from (current_date - interval \'$1 months\'))
+	define ('TRIN_QUERY_GET_PRODUCT_DEFS_OF_CATEGORY',
+		'select pd_id, pd_photo, pd_name, pd_size, pd_length, pd_width, pd_gender,
+		pd_colour, pd_comment, pd_brand, pc_name
+		from trinventum.product_definitions
+		left join trinventum.product_categories on pc_id = pd_pc_id
+		where pd_pc_id = $1 order by pd_id desc');
 
 	define ('TRIN_QUERY_GET_PRODUCT_BUYS',
 		'select b_id, b_name, count(*) as b_count from trinventum.transactions
@@ -67,8 +95,12 @@
 	define ('TRIN_QUERY_GET_PRODUCT_HIST_BY_ID',
 		'select his_pd_id, his_pd_photo, his_pd_name, his_pd_size,
 		his_pd_length, his_pd_width, his_pd_gender, his_pd_colour,
-		his_pd_comment, his_pd_brand, his_pd_version, his_pd_user, his_pd_record_timestamp
-		from trinventum.product_definitions_hist where his_pd_id = $1
+		his_pd_comment, his_pd_brand, his_pd_version, his_pd_user,
+		his_pd_record_timestamp,
+		coalesce (pc_name, \'?\') as pc_name
+		from trinventum.product_definitions_hist
+		left join trinventum.product_categories on pc_id = his_pd_pc_id
+		where his_pd_id = $1
 		order by his_pd_version desc');
 	define ('TRIN_QUERY_GET_PRODUCT_HIST_PHOTO',
 		'select his_pd_photo from trinventum.product_definitions_hist
@@ -78,8 +110,8 @@
 		"select nextval('trinventum.seq_pd_id')");
 	define ('TRIN_QUERY_ADD_PRODUCT_DEF',
 		"insert into trinventum.product_definitions (pd_id, pd_photo, pd_name, pd_size,
-		pd_length, pd_width, pd_gender, pd_colour, pd_comment, pd_brand)
-		values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)");
+		pd_length, pd_width, pd_gender, pd_colour, pd_comment, pd_brand, pd_pc_id)
+		values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)");
 	define ('TRIN_QUERY_ADD_PRODUCT_INSTANCE',
 		"insert into trinventum.products (p_pd_id, p_status, p_cost)
 		values ($1, $2, $3)");
@@ -115,6 +147,9 @@
 		pd_version = pd_version+1 where pd_id = $1");
 	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_COMMENT',
 		"update trinventum.product_definitions set pd_comment = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_CATEGORY',
+		"update trinventum.product_definitions set pd_pc_id = $2,
 		pd_version = pd_version+1 where pd_id = $1");
 
 	define ('TRIN_QUERY_UPDATE_PRODUCT_INSTANCE',
@@ -376,6 +411,154 @@
 
 	// =================== Product definitions/types =====================
 
+	function trin_db_get_product_categories ($conn)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query ($conn, TRIN_QUERY_GET_PRODUCT_CATEGORIES);
+		trin_db_set_last_error($conn);
+		return $res;
+	}
+
+	function trin_db_get_next_product_category ($conn, $categories)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_CAT_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_CAT_FIELD_NAME] = '';
+
+		$product = pg_fetch_assoc ($categories);
+		trin_db_set_last_error($conn);
+		if ($product !== FALSE)
+		{
+			$result[TRIN_DB_PROD_CAT_FIELD_ID] = $product['pc_id'];
+			$result[TRIN_DB_PROD_CAT_FIELD_NAME] = $product['pc_name'];
+			return $result;
+		}
+		return FALSE;
+	}
+
+	function trin_db_get_product_categories_as_options ($db)
+	{
+		$res = array();
+		$categories = trin_db_get_product_categories ($db);
+		if ($categories !== FALSE)
+		{
+			while (TRUE)
+			{
+				$next_cat = trin_db_get_next_product_category ($db, $categories);
+				if ($next_cat === FALSE)
+				{
+					break;
+				}
+				$res[$next_cat[TRIN_DB_PROD_CAT_FIELD_ID]]
+					= $next_cat[TRIN_DB_PROD_CAT_FIELD_NAME];
+			}
+		}
+		return $res;
+	}
+
+	function trin_db_get_product_category_history ($db, $id)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($db, TRIN_QUERY_GET_PRODUCT_CATEGORY_HIST_BY_ID,
+			array ($id));
+		trin_db_set_last_error($db);
+		return $res;
+	}
+
+	function trin_db_get_next_product_category_history_entry ($db, $product_his)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_CAT_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_CAT_FIELD_NAME] = '';
+		$result[TRIN_DB_PROD_CAT_FIELD_USER] = '';
+		$result[TRIN_DB_PROD_CAT_FIELD_TIMESTAMP] = '';
+
+		$his_entry = pg_fetch_assoc ($product_his);
+		trin_db_set_last_error($db);
+		if ($his_entry !== FALSE)
+		{
+			$result[TRIN_DB_PROD_CAT_FIELD_ID] = $his_entry['his_pc_id'];
+			$result[TRIN_DB_PROD_CAT_FIELD_NAME] = $his_entry['his_pc_name'];
+			$result[TRIN_DB_PROD_CAT_FIELD_USER] = $his_entry['his_pc_user'];
+			$result[TRIN_DB_PROD_CAT_FIELD_TIMESTAMP] = $his_entry['his_pc_record_timestamp'];
+			return $result;
+		}
+		return FALSE;
+	}
+
+	function trin_db_get_product_category_details ($db, $id)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_CAT_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_CAT_FIELD_NAME] = '';
+		$result[TRIN_DB_PROD_CAT_FIELD_VERSION] = '';
+
+		$cat_res = pg_query_params ($db,
+			TRIN_QUERY_GET_PRODUCT_CATEGORY_DET, array ($id));
+		trin_db_set_last_error($db);
+
+		if ($cat_res !== FALSE)
+		{
+			$cat = pg_fetch_assoc ($cat_res);
+			if ($cat !== FALSE)
+			{
+				$result[TRIN_DB_PROD_CAT_FIELD_ID] = $cat['pc_id'];
+				$result[TRIN_DB_PROD_CAT_FIELD_NAME] = $cat['pc_name'];
+				$result[TRIN_DB_PROD_CAT_FIELD_VERSION] = $cat['pc_name'];
+				return $result;
+			}
+			else
+			{
+				trin_db_set_last_error ('No data');
+			}
+		}
+		return FALSE;
+	}
+
+	function trin_db_get_product_defs_of_category ($db, $id)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($db, TRIN_QUERY_GET_PRODUCT_DEFS_OF_CATEGORY, array ($id));
+		trin_db_set_last_error($db);
+		return $res;
+	}
+
+	function trin_db_add_product_category ($db, $name)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($db, TRIN_QUERY_ADD_PRODUCT_CATEGORY, array ($name));
+		trin_db_set_last_error($db);
+		return $res;
+	}
+
+	function trin_db_update_category ($db, $s_id, $name, $version)
+	{
+		trin_db_clear_last_error();
+		$det = trin_db_get_product_category_details ($db, $s_id);
+		if ($det === FALSE)
+		{
+			trin_db_set_last_error('Cannot read record before update');
+			return FALSE;
+		}
+		else if ((int)$det[TRIN_DB_PROD_CAT_FIELD_VERSION] != (int)$version)
+		{
+			trin_db_set_last_error("Record version doesn't match: expected: "
+				. $det[TRIN_DB_PROD_CAT_FIELD_VERSION]
+				. ', got: ' . $version);
+			return FALSE;
+		}
+
+		$res = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_CATEGORY,
+			array ($s_id, $name));
+		trin_db_set_last_error($db);
+		return $res;
+	}
+
+	// =================== Product definitions/types =====================
+
 	function trin_db_get_product_defs ($conn)
 	{
 		trin_db_clear_last_error();
@@ -404,6 +587,7 @@
 		$result[TRIN_DB_PROD_DEF_FIELD_COUNT] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = '';
 
 		$product = pg_fetch_assoc ($products);
 		trin_db_set_last_error($conn);
@@ -444,6 +628,7 @@
 			$result[TRIN_DB_PROD_DEF_FIELD_COUNT] = $count_html;
 			$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = $product['pd_comment'];
 			$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $product['pd_brand'];
+			$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = $product['pc_name'];
 			return $result;
 		}
 		return FALSE;
@@ -478,6 +663,7 @@
 		$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_USER] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] = '';
 
@@ -515,6 +701,7 @@
 			$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $his_entry['his_pd_brand'];
 			$result[TRIN_DB_PROD_DEF_FIELD_USER] = $his_entry['his_pd_user'];
 			$result[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] = $his_entry['his_pd_record_timestamp'];
+			$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = $his_entry['pc_name'];
 			return $result;
 		}
 		return FALSE;
@@ -577,7 +764,8 @@
 	function trin_db_add_product ($db, $param_pd_name, $param_pd_photo,
 		$param_pd_size, $param_pd_length, $param_pd_width,
 		$param_pd_colour, $param_pd_count, $param_pd_brand,
-		$param_pd_gender, $param_pd_comment, $param_pd_cost)
+		$param_pd_gender, $param_pd_comment, $param_pd_category,
+		$param_pd_cost)
 	{
 		trin_db_clear_last_error();
 		if (is_uploaded_file ($_FILES[$param_pd_photo]['tmp_name']))
@@ -621,7 +809,8 @@
 		$result = pg_query_params ($db, TRIN_QUERY_ADD_PRODUCT_DEF,
 			array ($pd_id, $photo_data, $param_pd_name, $param_pd_size,
 			$param_pd_length, $param_pd_width, $param_pd_gender,
-			$param_pd_colour, $param_pd_comment, $param_pd_brand));
+			$param_pd_colour, $param_pd_comment, $param_pd_brand,
+			$param_pd_category));
 
 		// add entries in trinventum.products (product instances):
 		if ($result !== FALSE)
@@ -671,8 +860,11 @@
 		$result[TRIN_DB_PROD_DEF_FIELD_GENDER] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_COUNT] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_COUNT_TOTAL] = 0;
 		$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY_ID] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_VERSION] = 0;
 
 		$product_res = pg_query_params ($db,
@@ -710,9 +902,13 @@
 				}
 
 				$result[TRIN_DB_PROD_DEF_FIELD_COUNT] = $count_html;
+				$result[TRIN_DB_PROD_DEF_FIELD_COUNT_TOTAL] =
+					$product_count_res[TRIN_PROD_COUNT_COLUMN_TOTAL];
 				$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = $product['pd_comment'];
 				$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $product['pd_brand'];
 				$result[TRIN_DB_PROD_DEF_FIELD_VERSION] = $product['pd_version'];
+				$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = $product['pc_name'];
+				$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY_ID] = $product['pc_id'];
 				return $result;
 			}
 			else
@@ -959,12 +1155,28 @@
 		return $result;
 	}
 
+	function trin_db_update_product_category ($db, $pd_id,
+		$param_pd_category, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_CATEGORY,
+			array($pd_id, $param_pd_category));
+		trin_db_set_last_error($db);
+		return $result;
+	}
+
 	function trin_db_update_product ($db, $pd_id, $param_pd_name,
 		$param_pd_photo, $param_pd_size,
 		$param_pd_length, $param_pd_width,
 		$param_pd_colour, $param_pd_count,
 		$param_pd_brand, $param_pd_gender,
-		$param_pd_comment, $param_pd_cost, $param_pd_version)
+		$param_pd_comment, $param_pd_cost,
+		$param_pd_category, $param_pd_version)
 	{
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
@@ -1009,6 +1221,8 @@
 			$param_pd_comment, $param_pd_version++);
 		$result = $result && trin_db_update_product_cost ($db, $pd_id,
 			$param_pd_cost, $param_pd_version++);
+		$result = $result && trin_db_update_product_category ($db, $pd_id,
+			$param_pd_category, $param_pd_version++);
 
 		if ($result !== FALSE)
 		{

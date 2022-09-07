@@ -29,6 +29,10 @@ comment on schema trinventum is 'The main schema for the Trinventum application'
 /* Depends on the database version, seems enabled by default on some:
 create language plpgsql;
 */
+
+/*
+Required for indices and their comments and triggers.
+*/
 set schema 'trinventum';
 
 create type trinventum.t_gender as enum ('M', 'F', 'C', '-');
@@ -36,6 +40,65 @@ comment on type trinventum.t_gender is 'The gender/sex enumeration';
 
 create type trinventum.t_status as enum ('READY', 'SELLING', 'SOLD');
 comment on type trinventum.t_status is 'The possible product piece statuses';
+
+------------------ PRODUCT CATEGORIES ---------------------
+
+create table trinventum.product_categories
+(
+	pc_id serial primary key,
+	pc_name text not null,
+	pc_version integer not null default 1 check (pc_version >= 1)
+);
+
+comment on table trinventum.product_categories is 'The table for product categories';
+comment on column trinventum.product_categories.pc_id is 'Product category ID (assigned automatically)';
+comment on column trinventum.product_categories.pc_name is 'Product category name';
+comment on column trinventum.product_categories.pc_version is 'Record version';
+
+create table trinventum.product_categories_hist
+(
+	his_pc_id integer,
+	his_pc_name text not null,
+	his_pc_version integer,
+	his_pc_user text default current_user,
+	his_pc_record_timestamp timestamp not null default now()
+);
+
+comment on table trinventum.product_categories_hist is 'The table for product category history';
+comment on column trinventum.product_categories_hist.his_pc_id is 'Product category ID';
+comment on column trinventum.product_categories_hist.his_pc_name is 'Product category name';
+comment on column trinventum.product_categories_hist.his_pc_version is 'Record version';
+comment on column trinventum.product_categories_hist.his_pc_user is 'History record creation user';
+comment on column trinventum.product_categories_hist.his_pc_record_timestamp is 'History record creation time';
+
+create index product_categories_hist_idx_his_pc_id on trinventum.product_categories_hist (his_pc_id);
+comment on index product_categories_hist_idx_his_pc_id is
+ 'Index for searching product category history by category piece ID';
+
+create function trinventum.trg_product_categories_proc()
+returns trigger as
+$trg_product_categories_proc$
+begin
+	insert into trinventum.product_categories_hist
+	(his_pc_id, his_pc_name, his_pc_version)
+	values
+	(old.pc_id, old.pc_name, old.pc_version);
+
+	return null;
+end;
+$trg_product_categories_proc$ language plpgsql;
+
+comment on function trinventum.trg_product_categories_proc() is
+ 'Function for the trg_product_categories trigger, which saves product category record history';
+
+create trigger trg_product_categories
+after update or delete on trinventum.product_categories
+for each row execute procedure trinventum.trg_product_categories_proc();
+
+comment on trigger trg_product_categories on trinventum.product_categories is
+ 'Trigger that saves products category history';
+
+insert into trinventum.product_categories (pc_id, pc_name) values (0, 'Uncategorised products');
 
 ------------------ PRODUCT TYPES/DEFINITIONS ---------------------
 
@@ -54,6 +117,7 @@ create table trinventum.product_definitions
 	pd_brand text not null default 'NoName',
 	pd_gender trinventum.t_gender not null default '-',
 	pd_comment text,
+	pd_pc_id integer not null default 0 references trinventum.product_categories (pc_id),
 	pd_version integer not null default 1 check (pd_version >= 1)
 );
 
@@ -68,6 +132,7 @@ comment on column trinventum.product_definitions.pd_colour is 'Product colour';
 comment on column trinventum.product_definitions.pd_brand is 'Product brand name';
 comment on column trinventum.product_definitions.pd_gender is 'Product target gender/sex';
 comment on column trinventum.product_definitions.pd_comment is 'Product comment/descrption';
+comment on column trinventum.product_definitions.pd_pc_id is 'Product category';
 comment on column trinventum.product_definitions.pd_version is 'Record version';
 
 create table trinventum.product_definitions_hist
@@ -82,6 +147,7 @@ create table trinventum.product_definitions_hist
 	his_pd_brand text,
 	his_pd_gender trinventum.t_gender,
 	his_pd_comment text,
+	his_pd_pc_id integer,
 	his_pd_version integer,
 	his_pd_user text default current_user,
 	his_pd_record_timestamp timestamp not null default now()
@@ -98,6 +164,7 @@ comment on column trinventum.product_definitions_hist.his_pd_colour is 'Product 
 comment on column trinventum.product_definitions_hist.his_pd_brand is 'Product brand name';
 comment on column trinventum.product_definitions_hist.his_pd_gender is 'Product target gender/sex';
 comment on column trinventum.product_definitions_hist.his_pd_comment is 'Product comment/descrption';
+comment on column trinventum.product_definitions_hist.his_pd_comment is 'Product category';
 comment on column trinventum.product_definitions_hist.his_pd_version is 'Record version';
 comment on column trinventum.product_definitions_hist.his_pd_user is 'History record creation user';
 comment on column trinventum.product_definitions_hist.his_pd_record_timestamp is 'History record creation time';
@@ -113,11 +180,11 @@ begin
 	insert into trinventum.product_definitions_hist
 	(his_pd_id, his_pd_name, his_pd_photo, his_pd_size,
 	 his_pd_length, his_pd_width, his_pd_colour, his_pd_brand,
-	 his_pd_gender, his_pd_comment, his_pd_version)
+	 his_pd_gender, his_pd_comment, his_pd_pc_id, his_pd_version)
 	values
 	(old.pd_id, old.pd_name, old.pd_photo, old.pd_size,
 	 old.pd_length, old.pd_width, old.pd_colour, old.pd_brand,
-	 old.pd_gender, old.pd_comment, old.pd_version);
+	 old.pd_gender, old.pd_comment, old.pd_pc_id, old.pd_version);
 
 	return null;
 end;
@@ -472,4 +539,4 @@ create table trinventum.versions
 comment on table trinventum.versions is 'The table containing the database version';
 comment on column trinventum.versions.db_version is 'The current database version';
 
-insert into trinventum.versions (db_version) values ('3');
+insert into trinventum.versions (db_version) values ('4');
