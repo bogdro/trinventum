@@ -22,12 +22,18 @@
 ?>
 <div class="c menu">
 |
+<a href="main.php">Main page</a>
+|
 <a href="add_product.php">Add a new product</a>
 |
-<a href="sellers.php">Manage sellers</a>
+<a href="pieces.php">All pieces</a>
 |
-<a href="buyers.php">Manage buyers</a>
+<a href="sellers.php">Sellers</a>
 |
-<a href="transactions.php">Manage transactions</a>
+<a href="buyers.php">Buyers</a>
+|
+<a href="transactions.php">Transactions</a>
+|
+<a href="management.php">Management</a>
 |
 </div>

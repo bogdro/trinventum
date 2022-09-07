@@ -37,20 +37,48 @@
 			$_SESSION[TRIN_SESS_DB_HOST]);
 
 	$trin_db_ver = trin_db_get_version ($conn);
-	if ((int)$trin_db_ver < (int)TRIN_EXPECTED_DB_VERSION)
+	if ((int)$trin_db_ver == 0)
+	{
+		// just run the full script
+		$file = file_get_contents ("sql/trinventum-full.pgsql");
+		if ($file !== FALSE)
+		{
+			if (! trin_db_query ($conn, $file))
+			{
+				die ("Can't update DB version from $trin_db_ver to "
+					. TRIN_EXPECTED_DB_VERSION
+					. ': ' . trin_db_get_last_error ());
+			}
+		}
+		else
+		{
+			die ("Can't update DB version from $trin_db_ver to "
+				. TRIN_EXPECTED_DB_VERSION
+				. ": can't read file trinventum-full.pgsql");
+		}
+	}
+	else if ((int)$trin_db_ver < (int)TRIN_EXPECTED_DB_VERSION)
 	{
 		for ($i = (int)$trin_db_ver + 1; $i <= (int)TRIN_EXPECTED_DB_VERSION; $i++)
 		{
 			// run the missing scripts
-			$file = file_get_contents ("trinventum-v$i.pgsql");
+			$file = file_get_contents ("sql/trinventum-v$i.pgsql");
 			if ($file !== FALSE)
 			{
-				if (! pg_query ($conn, $file))
+				if (! trin_db_query ($conn, 'begin'))
 				{
 					die ("Can't update DB version from $trin_db_ver to "
 						. TRIN_EXPECTED_DB_VERSION
-						. ': ' . pg_last_error ());
+						. ' - cannot start transaction: ' . trin_db_get_last_error ());
 				}
+				if (! trin_db_query ($conn, $file))
+				{
+					trin_db_query ($conn, 'rollback');
+					die ("Can't update DB version from $trin_db_ver to "
+						. TRIN_EXPECTED_DB_VERSION
+						. ': ' . trin_db_get_last_error ());
+				}
+				trin_db_query ($conn, 'commit');
 			}
 			else
 			{

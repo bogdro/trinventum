@@ -24,10 +24,15 @@
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
+	$error = '';
+	$validation_failed_fields = array();
 
 	if (! trin_validate_session ())
 	{
@@ -39,7 +44,6 @@
 	}
 	else
 	{
-		$error = '';
 		$product_inst_id = $_GET[TRIN_DB_PROD_INST_FIELD_ID];
 		$return_link = 'main.php';
 		if (isset ($_GET[TRIN_PROD_DETAIL_PARAM]))
@@ -52,25 +56,40 @@
 			$_SESSION[TRIN_SESS_DB_DBNAME],
 			$_SESSION[TRIN_SESS_DB_HOST]);
 		if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_STATUS])
-			&& isset ($_POST[TRIN_DB_PROD_INST_FIELD_COST]))
+			&& isset ($_POST[TRIN_DB_PROD_INST_FIELD_COST])
+			&& isset ($_POST[TRIN_DB_PROD_INST_FIELD_VERSION]))
 		{
-			if (!$db)
+			$form_validators = array(
+				TRIN_DB_PROD_INST_FIELD_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER
+				);
+			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
+			if (count($validation_failed_fields) != 0)
 			{
-				$error = 'Cannot connect to database';
-			}
-			if (! trin_db_update_product_instance ($db,
-				$product_inst_id,
-				$_POST[TRIN_DB_PROD_INST_FIELD_STATUS],
-				$_POST[TRIN_DB_PROD_INST_FIELD_COST]))
-			{
-				$error = 'Cannot update product instance in the database: '
-					. pg_last_error ();
+				$error = 'Form validation failed - check field values: '
+					. implode(', ', $validation_failed_fields);
 			}
 			else
 			{
-				header ("Location: $return_link");
+				if (!$db)
+				{
+					$error = 'Cannot connect to database';
+				}
+				if (! trin_db_update_product_instance ($db,
+					$product_inst_id,
+					$_POST[TRIN_DB_PROD_INST_FIELD_STATUS],
+					$_POST[TRIN_DB_PROD_INST_FIELD_COST],
+					$_POST[TRIN_DB_PROD_INST_FIELD_VERSION]))
+				{
+					$error = 'Cannot update product instance in the database: '
+						. trin_db_get_last_error ();
+				}
+				else
+				{
+					header ("Location: $return_link");
+				}
 			}
 		}
+		$update_error = $error;
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
@@ -80,10 +99,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 		trin_meta_lastmod ($t_lastmod);
+		trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - product piece details </TITLE>
 
@@ -96,14 +115,9 @@
 
 <?php
 		include ('header.php');
-?>
-<?php
-		if ($error)
-		{
-?>
-<p class="c">Error: <?php echo $error; ?></p>
-<?php
-		} // $error
+		include ('menu.php');
+
+		trin_display_error($error);
 ?>
 <div class="menu">
 <a href="<?php echo $return_link; ?>">Return</a>
@@ -113,6 +127,7 @@
 <?php
 		$param_pp_status = '';
 		$param_pp_cost = '';
+		$param_pp_version = 0;
 
 		$error = '';
 		$have_prod = FALSE;
@@ -125,6 +140,7 @@
 				$have_prod = TRUE;
 				$param_pp_status = $product_det[TRIN_DB_PROD_INST_FIELD_STATUS];
 				$param_pp_cost = $product_det[TRIN_DB_PROD_INST_FIELD_COST];
+				$param_pp_version = $product_det[TRIN_DB_PROD_INST_FIELD_VERSION];
 
 				echo 	'<p>Status: ' . $param_pp_status . '</p>' .
 					'<p>Cost: ' . $param_pp_cost . '</p>'
@@ -133,7 +149,7 @@
 			else
 			{
 				$error = 'Cannot read product instance details from the database: '
-					. pg_last_error ();
+					. trin_db_get_last_error ();
 			}
 		}
 		else
@@ -141,12 +157,8 @@
 			$error = 'Cannot connect to database';
 		}
 
-		if ($error)
-		{
-?>
-<p class="c">Error: <?php echo $error; ?></p>
-<?php
-		} // $error
+		trin_display_error($error);
+
 		if ((! $have_prod) && (! $error))
 		{
 ?>
@@ -160,55 +172,50 @@ Update product piece details (warning - this updates ALL the given details):
 </p>
 
 <div class="login_box">
-<?php
-		if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_STATUS]))
-		{
-			$param_pp_status = $_POST[TRIN_DB_PROD_INST_FIELD_STATUS];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_COST]))
-		{
-			$param_pp_cost = $_POST[TRIN_DB_PROD_INST_FIELD_COST];
-		}
-?>
 <form action="<?php echo trin_get_self_action (); ?>" method="POST">
-
 <?php
+		// if the product piece failed to be upated,
+		// refresh it from the DB and make the user
+		// re-enter the data, else display what the use entered
+		if (! $update_error)
+		{
+			if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_STATUS]))
+			{
+				$param_pp_status = $_POST[TRIN_DB_PROD_INST_FIELD_STATUS];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_COST]))
+			{
+				$param_pp_cost = $_POST[TRIN_DB_PROD_INST_FIELD_COST];
+			}
+			/*
+			always take the current version value
+			if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_VERSION]))
+			{
+				$param_pp_version = $_POST[TRIN_DB_PROD_INST_FIELD_VERSION];
+			}
+			*/
+		}
+
 		if ($param_pp_status == TRIN_PROD_STATUS_SOLD)
 		{
-?>
-<input type="hidden" name="<?php echo TRIN_DB_PROD_INST_FIELD_STATUS; ?>"
-	value="<?php echo $param_pp_status; ?>">
-<?php
+			trin_create_text_input('hidden', '',
+				TRIN_DB_PROD_INST_FIELD_STATUS,
+				$param_pp_status, $validation_failed_fields);
 		}
 		else // ! SOLD
 		{
 ?>
 <p>
 Status:
-<select name="<?php echo TRIN_DB_PROD_INST_FIELD_STATUS; ?>">
-
-<option value="<?php echo TRIN_PROD_STATUS_READY; ?>"
 <?php
-			if ($param_pp_status == TRIN_PROD_STATUS_READY)
-			{
+			trin_create_select(TRIN_DB_PROD_INST_FIELD_STATUS,
+				$param_pp_status,
+				array(TRIN_PROD_STATUS_READY,
+					TRIN_PROD_STATUS_SALE_IN_PROGRESS),
+				array(TRIN_PROD_STATUS_READY,
+					TRIN_PROD_STATUS_SALE_IN_PROGRESS),
+				$validation_failed_fields)
 ?>
-	selected="selected"
-<?php
-			}
-?>
-><?php echo TRIN_PROD_STATUS_READY; ?></option>
-
-<option value="<?php echo TRIN_PROD_STATUS_SALE_IN_PROGRESS; ?>"
-<?php
-			if ($param_pp_status == TRIN_PROD_STATUS_SALE_IN_PROGRESS)
-			{
-?>
-	selected="selected"
-<?php
-			}
-?>
-><?php echo TRIN_PROD_STATUS_SALE_IN_PROGRESS; ?></option>
-</select>
 </p>
 <?php
 		} // SOLD
@@ -216,8 +223,12 @@ Status:
 
 <p>
 Cost:
-<input type="text" size="20"
-	value="<?php echo $param_pp_cost; ?>" name="<?php echo TRIN_DB_PROD_INST_FIELD_COST; ?>">
+<?php
+		trin_create_text_input('hidden', '', TRIN_DB_PROD_INST_FIELD_VERSION,
+			$param_pp_version, $validation_failed_fields);
+		trin_create_text_input('text', '20', TRIN_DB_PROD_INST_FIELD_COST,
+			$param_pp_cost, $validation_failed_fields);
+?>
 </p>
 
 <p>
@@ -227,11 +238,72 @@ Cost:
 </form>
 </div>
 
+<table>
+<caption>Product piece's history of changes</caption>
+<thead><tr>
+ <th>Status was</th>
+ <th>Cost was</th>
+ <th>Change user</th>
+ <th>Change time</th>
+</tr></thead>
+<tbody>
+<?php
+		$error = '';
+		$have_prod = FALSE;
+		if ($db)
+		{
+			$product_his = trin_db_get_product_instance_history ($db, $product_inst_id);
+			if ($product_his !== FALSE)
+			{
+				while (TRUE)
+				{
+					$next_his = trin_db_get_next_product_instance_hist_entry ($product_his);
+					if ($next_his === FALSE)
+					{
+						break;
+					}
+					$have_prod = TRUE;
+					echo '<tr class="c">' .
+						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_STATUS] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_COST] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_USER] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_TIMESTAMP] . '</td></tr>'
+						. "\n";
+				}
+			}
+			else
+			{
+				$error = 'Cannot read product database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else
+		{
+			$error = 'Cannot connect to database';
+		}
+
+		if ($error)
+		{
+?>
+<tr><td colspan="4" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<?php
+		} // $error
+		if ((! $have_prod) && (! $error))
+		{
+?>
+<tr><td colspan="4" class="c">No product piece history found</td></tr>
+<?php
+		} // ! $have_prod
+?>
+</tbody>
+</table>
+
 <div class="menu">
 <a href="<?php echo $return_link; ?>">Return</a>
 </div>
 
 <?php
+		include ('menu.php');
 		include ('footer.php');
 ?>
 

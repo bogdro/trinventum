@@ -21,7 +21,7 @@
 #
 
 NAME = trinventum
-VER = 0.1
+VER = 0.2
 
 RMDIR = /bin/rm -fr
 MKDIR = /bin/mkdir

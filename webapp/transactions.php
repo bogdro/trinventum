@@ -20,11 +20,13 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	error_reporting (E_ALL|E_NOTICE);
 	session_start();
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
@@ -32,6 +34,8 @@
 
 	$error = '';
 	$db = NULL;
+	$validation_failed_fields = array();
+	$use_mod_button = TRUE;
 
 	if (! trin_validate_session ())
 	{
@@ -39,6 +43,17 @@
 	}
 	else
 	{
+		$form_validators = array(
+			TRIN_DB_TRANS_LIST_PARAM_START => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+			TRIN_DB_TRANS_LIST_PARAM_COUNT => TRIN_VALIDATION_FIELD_TYPE_NUMBER
+			);
+		$validation_failed_fields = trin_validate_form($_GET, $form_validators);
+		if (count($validation_failed_fields) != 0)
+		{
+			$display_form = TRUE;
+			$error = 'Form validation failed - check field values: '
+				. implode(', ', $validation_failed_fields);
+		}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
@@ -48,10 +63,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 		trin_meta_lastmod ($t_lastmod);
+		trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - manage transactions </TITLE>
 
@@ -64,9 +79,29 @@
 
 <?php
 		include ('header.php');
+		include ('menu.php');
 
-		if (isset ($_GET[TRIN_DB_TRANS_PARAM_LIST]))
+		$offset = 0;
+		$limit = 1000000000;
+
+		if (isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_START]))
 		{
+			$offset = $_GET[TRIN_DB_TRANS_LIST_PARAM_START];
+		}
+
+		if (isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_COUNT]))
+		{
+			$limit = $_GET[TRIN_DB_TRANS_LIST_PARAM_COUNT];
+		}
+
+		if ($use_mod_button)
+		{
+			$ncols = 13;
+		}
+		else
+		{
+			$ncols = 12;
+		}
 ?>
 
 <div class="menu">
@@ -75,10 +110,43 @@
 <a href="add_transaction.php">Register a new transaction</a>
 </div>
 
+<div class="menu">
+<form action="<?php echo trin_get_self_action (); ?>" method="GET">
+List
+<?php
+		trin_create_text_input('text', '11', TRIN_DB_TRANS_LIST_PARAM_COUNT,
+			$limit, $validation_failed_fields);
+?>
+newest transactions, skipping
+<?php
+		trin_create_text_input('text', '5', TRIN_DB_TRANS_LIST_PARAM_START,
+			$offset, $validation_failed_fields);
+?>
+first ones - <input type="submit" value="Go!">
+</form>
+OR
+<a href="<?php echo $_SERVER['PHP_SELF'] . '?' . TRIN_DB_TRANS_PARAM_LIST . '=1'; ?>">List all transactions</a>
+</div>
+
+<?php
+		if (isset ($_GET[TRIN_DB_TRANS_PARAM_LIST])
+			|| (isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_START])
+				&& isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_COUNT])))
+		{
+?>
+
 <table>
 <caption>Registered transactions</caption>
 <thead><tr>
  <th>ID</th>
+<?php
+	if ($use_mod_button)
+	{
+?>
+ <th>Modify</th>
+<?php
+	} // $use_mod_button
+?>
  <th>Product type</th>
  <th>Product piece</th>
  <th>Seller</th>
@@ -89,6 +157,7 @@
  <th>Sell date</th>
  <th>Send price</th>
  <th>Send cost</th>
+ <th>Delete</th>
 </tr></thead>
 <tbody>
 <?php
@@ -100,9 +169,11 @@
 				$_SESSION[TRIN_SESS_DB_HOST]);
 			if ($db)
 			{
-				$trans = trin_db_get_transactions ($db);
+				$trans = trin_db_get_transactions ($db, $offset, $limit);
 				if ($trans !== FALSE)
 				{
+					$yes = '<span class="ok">YES</span>';
+					$no = '<span class="nok">NO</span>';
 					while (TRUE)
 					{
 						$next_tran = trin_db_get_next_transaction ($trans);
@@ -112,16 +183,16 @@
 						}
 						$have_trans = TRUE;
 
-						$paid = 'YES';
+						$paid = $yes;
 						if ($next_tran[TRIN_DB_TRANS_PARAM_PAID] === 'f')
 						{
-							$paid = 'NO';
+							$paid = $no;
 						}
 
-						$sent = 'YES';
+						$sent = $yes;
 						if ($next_tran[TRIN_DB_TRANS_PARAM_SENT] === 'f')
 						{
-							$sent = 'NO';
+							$sent = $no;
 						}
 
 						$product_def_link = 'details.php?' .
@@ -133,24 +204,46 @@
 						$tran_link = 'mod_transaction.php?' .
 							TRIN_DB_TRANS_PARAM_ID . '=' .
 							$next_tran[TRIN_DB_TRANS_PARAM_ID];
-						echo '<tr class="c">' .
-							'<td><a href="' . $tran_link . '">' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</a></td>' .
-							'<td><a href="' . $product_def_link . '">' . $next_tran[TRIN_DB_PROD_DEF_FIELD_ID] . '</a></td>' .
+						echo '<tr class="c">';
+						if ($use_mod_button)
+						{
+							echo '<td>' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</td>';
+							echo "<td>\n" .
+							"<form action=\"$tran_link\" method=\"POST\">\n" .
+							' <input type="hidden" name="' . TRIN_DB_TRANS_PARAM_ID . '" value="' .
+							$next_tran[TRIN_DB_TRANS_PARAM_ID] . "\">\n" .
+							' <input type="hidden" name="' . TRIN_PROD_DETAIL_PARAM . '" value="' .
+							$next_tran[TRIN_DB_PROD_DEF_FIELD_ID] . "\">\n" .
+							' <input type="hidden" name="' . TRIN_DB_PROD_INST_FIELD_ID . '" value="' .
+							$next_tran[TRIN_DB_PROD_INST_FIELD_ID] . "\">\n" .
+							' <input type="submit" value="Modify"></form></td>';
+						}
+						else
+						{
+							echo '<td><a href="' . $tran_link . '">' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</a></td>';
+						}
+						echo '<td><a href="' . $product_def_link . '">' . $next_tran[TRIN_DB_PROD_DEF_FIELD_NAME] . '</a></td>' .
 							'<td><a href="' . $product_link . '">' . $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
-							'<td><a href="sellers.php">' . $next_tran[TRIN_DB_SELLER_PARAM_ID] . '</a></td>' .
-							'<td><a href="buyers.php">' . $next_tran[TRIN_DB_BUYER_PARAM_ID] . '</a></td>' .
+							'<td><a href="sellers.php">' . $next_tran[TRIN_DB_SELLER_PARAM_NAME] . '</a></td>' .
+							'<td><a href="buyers.php">' . $next_tran[TRIN_DB_BUYER_PARAM_NAME] . '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .
 							'<td>' . $sent . '</td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SELLDATE] . '</td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SEND_PRICE] . '</td>' .
-							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SEND_COST] . '</td></tr>'
+							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SEND_COST] . '</td>' .
+							"<td>\n" .
+							"<form action=\"del_transaction.php\" method=\"POST\">\n" .
+							' <input type="hidden" name="' . TRIN_DB_TRANS_PARAM_ID . '" value="' .
+							$next_tran[TRIN_DB_TRANS_PARAM_ID] . "\">\n" .
+							' <input type="submit" value="Delete"></form><hr></td></tr>'
 							. "\n";
 					}
 				}
 				else
 				{
-					$error = 'Cannot read transaction database: ' . pg_last_error ();
+					$error = 'Cannot read transaction database: '
+						. trin_db_get_last_error ();
 				}
 			}
 			else
@@ -161,13 +254,13 @@
 			if ($error)
 			{
 ?>
-<tr><td colspan="11" class="c">Error: <?php echo $error; ?></td></tr>
+<tr><td colspan="<?php echo $ncols; ?>" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
 <?php
 			} // $error
 			if ((! $have_trans) && (! $error))
 			{
 ?>
-<tr><td colspan="11" class="c">No transactions found</td></tr>
+<tr><td colspan="<?php echo $ncols; ?>" class="c">No transactions found</td></tr>
 <?php
 			} // ! $have_trans
 ?>
@@ -176,18 +269,6 @@
 
 <?php
 		}
-		else // ! TRIN_DB_TRANS_PARAM_LIST
-		{
-?>
-
-<div class="c menu">
-<a href="<?php echo $_SERVER['PHP_SELF'] . '?' . TRIN_DB_TRANS_PARAM_LIST . '=1'; ?>">List all transactions</a>
-|
-<a href="add_transaction.php">Register a new transaction</a>
-</div>
-
-<?php
-		} // TRIN_DB_TRANS_PARAM_LIST
 ?>
 
 <div class="menu">
@@ -197,6 +278,7 @@
 </div>
 
 <?php
+		include ('menu.php');
 		include ('footer.php');
 ?>
 

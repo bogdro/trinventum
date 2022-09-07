@@ -20,11 +20,13 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	error_reporting (E_ALL|E_NOTICE);
 	session_start();
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
@@ -33,6 +35,7 @@
 	$display_form = FALSE;
 	$error = '';
 	$db = NULL;
+	$validation_failed_fields = array();
 
 	if (! trin_validate_session ())
 	{
@@ -59,26 +62,41 @@
 					&& isset ($_POST[TRIN_DB_TRANS_PARAM_SEND_COST])
 					)
 				{
-					// register transaction
-					if (!$db)
+					$form_validators = array(
+						TRIN_DB_TRANS_PARAM_PRICE => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+						TRIN_DB_TRANS_PARAM_SEND_PRICE => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+						TRIN_DB_TRANS_PARAM_SEND_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER
+						);
+					$validation_failed_fields = trin_validate_form($_POST, $form_validators);
+					if (count($validation_failed_fields) != 0)
 					{
 						$display_form = TRUE;
-						$error = 'Cannot connect to database';
+						$error = 'Form validation failed - check field values: '
+							. implode(', ', $validation_failed_fields);
 					}
-					if (! trin_db_add_transaction ($db,
-						$_POST[TRIN_DB_PROD_INST_FIELD_ID],
-						$_POST[TRIN_DB_SELLER_PARAM_ID],
-						$_POST[TRIN_DB_BUYER_PARAM_ID],
-						$_POST[TRIN_DB_TRANS_PARAM_PRICE],
-						$_POST[TRIN_DB_TRANS_PARAM_PAID],
-						$_POST[TRIN_DB_TRANS_PARAM_SENT],
-						$_POST[TRIN_DB_TRANS_PARAM_SELLDATE],
-						$_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE],
-						$_POST[TRIN_DB_TRANS_PARAM_SEND_COST]))
+					else
 					{
-						$display_form = TRUE;
-						$error = 'Cannot add transaction to the database: '
-							. pg_last_error ();
+						// register transaction
+						if (!$db)
+						{
+							$display_form = TRUE;
+							$error = 'Cannot connect to database';
+						}
+						if (! trin_db_add_transaction ($db,
+							$_POST[TRIN_DB_PROD_INST_FIELD_ID],
+							$_POST[TRIN_DB_SELLER_PARAM_ID],
+							$_POST[TRIN_DB_BUYER_PARAM_ID],
+							$_POST[TRIN_DB_TRANS_PARAM_PRICE],
+							$_POST[TRIN_DB_TRANS_PARAM_PAID],
+							$_POST[TRIN_DB_TRANS_PARAM_SENT],
+							$_POST[TRIN_DB_TRANS_PARAM_SELLDATE],
+							$_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE],
+							$_POST[TRIN_DB_TRANS_PARAM_SEND_COST]))
+						{
+							$display_form = TRUE;
+							$error = 'Cannot add transaction to the database: '
+								. trin_db_get_last_error ();
+						}
 					}
 					if (! $display_form)
 					{
@@ -115,10 +133,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 			trin_meta_lastmod ($t_lastmod);
+			trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - register a transaction </TITLE>
 
@@ -131,13 +149,9 @@
 
 <?php
 			include ('header.php');
+			include ('menu.php');
 
-			if ($error !== '')
-			{
-?>
-Error: <?php echo $error.'<br>'; ?><br>
-<?php
-			}
+			trin_display_error($error);
 ?>
 <div class="login_box">
 <form action="<?php echo trin_get_self_action (); ?>" method="POST">
@@ -154,9 +168,10 @@ Error: <?php echo $error.'<br>'; ?><br>
 					$products = trin_db_get_product_defs ($db);
 					if ($products !== FALSE)
 					{
-						$have_prod = FALSE;
-						echo '<p>Product type: <select name="'
-							. TRIN_PROD_DETAIL_PARAM . "\">\n";
+						echo "<p>Product type:\n";
+
+						$product_names = array();
+						$product_values = array();
 						while (TRUE)
 						{
 							$next_prod = trin_db_get_next_product ($db,
@@ -165,22 +180,23 @@ Error: <?php echo $error.'<br>'; ?><br>
 							{
 								break;
 							}
-							$have_prod = TRUE;
-							echo '<option value="' . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID]
-								. '">' . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID] . ' - '
-								. $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME] .
-								"</option>\n";
+							$product_names[] =
+								$next_prod[TRIN_DB_PROD_DEF_FIELD_ID]
+								. ' - '
+								. $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME];
+							$product_values[] =
+								$next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
 						}
-						if (! $have_prod)
-						{
-							// no data found, but add a dummy option required by HTML!
-							echo '<option value="-">-</option>';
-						}
-						echo "</select></p>\n";
+						trin_create_select(TRIN_PROD_DETAIL_PARAM,
+							'',
+							$product_names,
+							$product_values,
+							$validation_failed_fields);
 					}
 					else
 					{
-						$error = 'Cannot read product database: ' . pg_last_error ();
+						$error = 'Cannot read product database: '
+							. trin_db_get_last_error ();
 					}
 				}
 				else
@@ -190,8 +206,12 @@ Error: <?php echo $error.'<br>'; ?><br>
 			}
 			else
 			{
-				echo '<input type="hidden" name="' . TRIN_PROD_DETAIL_PARAM .
-					'" value="' . $_POST[TRIN_PROD_DETAIL_PARAM] . "\">\n";
+				echo 'Product type: ' . $_POST[TRIN_PROD_DETAIL_PARAM] . "<br>\n";
+				trin_create_text_input('hidden',
+					'',
+					TRIN_PROD_DETAIL_PARAM,
+					$_POST[TRIN_PROD_DETAIL_PARAM],
+					$validation_failed_fields);
 				if (!isset ($_POST[TRIN_DB_PROD_INST_FIELD_ID]))
 				{
 					// display a list of instances marked for selling of
@@ -204,9 +224,9 @@ Error: <?php echo $error.'<br>'; ?><br>
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
 						if ($products !== FALSE)
 						{
-							$have_prod = FALSE;
-							echo '<p>Product piece: <select name="'
-								. TRIN_DB_PROD_INST_FIELD_ID . "\">\n";
+							echo "<p>Product piece:\n";
+
+							$product_options = array();
 							while (TRUE)
 							{
 								$next_prod = trin_db_get_next_product_instance
@@ -215,22 +235,19 @@ Error: <?php echo $error.'<br>'; ?><br>
 								{
 									break;
 								}
-								$have_prod = TRUE;
-								echo '<option value="' . $next_prod[TRIN_DB_PROD_INST_FIELD_ID]
-									. '">' . $next_prod[TRIN_DB_PROD_INST_FIELD_ID] .
-									"</option>\n";
+								$product_options[] =
+									$next_prod[TRIN_DB_PROD_INST_FIELD_ID];
 							}
-							if (! $have_prod)
-							{
-								// no data found, but add a dummy
-								// option required by HTML!
-								echo '<option value="-">-</option>';
-							}
-							echo "</select></p>\n";
+							trin_create_select(TRIN_DB_PROD_INST_FIELD_ID,
+								'',
+								$product_options,
+								$product_options,
+								$validation_failed_fields);
 						}
 						else
 						{
-							$error = 'Cannot read product instance database: ' . pg_last_error ();
+							$error = 'Cannot read product instance database: '
+								. trin_db_get_last_error ();
 						}
 					}
 					else if (!$db)
@@ -240,14 +257,18 @@ Error: <?php echo $error.'<br>'; ?><br>
 				}
 				else
 				{
-					echo '<input type="hidden" name="' . TRIN_DB_PROD_INST_FIELD_ID .
-						'" value="' . $_POST[TRIN_DB_PROD_INST_FIELD_ID] . "\">\n";
+					trin_create_text_input('hidden',
+						'',
+						TRIN_DB_PROD_INST_FIELD_ID,
+						$_POST[TRIN_DB_PROD_INST_FIELD_ID],
+						$validation_failed_fields);
 					$display_trans_params = TRUE;
 				}
 			}
 
 			if ($display_trans_params)
 			{
+				echo 'Product piece: ' . $_POST[TRIN_DB_PROD_INST_FIELD_ID] . "<br>\n";
 				// display a list of sellers & buyers
 				// and the remaining fields for a transaction
 				if ($db)
@@ -255,9 +276,10 @@ Error: <?php echo $error.'<br>'; ?><br>
 					$buyers = trin_db_get_buyers ($db);
 					if ($buyers !== FALSE)
 					{
-						$have_buyer = FALSE;
-						echo '<p>Buyer: <select name="' . TRIN_DB_BUYER_PARAM_ID
-							. "\">\n";
+						echo "<p>Buyer:\n";
+
+						$buyer_names = array();
+						$buyer_values = array();
 						while (TRUE)
 						{
 							$next_buyer = trin_db_get_next_buyer ($buyers);
@@ -265,22 +287,21 @@ Error: <?php echo $error.'<br>'; ?><br>
 							{
 								break;
 							}
-							$have_buyer = TRUE;
-							echo '<option value="' . $next_buyer[TRIN_DB_BUYER_PARAM_ID]
-								. '">' . $next_buyer[TRIN_DB_BUYER_PARAM_NAME] .
-								"</option>\n";
+							$buyer_names[] =
+								$next_buyer[TRIN_DB_BUYER_PARAM_NAME];
+							$buyer_values[] =
+								$next_buyer[TRIN_DB_BUYER_PARAM_ID];
 						}
-						if (! $have_buyer)
-						{
-							// no data found, but add a dummy
-							// option required by HTML!
-							echo '<option value="-">-</option>';
-						}
-						echo "</select></p>\n";
+						trin_create_select(TRIN_DB_BUYER_PARAM_ID,
+							'',
+							$buyer_names,
+							$buyer_values,
+							$validation_failed_fields);
 					}
 					else
 					{
-						$error = 'Cannot read buyer database: ' . pg_last_error ();
+						$error = 'Cannot read buyer database: '
+							. trin_db_get_last_error ();
 					}
 				}
 				else
@@ -293,9 +314,10 @@ Error: <?php echo $error.'<br>'; ?><br>
 					$sellers = trin_db_get_sellers ($db);
 					if ($sellers !== FALSE)
 					{
-						$have_seller = FALSE;
-						echo '<p>Seller: <select name="' . TRIN_DB_SELLER_PARAM_ID
-							. "\">\n";
+						echo "<p>Seller:\n";
+
+						$seller_names = array();
+						$seller_values = array();
 						while (TRUE)
 						{
 							$next_seller = trin_db_get_next_seller ($sellers);
@@ -303,22 +325,21 @@ Error: <?php echo $error.'<br>'; ?><br>
 							{
 								break;
 							}
-							$have_seller = TRUE;
-							echo '<option value="' . $next_seller[TRIN_DB_SELLER_PARAM_ID]
-								. '">' . $next_seller[TRIN_DB_SELLER_PARAM_NAME] .
-								"</option>\n";
+							$seller_names[] =
+								$next_seller[TRIN_DB_SELLER_PARAM_NAME];
+							$seller_values[] =
+								$next_seller[TRIN_DB_SELLER_PARAM_ID];
 						}
-						if (! $have_seller)
-						{
-							// no data found, but add a dummy
-							// option required by HTML!
-							echo '<option value="-">-</option>';
-						}
-						echo "</select></p>\n";
+						trin_create_select(TRIN_DB_SELLER_PARAM_ID,
+							'',
+							$seller_names,
+							$seller_values,
+							$validation_failed_fields);
 					}
 					else
 					{
-						$error = 'Cannot read seller database: ' . pg_last_error ();
+						$error = 'Cannot read seller database: '
+							. trin_db_get_last_error ();
 					}
 				}
 				else
@@ -353,6 +374,7 @@ Error: <?php echo $error.'<br>'; ?><br>
 				}
 				else
 				{
+					/*
 					$curr_time = getdate ();
 					$param_trans_selldate = $curr_time['year'] . '-'
 						. $curr_time['mon'] . '-'
@@ -360,6 +382,8 @@ Error: <?php echo $error.'<br>'; ?><br>
 						. $curr_time['hours'] . ':'
 						. $curr_time['minutes'] . ':'
 						. $curr_time['seconds'];
+					*/
+					$param_trans_selldate = date('Y-m-d H:i:s');
 				}
 
 				if (isset ($_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE]))
@@ -390,87 +414,71 @@ Error: <?php echo $error.'<br>'; ?><br>
 					$param_trans_sent = 'NO';
 				}
 
+				trin_display_error($error);
 ?>
 <p>
 Sell price:
-<input type="text" size="20"
-	value="<?php echo $param_trans_sell_price; ?>"
-	name="<?php echo TRIN_DB_TRANS_PARAM_PRICE; ?>">
+<?php
+				trin_create_text_input('text', '20',
+					TRIN_DB_TRANS_PARAM_PRICE,
+					$param_trans_sell_price,
+					$validation_failed_fields,
+					'Only decimal values allowed, no currency names');
+?>
 </p>
 
 <p>
 Was the product paid for:
-<select name="<?php echo TRIN_DB_TRANS_PARAM_PAID; ?>">
-
-<option value="true"
 <?php
-				if ($param_trans_paid == 'YES')
-				{
+				trin_create_select(TRIN_DB_TRANS_PARAM_PAID,
+					$param_trans_paid,
+					array('YES', 'NO'),
+					array('YES', 'NO'),
+					$validation_failed_fields)
 ?>
-	selected="selected"
-<?php
-				}
-?>
->YES</option>
-
-<option value="false"
-<?php
-				if ($param_trans_paid == 'NO')
-				{
-?>
-	selected="selected"
-<?php
-				}
-?>
->NO</option>
-</select>
+</p>
 
 <p>
 Was the product sent:
-<select name="<?php echo TRIN_DB_TRANS_PARAM_SENT; ?>">
-
-<option value="true"
 <?php
-				if ($param_trans_sent == 'YES')
-				{
+				trin_create_select(TRIN_DB_TRANS_PARAM_SENT,
+					$param_trans_sent,
+					array('YES', 'NO'),
+					array('YES', 'NO'),
+					$validation_failed_fields)
 ?>
-	selected="selected"
-<?php
-				}
-?>
->YES</option>
-
-<option value="false"
-<?php
-				if ($param_trans_sent == 'NO')
-				{
-?>
-	selected="selected"
-<?php
-				}
-?>
->NO</option>
-</select>
+</p>
 
 <p>
 Sell date:
-<input type="text" size="20"
-	value="<?php echo $param_trans_selldate; ?>"
-	name="<?php echo TRIN_DB_TRANS_PARAM_SELLDATE; ?>">
+<?php
+				trin_create_text_input('text', '20',
+					TRIN_DB_TRANS_PARAM_SELLDATE,
+					$param_trans_selldate,
+					$validation_failed_fields);
+?>
 </p>
 
 <p>
 Send price:
-<input type="text" size="20"
-	value="<?php echo $param_trans_send_price; ?>"
-	name="<?php echo TRIN_DB_TRANS_PARAM_SEND_PRICE; ?>">
+<?php
+				trin_create_text_input('text', '20',
+					TRIN_DB_TRANS_PARAM_SEND_PRICE,
+					$param_trans_send_price,
+					$validation_failed_fields,
+					'Only decimal values allowed, no currency names');
+?>
 </p>
 
 <p>
 Send cost:
-<input type="text" size="20"
-	value="<?php echo $param_trans_send_cost; ?>"
-	name="<?php echo TRIN_DB_TRANS_PARAM_SEND_COST; ?>">
+<?php
+				trin_create_text_input('text', '20',
+					TRIN_DB_TRANS_PARAM_SEND_COST,
+					$param_trans_send_cost,
+					$validation_failed_fields,
+					'Only decimal values allowed, no currency names');
+?>
 </p>
 
 <?php
@@ -481,14 +489,6 @@ Send cost:
 <input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
 </p>
 
-<?php
-			if ($error !== '')
-			{
-?>
-Error: <?php echo $error.'<br>'; ?><br>
-<?php
-			}
-?>
 </form>
 </div>
 
@@ -499,6 +499,7 @@ Error: <?php echo $error.'<br>'; ?><br>
 </div>
 
 <?php
+			include ('menu.php');
 			include ('footer.php');
 ?>
 

@@ -20,7 +20,7 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	define ('TRIN_VERSION', '0.1');
+	define ('TRIN_VERSION', '0.2');
 
 	define ('TRIN_HTTP_DATE_FORMAT', 'D, j M Y G:i:s T');
 
@@ -29,8 +29,9 @@
 	define ('TRIN_SESS_DB_PASS', 'trin_sess_db_pass');
 	define ('TRIN_SESS_DB_HOST', 'trin_sess_db_host');
 	define ('TRIN_SESS_DB_DBNAME', 'trin_sess_db_dbname');
+	define ('TRIN_SESS_DB_LAST_ERROR', 'trin_sess_db_last_error');
 
-	define ('TRIN_EXPECTED_DB_VERSION', '1');
+	define ('TRIN_EXPECTED_DB_VERSION', '2');
 
 	define ('TRIN_DB_PROD_DEF_FIELD_ID', 'id');
 	define ('TRIN_DB_PROD_DEF_FIELD_PHOTO', 'photo');
@@ -43,8 +44,13 @@
 	define ('TRIN_DB_PROD_DEF_FIELD_COUNT', 'count');
 	define ('TRIN_DB_PROD_DEF_FIELD_COMMENT', 'comment');
 	define ('TRIN_DB_PROD_DEF_FIELD_BRAND', 'brand');
+	define ('TRIN_DB_PROD_DEF_FIELD_VERSION', 'version');
+	define ('TRIN_DB_PROD_DEF_FIELD_USER', 'user');
+	define ('TRIN_DB_PROD_DEF_FIELD_TIMESTAMP', 'timestamp');
 
 	define ('TRIN_PROD_PHOTO_PARAM', 'id');
+	define ('TRIN_PROD_PHOTO_PARAM_HIS', 'h_id');
+	define ('TRIN_PROD_PHOTO_PARAM_HIS_VERSION', 'h_v');
 	define ('TRIN_PROD_DETAIL_PARAM', 'id');
 
 	define ('TRIN_PROD_COUNT_COLUMN_TOTAL', 'Total');
@@ -64,13 +70,24 @@
 	define ('TRIN_DB_PROD_PARAM_GENDER', 'prod_param_gender');
 	define ('TRIN_DB_PROD_PARAM_COMMENT', 'prod_param_comment');
 	define ('TRIN_DB_PROD_PARAM_COST', 'prod_param_cost');
+	define ('TRIN_DB_PROD_PARAM_VERSION', 'prod_param_vesion');
 
 	define ('TRIN_DB_PROD_INST_FIELD_ID', 'pid');
 	define ('TRIN_DB_PROD_INST_FIELD_STATUS', 'status');
 	define ('TRIN_DB_PROD_INST_FIELD_COST', 'cost');
+	define ('TRIN_DB_PROD_INST_FIELD_VERSION', 'version');
+	define ('TRIN_DB_PROD_INST_FIELD_USER', 'user');
+	define ('TRIN_DB_PROD_INST_FIELD_TIMESTAMP', 'timestamp');
+
+	define ('TRIN_DB_PROD_INST_PARAM_LIST', 'pp_list');
+	define ('TRIN_DB_PROD_INST_LIST_PARAM_START', 'pstart');
+	define ('TRIN_DB_PROD_INST_LIST_PARAM_COUNT', 'pcount');
 
 	define ('TRIN_DB_SELLER_PARAM_ID', 'sid');
 	define ('TRIN_DB_SELLER_PARAM_NAME', 'seller_param_name');
+	define ('TRIN_DB_SELLER_PARAM_VERSION', 'seller_param_version');
+	define ('TRIN_DB_SELLER_PARAM_USER', 'seller_param_user');
+	define ('TRIN_DB_SELLER_PARAM_TIMESTAMP', 'seller_param_timestamp');
 
 	define ('TRIN_DB_BUYER_PARAM_ID', 'bid');
 	define ('TRIN_DB_BUYER_PARAM_NAME', 'buyer_param_name');
@@ -78,6 +95,9 @@
 	define ('TRIN_DB_BUYER_PARAM_LOGIN', 'buyer_param_login');
 	define ('TRIN_DB_BUYER_PARAM_EMAIL', 'buyer_param_email');
 	define ('TRIN_DB_BUYER_PARAM_COMMENT', 'buyer_param_comment');
+	define ('TRIN_DB_BUYER_PARAM_VERSION', 'buyer_param_version');
+	define ('TRIN_DB_BUYER_PARAM_USER', 'buyer_param_user');
+	define ('TRIN_DB_BUYER_PARAM_TIMESTAMP', 'buyer_param_timestamp');
 
 	define ('TRIN_DB_TRANS_PARAM_LIST', 'trans_list');
 	define ('TRIN_DB_TRANS_PARAM_ID', 'tid');
@@ -87,6 +107,23 @@
 	define ('TRIN_DB_TRANS_PARAM_SELLDATE', 'trans_sell_date');
 	define ('TRIN_DB_TRANS_PARAM_SEND_PRICE', 'trans_send_price');
 	define ('TRIN_DB_TRANS_PARAM_SEND_COST', 'trans_send_cost');
+	define ('TRIN_DB_TRANS_PARAM_VERSION', 'trans_version');
+	define ('TRIN_DB_TRANS_PARAM_USER', 'trans_user');
+	define ('TRIN_DB_TRANS_PARAM_TIMESTAMP', 'trans_timestamp');
+
+	define ('TRIN_DB_TRANS_LIST_PARAM_START', 'tstart');
+	define ('TRIN_DB_TRANS_LIST_PARAM_COUNT', 'tcount');
 
 	define ('TRIN_DB_TRANS_PARAM_COUNT', 'trans_count');
+
+	define ('TRIN_VALIDATION_FIELD_TYPE_NUMBER', 'number');
+
+	define ('TRIN_FORM_FIELD_SUBMIT_PREFIX', 'submit_');
+	define ('TRIN_FORM_SUBMIT_DB_DUMP', 'trin_db_dump');
+	define ('TRIN_FORM_SUBMIT_DB_RESTORE', 'trin_db_restore');
+	define ('TRIN_FORM_PARAM_DB_RESTORE_FILE', 'trin_db_restore_file');
+	define ('TRIN_FORM_SUBMIT_DB_DESTROY', 'trin_db_destroy');
+	define ('TRIN_FORM_SUBMIT_DB_DESTROY2', 'trin_db_destroy2');
+
+	define ('TRIN_FORM_PARAM_DB_QUERY', 'trin_db_query');
 ?>

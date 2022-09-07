@@ -20,17 +20,20 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	error_reporting (E_ALL|E_NOTICE);
 	session_start();
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
 
 	$error = '';
+	$validation_failed_fields = array();
 	$db = NULL;
 
 	if (! trin_validate_session ())
@@ -52,7 +55,8 @@
 			if (! trin_db_add_seller ($db,
 				$_POST[TRIN_DB_SELLER_PARAM_NAME]))
 			{
-				$error = 'Cannot add seller to the database: ' . pg_last_error ();
+				$error = 'Cannot add seller to the database: '
+					. trin_db_get_last_error ();
 			}
 		}
 ?>
@@ -64,10 +68,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 		trin_meta_lastmod ($t_lastmod);
+		trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - manage sellers </TITLE>
 
@@ -80,18 +84,15 @@
 
 <?php
 		include ('header.php');
+		include ('menu.php');
 
-		if ($error !== '')
-		{
-?>
-Error: <?php echo $error.'<br>'; ?><br>
-<?php
-		}
+		trin_display_error($error);
 ?>
 <div class="login_box">
 <?php
 
 		$param_seller_name = '';
+		$param_seller_version = 0;
 
 		if (isset ($_POST[TRIN_DB_SELLER_PARAM_NAME]))
 		{
@@ -100,7 +101,9 @@ Error: <?php echo $error.'<br>'; ?><br>
 
 		trin_create_seller_form (
 			trin_get_self_action (), 'Add seller',
-			TRIN_DB_SELLER_PARAM_NAME, $param_seller_name
+			TRIN_DB_SELLER_PARAM_NAME, $param_seller_name,
+			TRIN_DB_SELLER_PARAM_VERSION, $param_seller_version,
+			$validation_failed_fields
 		);
 ?>
 </div>
@@ -138,7 +141,8 @@ Error: <?php echo $error.'<br>'; ?><br>
 			}
 			else
 			{
-				$error = 'Cannot read seller database: ' . pg_last_error ();
+				$error = 'Cannot read seller database: '
+					. trin_db_get_last_error ();
 			}
 		}
 		else
@@ -149,15 +153,76 @@ Error: <?php echo $error.'<br>'; ?><br>
 		if ($error)
 		{
 ?>
-<tr><td colspan="3" class="c">Error: <?php echo $error; ?></td></tr>
+<tr><td colspan="2" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_seller) && (! $error))
 		{
 ?>
-<tr><td colspan="3" class="c">No sellers found</td></tr>
+<tr><td colspan="2" class="c">No sellers found</td></tr>
 <?php
 		} // ! $have_seller
+?>
+</tbody>
+</table>
+
+<table>
+<caption>Products sold</caption>
+<thead><tr>
+ <th>Seller name</th>
+ <th>Product name</th>
+ <th>Quantity</th>
+</tr></thead>
+<tbody>
+<?php
+		$error = '';
+		$have_sale = FALSE;
+		if ($db)
+		{
+			$sales = trin_db_get_seller_transactions ($db);
+			if ($sales !== FALSE)
+			{
+				while (TRUE)
+				{
+					$next_sale = trin_db_get_next_seller_transaction ($sales);
+					if ($next_sale === FALSE)
+					{
+						break;
+					}
+					$product_link = 'details.php?' . TRIN_PROD_DETAIL_PARAM
+						. '=' . $next_sale[TRIN_DB_PROD_DEF_FIELD_ID];
+					$have_sale = TRUE;
+					echo '<tr class="c">' .
+						'<td>' . $next_sale[TRIN_DB_SELLER_PARAM_NAME] . '</td>' .
+						"<td><a href=\"$product_link\">"
+							. $next_sale[TRIN_DB_PROD_DEF_FIELD_NAME] . '</a></td>' .
+						'<td>' . $next_sale[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
+						. "\n";
+				}
+			}
+			else
+			{
+				$error = 'Cannot read product sale database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else
+		{
+			$error = 'Cannot connect to database';
+		}
+
+		if ($error)
+		{
+?>
+<tr><td colspan="3" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<?php
+		} // $error
+		if ((! $have_sale) && (! $error))
+		{
+?>
+<tr><td colspan="3" class="c">No products sold</td></tr>
+<?php
+		} // ! $have_sale
 ?>
 </tbody>
 </table>
@@ -167,6 +232,7 @@ Error: <?php echo $error.'<br>'; ?><br>
 </div>
 
 <?php
+		include ('menu.php');
 		include ('footer.php');
 ?>
 

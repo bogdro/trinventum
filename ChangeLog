@@ -1,3 +1,106 @@
+2016-02-26	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
+
+	* Trinventum version 0.2:
+	  Many UI improvements in data, layout, menu & error display and form
+	  generating and descriptions. Fixes & improvements in transaction
+	  modification. New data display - product sellers in product details,
+	  product transactions per product in seller & buyer lists. Product
+	  details can now be updated one by one, not all together.
+	  Transactions can now be deleted. Added simple database management
+	  operations. Added recording the history of changes for product
+	  definitions, product pieces, sellers, buyers and transactions.
+	  Transaction modification changed to a separate button and now offers
+	  the same product by default and allows changing only the other
+	  details. To choose another product for a transaction, the current
+	  transaction must be deleted and a new one created. Added a page
+	  which lists all product pieces, their statuses and counts of
+	  status changes per month during the last year. Better lynx support.
+	  Checking for concurrent database modifications and disallowing
+	  overwriting.
+	* functions.php: added function for converting male/female/child
+	  abbreviations to their full names.
+	* main.php, details.php: using full gender names instead of M/F/C/-.
+	* trinventum.css: added class for "OK" and "not OK" messages. Added
+	  class for products with no free pieces. Added margins around tables.
+	  Added a class for error messages. Allow the product images to be
+	  scaled while preserving the maximum width. Better lynx support.
+	* transactions.php: using colours for YES/NO. Displaying seller,
+	  buyer and product names instead of their IDs.
+	* main.php: making products with no free pieces greyed-out. Add
+	  horizontal lines in table, for Lynx.
+	* details.php, add_product.php, sellers.php, buyers.php,
+	  mod_buyer.php, mod_seller.php, add_transaction.php,
+	  transactions.php, ppdetails.php, mod_transaction.php: include the
+	  whole navigation menu.
+	* menu.php: include a link to the main page, shorten the names
+	* buyers.php: make buyer e-mail address clickable. Display how many
+	  products have been bought by each buyer, per product type
+	* details.php: displaying buyer's name instead of ID in the
+	  product sellings' list, displaying also product sellers, added a
+	  title to the photo. Allow editing product properties one by one.
+	  Displaying product definition history of changes.
+	* functions.php (cs_create_product_def_form), add_transaction.php,
+	  mod_transaction.php: added titles for some fields, describing what
+	  to enter in them
+	* details.php, add_product.php, add_transaction.php, ppdetails.php,
+	  mod_transaction.php: add simple form validation.
+	* functions.php: added a dedicated function to display errors. Added
+	  a dedicated function for PHP error reporting settings. Changed
+	  product & buyer comment fields to textareas. Added functions for
+	  generating <input>, <select> and <textarea> form elements
+	* db_functions.php: Added a dedicated function for getting the last
+	  database error. Added a dedicated function for performing generic
+	  database queries. Added dedicated functions for updating each
+	  property of a product definition. Added dedicated functions for
+	  querying transactions of buyers and sellers. Using associative
+	  arrays as query return types when useful.
+	* details.php, add_product.php, sellers.php, buyers.php,
+	  mod_buyer.php, mod_seller.php, add_transaction.php,
+	  transactions.php, ppdetails.php, mod_transaction.php, main.php,
+	  login.php: using the dedicated functions to display errors and to
+	  enable PHP error reporting. Using the dedicated functions to get
+	  database errors
+	* add_transaction.php, mod_transaction.php: moved error display to
+	  the top of the form
+	* db_check.php: Using the dedicated functions to get database errors
+	  and to perform the upgrade (removing dependency on pg_* functions).
+	  If the database doesn't exist, run the full script instead of all
+	  the scripts one by one. Use begin+commit around each file (except
+	  for the full file, which must succeed).
+	* mod_transaction.php: displaying the modified transaction's details,
+	  fixed detecting that no parameter or the "empty" parameter value
+	  has been chosen
+	* details.php, add_product.php, sellers.php, buyers.php,
+	  add_transaction.php, ppdetails.php, mod_transaction.php: using the
+	  new form-generating functions.
+	* add_transaction.php: fixed sell date default value for months < 10.
+	* db_functions.php (cs_db_update_transaction): fixed marking the
+	  previous product instance as READY when changing the product
+	  instance during updating a transaction.
+	* sellers.php: display how many products have been sold by each
+	  seller, per product type
+	* trinventum-v1.pgsql: added comments for the schema, types and objects
+	* trinventum-v2.pgsql: added new schema objects
+	* trinventum-full.pgsql: added a file creating the full schema
+	* db_functions.php (cs_db_get_product_defs): products now listed from
+	  newest to oldest
+	* db_functions.php (cs_db_get_transactions): transactions now listed
+	  from newest to oldest
+	* management.php: a new page for DB management, currently destroying
+	  and querying.
+	* transactions.php, db_functions.php: transactions can now be deleted.
+	  Support for selecting transactions by offset and limit.
+	* .htaccess: added a htaccess control file with some basic settings
+	* sql: a new directory for SQL files creating the database
+	* functions.php (cs_include_css): a new function for CSS inclusion
+	* rsrc: a new directory for CSS stylesheets and other resources
+	* details.php, mod_seller.php, mod_buyer.php, ppdetails.php,
+	  mod_transaction.php: using database record version numbers to detect
+	  concurrent modifications of data. Showing the object's history on
+	  the object's details' page.
+	* pieces.php: a new page which lists all product pieces, their
+	  statuses and counts of status changes per month during the last year
+
 2015-10-24	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 
 	* Trinventum version 0.1:

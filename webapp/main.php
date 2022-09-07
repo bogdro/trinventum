@@ -44,10 +44,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 		trin_meta_lastmod ($t_lastmod);
+		trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - main </TITLE>
 
@@ -96,24 +96,30 @@
 						break;
 					}
 					$have_prod = TRUE;
+					$counts = trin_db_count_products($db, $next_prod[TRIN_DB_PROD_DEF_FIELD_ID]);
+					$rowclass = 'c';
+					if ((!isset ($counts['READY'])) || ($counts['READY'] == 0))
+					{
+						$rowclass .= ' missing';
+					}
 					$prod_det_link = 'details.php?' . TRIN_PROD_DETAIL_PARAM
 						. '=' . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
-					echo '<tr class="c">' .
+					echo "<tr class=\"$rowclass\">" .
 						"<td><a href=\"$prod_det_link\">" . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID] . '</a></td>' .
 						"<td><a href=\"$prod_det_link\">" . $next_prod[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</a></td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME] . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_BRAND] . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_SIZE] . '</td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_GENDER] . '</td>' .
+						'<td>' . trin_get_gender_name($next_prod[TRIN_DB_PROD_DEF_FIELD_GENDER]) . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COLOUR] . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COUNT] . '</td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COMMENT] . '</td></tr>'
+						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COMMENT] . '<hr></td></tr>'
 						. "\n";
 				}
 			}
 			else
 			{
-				$error = 'Cannot read product database: ' . pg_last_error ();
+				$error = 'Cannot read product database: ' . trin_db_get_last_error ();
 			}
 		}
 		else
@@ -124,7 +130,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="9" class="c">Error: <?php echo $error; ?></td></tr>
+<tr><td colspan="9" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_prod) && (! $error))

@@ -20,11 +20,13 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	//error_reporting (E_ALL|E_NOTICE); // crashes the db_check if first use
 	session_start();
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
@@ -32,6 +34,7 @@
 
 	$display_form = FALSE;
 	$error = '';
+	$validation_failed_fields = array();
 	$db = NULL;
 
 	if (isset ($_POST[TRIN_SESS_DB_LOGIN])
@@ -51,7 +54,7 @@
 		else if (! trin_db_check ($db))
 		{
 			$display_form = TRUE;
-			$error = 'Cannot check the database: ' . pg_last_error ();
+			$error = 'Cannot check the database: ' . trin_db_get_last_error ();
 			trin_db_close ($db);
 		}
 		if (! $display_form)
@@ -79,10 +82,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 		trin_meta_lastmod ($t_lastmod);
+		trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - login </TITLE>
 
@@ -94,12 +97,7 @@
 </HEAD><BODY>
 
 <?php
-		if ($error !== '')
-		{
-?>
-Error: <?php echo $error.'<br>'; ?><br>
-<?php
-		}
+		trin_display_error($error);
 
 		$param_db_login = '';
 		$param_db_pass = '';
@@ -128,7 +126,7 @@ Error: <?php echo $error.'<br>'; ?><br>
 ?>
 
 <div class="login_box c">
-Trinventum e-commerce management software
+Trinventum e-commerce store management software
 </div>
 
 <div class="login_box">
@@ -140,26 +138,34 @@ Database connection parameters:
 
 <p class="c">
 Username:
-<input type="text" size="20"
-	value="<?php echo $param_db_login; ?>" name="<?php echo TRIN_SESS_DB_LOGIN; ?>">
+<?php
+	trin_create_text_input('text', '20', TRIN_SESS_DB_LOGIN,
+		$param_db_login, $validation_failed_fields);
+?>
 </p>
 
 <p class="c">
 Password:
-<input type="password" size="20"
-	value="<?php echo $param_db_pass; ?>" name="<?php echo TRIN_SESS_DB_PASS; ?>">
+<?php
+	trin_create_text_input('password', '20', TRIN_SESS_DB_PASS,
+		$param_db_pass, $validation_failed_fields);
+?>
 </p>
 
 <p class="c">
 Server address:
-<input type="text" size="20"
-	value="<?php echo $param_db_host; ?>" name="<?php echo TRIN_SESS_DB_HOST; ?>">
+<?php
+	trin_create_text_input('text', '20', TRIN_SESS_DB_HOST,
+		$param_db_host, $validation_failed_fields);
+?>
 </p>
 
 <p class="c">
 Database name:
-<input type="text" size="20"
-	value="<?php echo $param_db_dbname; ?>" name="<?php echo TRIN_SESS_DB_DBNAME; ?>">
+<?php
+	trin_create_text_input('text', '20', TRIN_SESS_DB_DBNAME,
+		$param_db_dbname, $validation_failed_fields);
+?>
 </p>
 
 <p class="c">

@@ -20,11 +20,13 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	error_reporting (E_ALL|E_NOTICE);
 	session_start();
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
@@ -32,6 +34,7 @@
 
 	$display_form = FALSE;
 	$error = '';
+	$validation_failed_fields = array();
 	$db = NULL;
 
 	if (! trin_validate_session ())
@@ -53,6 +56,7 @@
 			&& isset ($_POST[TRIN_DB_BUYER_PARAM_LOGIN])
 			&& isset ($_POST[TRIN_DB_BUYER_PARAM_EMAIL])
 			&& isset ($_POST[TRIN_DB_BUYER_PARAM_COMMENT])
+			&& isset ($_POST[TRIN_DB_BUYER_PARAM_VERSION])
 			)
 		{
 			if (!$db)
@@ -66,10 +70,12 @@
 				$_POST[TRIN_DB_BUYER_PARAM_ADDRESS],
 				$_POST[TRIN_DB_BUYER_PARAM_LOGIN],
 				$_POST[TRIN_DB_BUYER_PARAM_EMAIL],
-				$_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
+				$_POST[TRIN_DB_BUYER_PARAM_COMMENT],
+				$_POST[TRIN_DB_BUYER_PARAM_VERSION]))
 			{
 				$display_form = TRUE;
-				$error = 'Cannot update buyer in the database: ' . pg_last_error ();
+				$error = 'Cannot update buyer in the database: '
+					. trin_db_get_last_error ();
 			}
 			if (! $display_form)
 			{
@@ -81,6 +87,7 @@
 			$display_form = TRUE;
 		}
 
+		$update_error = $error;
 		if ($display_form)
 		{
 ?>
@@ -92,10 +99,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 			trin_meta_lastmod ($t_lastmod);
+			trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - modify buyer </TITLE>
 
@@ -108,13 +115,9 @@
 
 <?php
 			include ('header.php');
+			include ('menu.php');
 
-			if ($error !== '')
-			{
-?>
-Error: <?php echo $error.'<br>'; ?><br>
-<?php
-			}
+			trin_display_error($error);
 ?>
 <div class="login_box">
 <?php
@@ -123,6 +126,7 @@ Error: <?php echo $error.'<br>'; ?><br>
 			$param_buyer_login = '';
 			$param_buyer_email = '';
 			$param_buyer_comment = '';
+			$param_buyer_version = 0;
 
 			$buyer = trin_db_get_buyer_details ($db, $_GET[TRIN_DB_BUYER_PARAM_ID]);
 			if ($buyer !== FALSE)
@@ -132,31 +136,49 @@ Error: <?php echo $error.'<br>'; ?><br>
 				$param_buyer_login = $buyer[TRIN_DB_BUYER_PARAM_LOGIN];
 				$param_buyer_email = $buyer[TRIN_DB_BUYER_PARAM_EMAIL];
 				$param_buyer_comment = $buyer[TRIN_DB_BUYER_PARAM_COMMENT];
+				$param_buyer_version = $buyer[TRIN_DB_BUYER_PARAM_VERSION];
+			}
+			else
+			{
+				trin_display_error ('Cannot read buyer details: No data');
 			}
 
-			if (isset ($_POST[TRIN_DB_BUYER_PARAM_NAME]))
+			// if the buyer failed to be upated,
+			// refresh it from the DB and make the user
+			// re-enter the data, else display what the use entered
+			if (! $update_error)
 			{
-				$param_buyer_name = $_POST[TRIN_DB_BUYER_PARAM_NAME];
-			}
+				if (isset ($_POST[TRIN_DB_BUYER_PARAM_NAME]))
+				{
+					$param_buyer_name = $_POST[TRIN_DB_BUYER_PARAM_NAME];
+				}
 
-			if (isset ($_POST[TRIN_DB_BUYER_PARAM_ADDRESS]))
-			{
-				$param_buyer_address = $_POST[TRIN_DB_BUYER_PARAM_ADDRESS];
-			}
+				if (isset ($_POST[TRIN_DB_BUYER_PARAM_ADDRESS]))
+				{
+					$param_buyer_address = $_POST[TRIN_DB_BUYER_PARAM_ADDRESS];
+				}
 
-			if (isset ($_POST[TRIN_DB_BUYER_PARAM_LOGIN]))
-			{
-				$param_buyer_login = $_POST[TRIN_DB_BUYER_PARAM_LOGIN];
-			}
+				if (isset ($_POST[TRIN_DB_BUYER_PARAM_LOGIN]))
+				{
+					$param_buyer_login = $_POST[TRIN_DB_BUYER_PARAM_LOGIN];
+				}
 
-			if (isset ($_POST[TRIN_DB_BUYER_PARAM_EMAIL]))
-			{
-				$param_buyer_email = $_POST[TRIN_DB_BUYER_PARAM_EMAIL];
-			}
+				if (isset ($_POST[TRIN_DB_BUYER_PARAM_EMAIL]))
+				{
+					$param_buyer_email = $_POST[TRIN_DB_BUYER_PARAM_EMAIL];
+				}
 
-			if (isset ($_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
-			{
-				$param_buyer_comment = $_POST[TRIN_DB_BUYER_PARAM_COMMENT];
+				if (isset ($_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
+				{
+					$param_buyer_comment = $_POST[TRIN_DB_BUYER_PARAM_COMMENT];
+				}
+				/*
+				always take the current version value
+				if (isset ($_POST[TRIN_DB_BUYER_PARAM_VERSION]))
+				{
+					$param_buyer_version = $_POST[TRIN_DB_BUYER_PARAM_VERSION];
+				}
+				*/
 			}
 
 			trin_create_buyer_form (
@@ -165,16 +187,91 @@ Error: <?php echo $error.'<br>'; ?><br>
 				TRIN_DB_BUYER_PARAM_ADDRESS, $param_buyer_address,
 				TRIN_DB_BUYER_PARAM_LOGIN, $param_buyer_login,
 				TRIN_DB_BUYER_PARAM_EMAIL, $param_buyer_email,
-				TRIN_DB_BUYER_PARAM_COMMENT, $param_buyer_comment
+				TRIN_DB_BUYER_PARAM_COMMENT, $param_buyer_comment,
+				TRIN_DB_BUYER_PARAM_VERSION, $param_buyer_version,
+				$validation_failed_fields
 			);
 ?>
 </div>
+
+<table>
+<caption>Buyer's history of changes</caption>
+<thead><tr>
+ <th>Name was</th>
+ <th>Address was</th>
+ <th>Login was</th>
+ <th>Email was</th>
+ <th>Comment was</th>
+ <th>Change user</th>
+ <th>Change time</th>
+</tr></thead>
+<tbody>
+<?php
+		$error = '';
+		$have_his = FALSE;
+		if ($db)
+		{
+			$buyer_his = trin_db_get_buyer_history ($db,
+				$_GET[TRIN_DB_BUYER_PARAM_ID]);
+			if ($buyer_his !== FALSE)
+			{
+				while (TRUE)
+				{
+					$next_his = trin_db_get_next_buyer_hist_entry ($buyer_his);
+					if ($next_his === FALSE)
+					{
+						break;
+					}
+					$have_his = TRUE;
+					$buyer_email = '<a href="mailto:'
+						. $next_his[TRIN_DB_BUYER_PARAM_EMAIL]
+						. '">'
+						. $next_his[TRIN_DB_BUYER_PARAM_EMAIL]
+						. '</a>';
+					echo '<tr class="c">' .
+						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_NAME] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_ADDRESS] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_LOGIN] . '</td>' .
+						'<td>' . $buyer_email . '</td>' .
+						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_COMMENT] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_USER] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_TIMESTAMP] . '</td></tr>'
+						. "\n";
+				}
+			}
+			else
+			{
+				$error = 'Cannot read buyer database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else
+		{
+			$error = 'Cannot connect to database';
+		}
+
+		if ($error)
+		{
+?>
+<tr><td colspan="7" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<?php
+		} // $error
+		if ((! $have_his) && (! $error))
+		{
+?>
+<tr><td colspan="7" class="c">No buyer history found</td></tr>
+<?php
+		} // ! $have_prod
+?>
+</tbody>
+</table>
 
 <div class="menu">
 <a href="buyers.php">Return</a>
 </div>
 
 <?php
+			include ('menu.php');
 			include ('footer.php');
 ?>
 

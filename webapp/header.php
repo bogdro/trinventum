@@ -22,9 +22,9 @@
 ?>
 <div>
 <span class="l">
-Trinventum e-commerce management software
+Trinventum e-commerce store management software
 </span>
-<span class="right">
+<span class="fright">
 <a href="help.php">Help</a>
 |
 <a href="logout.php">Logout</a>

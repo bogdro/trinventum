@@ -24,5 +24,5 @@
 ?>
 <hr>
 <div class="c">
-Trinventum e-commerce management software version <?php echo TRIN_VERSION; ?>.
+Trinventum e-commerce store management software version <?php echo TRIN_VERSION; ?>.
 </div>

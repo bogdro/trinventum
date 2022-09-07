@@ -24,10 +24,15 @@
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
+	$error = '';
+	$validation_failed_fields = array();
 
 	if (! trin_validate_session ())
 	{
@@ -44,7 +49,23 @@
 			$_SESSION[TRIN_SESS_DB_PASS],
 			$_SESSION[TRIN_SESS_DB_DBNAME],
 			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
+		$form_validators = array(
+			TRIN_DB_PROD_PARAM_LENGTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+			TRIN_DB_PROD_PARAM_WIDTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+			TRIN_DB_PROD_PARAM_COUNT => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+			TRIN_DB_PROD_PARAM_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER
+			);
+		$validation_failed_fields = trin_validate_form($_POST, $form_validators);
+		if (!$db)
+		{
+			$error = 'Cannot connect to database';
+		}
+		else if (count($validation_failed_fields) != 0)
+		{
+			$error = 'Form validation failed - check field values: '
+				. implode(', ', $validation_failed_fields);
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
 			&& isset ($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_SIZE])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH])
@@ -54,12 +75,9 @@
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_BRAND])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_GENDER])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
 		{
-			if (!$db)
-			{
-				$error = 'Cannot connect to database';
-			}
 			if (! trin_db_update_product ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_NAME],
@@ -72,11 +90,157 @@
 				$_POST[TRIN_DB_PROD_PARAM_BRAND],
 				$_POST[TRIN_DB_PROD_PARAM_GENDER],
 				$_POST[TRIN_DB_PROD_PARAM_COMMENT],
-				$_POST[TRIN_DB_PROD_PARAM_COST]))
+				$_POST[TRIN_DB_PROD_PARAM_COST],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
 			{
-				$error = 'Cannot update product in the database: ' . pg_last_error ();
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
 			}
 		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_NAME])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_name ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_NAME],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_PHOTO])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_photo ($db,
+				$product_id,
+				TRIN_DB_PROD_PARAM_PHOTO,
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_SIZE])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_SIZE])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_size ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_SIZE],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_LENGTH])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_length ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_LENGTH],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_WIDTH])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_width ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_WIDTH],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COLOUR])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_colour ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_COLOUR],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COUNT])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COUNT])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_count ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_COUNT],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_BRAND])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_BRAND])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_brand ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_BRAND],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_GENDER])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_GENDER])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_gender ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_GENDER],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COMMENT])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_comment ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_COMMENT],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COST])
+			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COST])
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+		{
+			if (! trin_db_update_product_cost ($db,
+				$product_id,
+				$_POST[TRIN_DB_PROD_PARAM_COST],
+				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$error = 'Cannot update product in the database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		$update_error = $error;
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
@@ -86,10 +250,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 		trin_meta_lastmod ($t_lastmod);
+		trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - product details </TITLE>
 
@@ -102,6 +266,9 @@
 
 <?php
 		include ('header.php');
+		include ('menu.php');
+
+		trin_display_error($error);
 ?>
 
 <div class="menu">
@@ -121,6 +288,7 @@
 		$param_pd_gender = '-';
 		$param_pd_comment = '';
 		$param_pd_cost = '';
+		$param_pd_version = 0;
 
 		$error = '';
 		$have_prod = FALSE;
@@ -140,33 +308,36 @@
 				$param_pd_brand = $product_det[TRIN_DB_PROD_DEF_FIELD_BRAND];
 				$param_pd_gender = $product_det[TRIN_DB_PROD_DEF_FIELD_GENDER];
 				$param_pd_comment = $product_det[TRIN_DB_PROD_DEF_FIELD_COMMENT];
+				$param_pd_version = $product_det[TRIN_DB_PROD_DEF_FIELD_VERSION];
 				if ($product_det[TRIN_DB_PROD_DEF_FIELD_PHOTO] !== '-')
 				{
-					$photo = '<a href="get_photo.php?' .
-						TRIN_PROD_PHOTO_PARAM . '=' .
-						$product_id . '">' . $product_det[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</a>';
+					$photo = '<a href="get_photo.php?'
+						. TRIN_PROD_PHOTO_PARAM . '='
+						. $product_id
+						. '" title="Click to see the original picture">'
+						. $product_det[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</a>';
 				}
 				else
 				{
 					$photo = '-';
 				}
 
-				echo 	"<ul><li><p>Photo: $photo</p></li>" .
-					'<li><p>Name: ' . $param_pd_name . '</p></li>' .
-					'<li><p>Brand: ' . $param_pd_brand . '</p></li>' .
-					'<li><p>Size: ' . $param_pd_size . '</p></li>' .
-					'<li><p>Length: ' . $param_pd_length . '</p></li>' .
-					'<li><p>Width: ' . $param_pd_width . '</p></li>' .
-					'<li><p>Gender: ' . $param_pd_gender . '</p></li>' .
-					'<li><p>Colour: ' . $param_pd_colour . '</p></li>' .
-					'<li><p>Count:</p><p>' . $param_pd_count . '</p></li>' .
-					'<li><p>Comment: ' . $param_pd_comment . '</p></li>' .
-					'</ul>';
-
+				echo 	"<ul>\n <li><p>Photo: $photo</p></li>\n" .
+					' <li><p>Name: ' . $param_pd_name . "</p></li>\n" .
+					' <li><p>Brand: ' . $param_pd_brand . "</p></li>\n" .
+					' <li><p>Size: ' . $param_pd_size . "</p></li>\n" .
+					' <li><p>Length: ' . $param_pd_length . "</p></li>\n" .
+					' <li><p>Width: ' . $param_pd_width . "</p></li>\n" .
+					' <li><p>Gender: ' . trin_get_gender_name($param_pd_gender) . "</p></li>\n" .
+					' <li><p>Colour: ' . $param_pd_colour . "</p></li>\n" .
+					' <li><p>Count:</p><p>' . $param_pd_count . "</p></li>\n" .
+					' <li><p>Comment: ' . $param_pd_comment . "</p></li>\n" .
+					"</ul>\n";
 			}
 			else
 			{
-				$error = 'Cannot read product details from the database: ' . pg_last_error ();
+				$error = 'Cannot read product details from the database: '
+					. trin_db_get_last_error ();
 			}
 		}
 		else
@@ -174,12 +345,8 @@
 			$error = 'Cannot connect to database';
 		}
 
-		if ($error)
-		{
-?>
-<p class="c">Error: <?php echo $error; ?></p>
-<?php
-		} // $error
+		trin_display_error($error);
+
 		if ((! $have_prod) && (! $error))
 		{
 ?>
@@ -189,58 +356,71 @@
 ?>
 
 <p class="c">
-Update details (warning - this updates ALL the given details):
+Update product details:
 </p>
 
 <div class="login_box">
 <?php
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME]))
+		// if the product failed to be upated,
+		// refresh it from the DB and make the user
+		// re-enter the data, else display what the use entered
+		if (! $update_error)
 		{
-			$param_pd_name = $_POST[TRIN_DB_PROD_PARAM_NAME];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_PHOTO]))
-		{
-			$param_pd_photo = $_POST[TRIN_DB_PROD_PARAM_PHOTO];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_SIZE]))
-		{
-			$param_pd_size = $_POST[TRIN_DB_PROD_PARAM_SIZE];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH]))
-		{
-			$param_pd_length = $_POST[TRIN_DB_PROD_PARAM_LENGTH];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH]))
-		{
-			$param_pd_width = $_POST[TRIN_DB_PROD_PARAM_WIDTH];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR]))
-		{
-			$param_pd_colour = $_POST[TRIN_DB_PROD_PARAM_COLOUR];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_COUNT]))
-		{
-			$param_pd_count = $_POST[TRIN_DB_PROD_PARAM_COUNT];
-		}
-		else
-		{
-			$param_pd_count = 0; // $param_pd_count is an HTML string hard to parse now
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_BRAND]))
-		{
-			$param_pd_brand = $_POST[TRIN_DB_PROD_PARAM_BRAND];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_GENDER]))
-		{
-			$param_pd_gender = $_POST[TRIN_DB_PROD_PARAM_GENDER];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT]))
-		{
-			$param_pd_comment = $_POST[TRIN_DB_PROD_PARAM_COMMENT];
-		}
-		if (isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
-		{
-			$param_pd_cost = $_POST[TRIN_DB_PROD_PARAM_COST];
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME]))
+			{
+				$param_pd_name = $_POST[TRIN_DB_PROD_PARAM_NAME];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_PHOTO]))
+			{
+				$param_pd_photo = $_POST[TRIN_DB_PROD_PARAM_PHOTO];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_SIZE]))
+			{
+				$param_pd_size = $_POST[TRIN_DB_PROD_PARAM_SIZE];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH]))
+			{
+				$param_pd_length = $_POST[TRIN_DB_PROD_PARAM_LENGTH];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH]))
+			{
+				$param_pd_width = $_POST[TRIN_DB_PROD_PARAM_WIDTH];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR]))
+			{
+				$param_pd_colour = $_POST[TRIN_DB_PROD_PARAM_COLOUR];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_COUNT]))
+			{
+				$param_pd_count = $_POST[TRIN_DB_PROD_PARAM_COUNT];
+			}
+			else
+			{
+				$param_pd_count = 0; // $param_pd_count is an HTML string hard to parse now
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_BRAND]))
+			{
+				$param_pd_brand = $_POST[TRIN_DB_PROD_PARAM_BRAND];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_GENDER]))
+			{
+				$param_pd_gender = $_POST[TRIN_DB_PROD_PARAM_GENDER];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT]))
+			{
+				$param_pd_comment = $_POST[TRIN_DB_PROD_PARAM_COMMENT];
+			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
+			{
+				$param_pd_cost = $_POST[TRIN_DB_PROD_PARAM_COST];
+			}
+			/*
+			always take the current version value
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$param_pd_version = $_POST[TRIN_DB_PROD_PARAM_VERSION];
+			}
+			*/
 		}
 
 		trin_create_product_def_form (
@@ -255,7 +435,9 @@ Update details (warning - this updates ALL the given details):
 			TRIN_DB_PROD_PARAM_BRAND, $param_pd_brand,
 			TRIN_DB_PROD_PARAM_GENDER, $param_pd_gender,
 			TRIN_DB_PROD_PARAM_COMMENT, $param_pd_comment,
-			TRIN_DB_PROD_PARAM_COST, $param_pd_cost
+			TRIN_DB_PROD_PARAM_COST, $param_pd_cost,
+			TRIN_DB_PROD_PARAM_VERSION, $param_pd_version,
+			$validation_failed_fields, TRUE
 		);
 ?>
 </div>
@@ -298,7 +480,8 @@ Update details (warning - this updates ALL the given details):
 			}
 			else
 			{
-				$error = 'Cannot read product database: ' . pg_last_error ();
+				$error = 'Cannot read product database: '
+					. trin_db_get_last_error ();
 			}
 		}
 		else
@@ -309,7 +492,7 @@ Update details (warning - this updates ALL the given details):
 		if ($error)
 		{
 ?>
-<tr><td colspan="3" class="c">Error: <?php echo $error; ?></td></tr>
+<tr><td colspan="3" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_prod) && (! $error))
@@ -323,9 +506,68 @@ Update details (warning - this updates ALL the given details):
 </table>
 
 <table>
-<caption>Product sellings</caption>
+<caption>Product buyings</caption>
 <thead><tr>
  <th>Buyer</th>
+ <th>Quantity</th>
+</tr></thead>
+<tbody>
+<?php
+		$error = '';
+		$have_buy = FALSE;
+		if ($db)
+		{
+			$buys = trin_db_get_product_buys ($db, $product_id);
+			if ($buys !== FALSE)
+			{
+				while (TRUE)
+				{
+					$next_buy = trin_db_get_next_product_buy ($buys);
+					if ($next_buy === FALSE)
+					{
+						break;
+					}
+					$buyer_link = 'mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
+						. '=' . $next_buy[TRIN_DB_BUYER_PARAM_ID];
+					$have_buy = TRUE;
+					echo '<tr class="c">' .
+						"<td><a href=\"$buyer_link\">"
+							. $next_buy[TRIN_DB_BUYER_PARAM_NAME] . '</a></td>' .
+						'<td>' . $next_buy[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
+						. "\n";
+				}
+			}
+			else
+			{
+				$error = 'Cannot read product buyings\' database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else
+		{
+			$error = 'Cannot connect to database';
+		}
+
+		if ($error)
+		{
+?>
+<tr><td colspan="2" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<?php
+		} // $error
+		if ((! $have_buy) && (! $error))
+		{
+?>
+<tr><td colspan="2" class="c">No product buyings found</td></tr>
+<?php
+		} // ! $have_sale
+?>
+</tbody>
+</table>
+
+<table>
+<caption>Product sellings</caption>
+<thead><tr>
+ <th>Seller</th>
  <th>Quantity</th>
 </tr></thead>
 <tbody>
@@ -344,19 +586,20 @@ Update details (warning - this updates ALL the given details):
 					{
 						break;
 					}
-					$buyer_link = 'mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
-						. '=' . $next_sale[TRIN_DB_BUYER_PARAM_ID];
+					$seller_link = 'mod_seller.php?' . TRIN_DB_SELLER_PARAM_ID
+						. '=' . $next_sale[TRIN_DB_SELLER_PARAM_ID];
 					$have_sale = TRUE;
 					echo '<tr class="c">' .
-						"<td><a href=\"$buyer_link\">"
-							. $next_sale[TRIN_DB_BUYER_PARAM_ID] . '</a></td>' .
+						"<td><a href=\"$seller_link\">"
+							. $next_sale[TRIN_DB_SELLER_PARAM_NAME] . '</a></td>' .
 						'<td>' . $next_sale[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
 						. "\n";
 				}
 			}
 			else
 			{
-				$error = 'Cannot read product sale database: ' . pg_last_error ();
+				$error = 'Cannot read product sale database: '
+					. trin_db_get_last_error ();
 			}
 		}
 		else
@@ -367,7 +610,7 @@ Update details (warning - this updates ALL the given details):
 		if ($error)
 		{
 ?>
-<tr><td colspan="2" class="c">Error: <?php echo $error; ?></td></tr>
+<tr><td colspan="2" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_sale) && (! $error))
@@ -380,11 +623,82 @@ Update details (warning - this updates ALL the given details):
 </tbody>
 </table>
 
+<table>
+<caption>Product's history of changes</caption>
+<thead><tr>
+ <th>Photo was</th>
+ <th>Name was</th>
+ <th>Brand was</th>
+ <th>Size was</th>
+ <th>Gender was</th>
+ <th>Colour was</th>
+ <th>Comment was</th>
+ <th>Change user</th>
+ <th>Change time</th>
+</tr></thead>
+<tbody>
+<?php
+		$error = '';
+		$have_his = FALSE;
+		if ($db)
+		{
+			$his = trin_db_get_product_history ($db, $product_id);
+			if ($his !== FALSE)
+			{
+				while (TRUE)
+				{
+					$next_his = trin_db_get_next_product_history_entry ($his);
+					if ($next_his === FALSE)
+					{
+						break;
+					}
+					$have_his = TRUE;
+					echo '<tr class="c">' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_NAME] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_BRAND] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_SIZE] . '</td>' .
+						'<td>' . trin_get_gender_name($next_his[TRIN_DB_PROD_DEF_FIELD_GENDER]) . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_COLOUR] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_COMMENT] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_USER] . '</td>' .
+						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] . '<hr></td></tr>'
+						. "\n";
+				}
+			}
+			else
+			{
+				$error = 'Cannot read product history database: '
+					. trin_db_get_last_error ();
+			}
+		}
+		else
+		{
+			$error = 'Cannot connect to database';
+		}
+
+		if ($error)
+		{
+?>
+<tr><td colspan="9" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<?php
+		} // $error
+		if ((! $have_his) && (! $error))
+		{
+?>
+<tr><td colspan="9" class="c">No product history found</td></tr>
+<?php
+		} // ! $have_sale
+?>
+</tbody>
+</table>
+
 <div class="menu">
 <a href="main.php">Return</a>
 </div>
 
 <?php
+		include ('menu.php');
 		include ('footer.php');
 ?>
 

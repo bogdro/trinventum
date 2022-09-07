@@ -37,10 +37,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 	trin_meta_lastmod ($t_lastmod);
+	trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - help </TITLE>
 
@@ -164,7 +164,8 @@ You cannot decrease the number of product pieces, but you can increase it.
 Below the product type details, you'll see a list of current product pieces of the given type.
 To modify a piece, click on its ID. You can only change the status between READY and SELLING
 (which means that the product is put for sale). When the piece is SOLD, you can't change it back
-to READY or SELLING, you can update only the cost then.
+to READY (unless the piece's transaction is modified to actually select another piece)
+or SELLING, you can update only the cost then.
 </p>
 
 <p>
@@ -206,6 +207,12 @@ Then you input the rest of the transaction parameters:
 </ul>
 
 <p>
+If you get "Record version doesn't match" errors, then someone must have updated the
+object you're working on. Refresh the page, double-check the values, re-enter your
+changes and retry the operation.
+</p>
+
+<p>
 To backup the database, for PostgreSQL, you would do:
 </p>
 	<pre>
@@ -224,11 +231,24 @@ and provide the DATABASE user password.
 </p>
 
 <p>
-To delete and re-crete the database, run (for PostgreSQL):
+To delete and re-crete the database schema, run (for PostgreSQL):
+</p>
+	<pre>
+	psql trinventum
+	drop schema trinventum cascade;</pre>
+<p>
+After this, you need to re-login to Trinventum to re-create the structures.
+</p>
+
+<p>
+To delete and re-crete the whole database, run (for PostgreSQL):
 </p>
 	<pre>
 	dropdb trinventum
 	createdb trinventum</pre>
+<p>
+After this, you need to re-login to Trinventum to re-create the structures.
+</p>
 
 
 

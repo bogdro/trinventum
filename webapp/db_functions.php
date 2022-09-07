@@ -29,20 +29,48 @@
 	define ('TRIN_QUERY_GET_PRODUCT_DEFS',
 		'select pd_id, pd_photo, pd_name, pd_size, pd_length, pd_width, pd_gender,
 		pd_colour, pd_comment, pd_brand
-		from trinventum.product_definitions order by pd_id asc');
+		from trinventum.product_definitions order by pd_id desc');
 	define ('TRIN_QUERY_GET_PRODUCT_PHOTO',
 		'select pd_photo from trinventum.product_definitions where pd_id = $1');
 	define ('TRIN_QUERY_GET_PRODUCT_DET',
 		'select pd_id, pd_photo, pd_name, pd_size, pd_length, pd_width, pd_gender,
-		pd_colour, pd_comment, pd_brand
+		pd_colour, pd_comment, pd_brand, pd_version
 		from trinventum.product_definitions where pd_id = $1');
 	define ('TRIN_QUERY_GET_PRODUCT_COUNTS',
-		'select p_status::text, count(*) from trinventum.products where p_pd_id = $1 group by p_status
+		'select p_status::text as p_status, count(*) as p_count from trinventum.products
+		where p_pd_id = $1 group by p_status
 		union all select \'' . TRIN_PROD_COUNT_COLUMN_TOTAL . '\' as p_status,
-		count(*) from trinventum.products where p_pd_id = $1 order by p_status;');
-	define ('TRIN_QUERY_GET_PRODUCT_SALES',
-		'select t_buyer, count(*) from trinventum.transactions where t_product_id in
-		(select p_id from trinventum.products where p_pd_id = $1) group by t_buyer');
+		count(*) as p_count from trinventum.products where p_pd_id = $1 order by p_status');
+	define ('TRIN_QUERY_GET_ALL_PRODUCT_COUNTS',
+		'select p_status as p_status, count(*) as p_count from trinventum.products
+		group by p_status');
+	// had to use a dedicated function - PHP driver didn't accept correct SQL statements
+	define ('TRIN_QUERY_GET_MONTH_HIST_PRODUCT_COUNTS',
+		'select his_p_status as p_status, count(*) as p_count from trinventum.products_hist
+		where extract (month from his_p_record_timestamp)
+		= trinventum.months_ago($1)
+		group by p_status');
+//		= extract (month from (current_date - interval \'$1 months\'))
+
+	define ('TRIN_QUERY_GET_PRODUCT_BUYS',
+		'select b_id, b_name, count(*) as b_count from trinventum.transactions
+		join trinventum.buyers on b_id = t_buyer where t_product_id in
+		(select p_id from trinventum.products where p_pd_id = $1)
+		group by b_id, b_name order by count(*) desc');
+	define ('TRIN_QUERY_GET_PRODUCT_SELLINGS',
+		'select s_id, s_name, count(*) as s_count from trinventum.transactions
+		join trinventum.sellers on s_id = t_seller where t_product_id in
+		(select p_id from trinventum.products where p_pd_id = $1)
+		group by s_id, s_name order by count(*) desc');
+	define ('TRIN_QUERY_GET_PRODUCT_HIST_BY_ID',
+		'select his_pd_id, his_pd_photo, his_pd_name, his_pd_size,
+		his_pd_length, his_pd_width, his_pd_gender, his_pd_colour,
+		his_pd_comment, his_pd_brand, his_pd_version, his_pd_user, his_pd_record_timestamp
+		from trinventum.product_definitions_hist where his_pd_id = $1
+		order by his_pd_version desc');
+	define ('TRIN_QUERY_GET_PRODUCT_HIST_PHOTO',
+		'select his_pd_photo from trinventum.product_definitions_hist
+		where his_pd_id = $1 and his_pd_version = $2');
 
 	define ('TRIN_QUERY_GET_PRODUCT_NEXT_ID',
 		"select nextval('trinventum.seq_pd_id')");
@@ -57,32 +85,81 @@
 	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF',
 		"update trinventum.product_definitions set pd_photo = $2, pd_name = $3,
 		pd_size = $4, pd_length = $5, pd_width = $6, pd_gender = $7,
-		pd_colour = $8, pd_comment = $9, pd_brand = $10
+		pd_colour = $8, pd_comment = $9, pd_brand = $10, pd_version = pd_version+1
 		where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_NAME',
+		"update trinventum.product_definitions set pd_name = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_PHOTO',
+		"update trinventum.product_definitions set pd_photo = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_SIZE',
+		"update trinventum.product_definitions set pd_size = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_LENGTH',
+		"update trinventum.product_definitions set pd_length = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_WIDTH',
+		"update trinventum.product_definitions set pd_width = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_COLOUR',
+		"update trinventum.product_definitions set pd_colour = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_BRAND',
+		"update trinventum.product_definitions set pd_brand = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_GENDER',
+		"update trinventum.product_definitions set pd_gender = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+	define ('TRIN_QUERY_UPDATE_PRODUCT_DEF_COMMENT',
+		"update trinventum.product_definitions set pd_comment = $2,
+		pd_version = pd_version+1 where pd_id = $1");
+
 	define ('TRIN_QUERY_UPDATE_PRODUCT_INSTANCE',
-		"update trinventum.products set p_status = $2, p_cost = $3 where p_id = $1");
+		"update trinventum.products set p_status = $2, p_cost = $3,
+		p_version = p_version+1 where p_id = $1");
 	define ('TRIN_QUERY_UPDATE_PRODUCT_INSTANCE_COST',
-		"update trinventum.products set p_cost = $2 where p_pd_id = $1");
+		"update trinventum.products set p_cost = $2,
+		p_version = p_version+1 where p_pd_id = $1");
 	define ('TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS',
-		"update trinventum.products set p_status = $2 where p_id = $1");
+		"update trinventum.products set p_status = $2,
+		p_version = p_version+1 where p_id = $1");
 	define ('TRIN_QUERY_GET_PRODUCT_INSTANCES',
 		'select p_id, p_status, p_cost
 		from trinventum.products where p_pd_id = $1 order by p_id asc');
+	define ('TRIN_QUERY_GET_ALL_PRODUCT_INSTANCES',
+		'select p_id, p_pd_id, pd_name, p_status, p_cost
+		from trinventum.products
+		join trinventum.product_definitions on pd_id = p_pd_id
+		order by p_id desc offset $1 limit $2');
 	define ('TRIN_QUERY_GET_PRODUCT_INSTANCES_WITH_STATUS',
 		'select p_id, p_status, p_cost
 		from trinventum.products where p_pd_id = $1 and p_status = $2 order by p_id asc');
 	define ('TRIN_QUERY_GET_PRODUCT_INSTANCE_DET',
-		'select p_id, p_status, p_cost
+		'select p_id, p_status, p_cost, p_version
 		from trinventum.products where p_id = $1');
+	define ('TRIN_QUERY_GET_PRODUCT_INSTANCE_HIST_BY_ID',
+		'select his_p_status, his_p_cost, his_p_user, his_p_record_timestamp
+		from trinventum.products_hist where his_p_id = $1 order by his_p_version desc');
 
 	define ('TRIN_QUERY_GET_SELLERS',
 		'select s_id, s_name from trinventum.sellers order by s_id asc');
 	define ('TRIN_QUERY_ADD_SELLER',
 		'insert into trinventum.sellers (s_name) values ($1)');
 	define ('TRIN_QUERY_GET_SELLER_DET',
-		'select s_id, s_name from trinventum.sellers where s_id = $1');
+		'select s_id, s_name, s_version from trinventum.sellers where s_id = $1');
 	define ('TRIN_QUERY_UPDATE_SELLER',
-		"update trinventum.sellers set s_name = $2 where s_id = $1");
+		"update trinventum.sellers set s_name = $2,
+		s_version = s_version+1 where s_id = $1");
+	define ('TRIN_QUERY_GET_SELLER_TRANSACTIONS',
+		'select pd_id, pd_name, s_id, s_name, count(*) as st_count from trinventum.transactions
+		join trinventum.product_definitions on pd_id =
+		(select p_pd_id from trinventum.products where p_id = t_product_id)
+		join trinventum.sellers on s_id = t_seller
+		group by pd_id, pd_name, s_id, s_name order by count(*) desc');
+	define ('TRIN_QUERY_GET_SELLER_HIST_BY_ID',
+		'select his_s_name, his_s_user, his_s_record_timestamp from trinventum.sellers_hist
+		where his_s_id = $1 order by his_s_version desc');
 
 	define ('TRIN_QUERY_GET_BUYERS',
 		'select b_id, b_name, b_postal_address, b_login, b_email_address, b_comment
@@ -91,17 +168,34 @@
 		'insert into trinventum.buyers (b_name, b_postal_address, b_login,
 		b_email_address, b_comment) values ($1, $2, $3, $4, $5)');
 	define ('TRIN_QUERY_GET_BUYER_DET',
-		'select b_id, b_name, b_postal_address, b_login, b_email_address, b_comment
+		'select b_id, b_name, b_postal_address, b_login,
+		b_email_address, b_comment, b_version
 		from trinventum.buyers where b_id = $1');
 	define ('TRIN_QUERY_UPDATE_BUYER',
 		"update trinventum.buyers set b_name = $2, b_postal_address = $3,
-		b_login = $4, b_email_address = $5, b_comment = $6 where b_id = $1");
+		b_login = $4, b_email_address = $5, b_comment = $6,
+		b_version = b_version+1  where b_id = $1");
+	define ('TRIN_QUERY_GET_BUYER_TRANSACTIONS',
+		'select pd_id, pd_name, b_id, b_name, count(*) as bt_count from trinventum.transactions
+		join trinventum.product_definitions on pd_id =
+		(select p_pd_id from trinventum.products where p_id = t_product_id)
+		join trinventum.buyers on b_id = t_buyer
+		group by pd_id, pd_name, b_id, b_name order by count(*) desc');
+	define ('TRIN_QUERY_GET_BUYER_HIST_BY_ID',
+		'select his_b_name, his_b_postal_address, his_b_login,
+		his_b_email_address, his_b_comment, his_b_user, his_b_record_timestamp
+		from trinventum.buyers_hist where his_b_id = $1 order by his_b_version desc');
 
 	define ('TRIN_QUERY_GET_TRANSACTIONS',
-		'select t.t_id, p.p_pd_id, t.t_product_id, t.t_seller, t.t_buyer, t.t_price, t.t_paid,
+		'select t.t_id, p.p_pd_id, t.t_product_id, pd.pd_name, t.t_seller, s.s_name,
+		t.t_buyer, b.b_name, t.t_price, t.t_paid,
 		t.t_sent, t.t_sell_date, t.t_send_price, t.t_send_cost
-		from trinventum.transactions t join trinventum.products p on p.p_id = t.t_product_id
-		order by t_id asc');
+		from trinventum.transactions t
+		join trinventum.products p on p.p_id = t.t_product_id
+		join trinventum.product_definitions pd on pd.pd_id = p.p_pd_id
+		join trinventum.buyers b on b.b_id  = t.t_buyer
+		join trinventum.sellers s on s.s_id  = t.t_seller
+		order by t_id desc offset $1 limit $2');
 	define ('TRIN_QUERY_ADD_TRANSACTION',
 		'insert into trinventum.transactions (t_product_id, t_seller, t_buyer,
 		t_price, t_paid, t_sent, t_sell_date, t_send_price, t_send_cost)
@@ -109,11 +203,71 @@
 	define ('TRIN_QUERY_UPDATE_TRANSACTION',
 		'update trinventum.transactions set t_product_id = $2, t_seller = $3,
 		t_buyer = $4, t_price = $5, t_paid = $6, t_sent = $7, t_sell_date = $8,
-		t_send_price = $9, t_send_cost = $10 where t_id = $1');
+		t_send_price = $9, t_send_cost = $10,
+		t_version = t_version+1  where t_id = $1');
 	define ('TRIN_QUERY_GET_TRANSACTION_DET',
-		'select t_id, t_product_id, t_seller, t_buyer, t_price, t_paid,
-		t_sent, t_sell_date, t_send_price, t_send_cost
-		from trinventum.transactions where t_id = $1');
+		'select t.t_id, p.p_pd_id, t.t_product_id, pd.pd_name, t.t_seller, s.s_name,
+		t.t_buyer, b.b_name, t.t_price, t.t_paid,
+		t.t_sent, t.t_sell_date, t.t_send_price, t.t_send_cost, t.t_version
+		from trinventum.transactions t
+		join trinventum.products p on p.p_id = t.t_product_id
+		join trinventum.product_definitions pd on pd.pd_id = p.p_pd_id
+		join trinventum.buyers b on b.b_id  = t.t_buyer
+		join trinventum.sellers s on s.s_id  = t.t_seller
+		where t_id = $1');
+	define ('TRIN_QUERY_DELETE_TRANSACTION',
+		'delete from trinventum.transactions where t_id = $1');
+	/*
+	define ('TRIN_QUERY_GET_TRANS_HIST_BY_ID',
+		'select t.his_t_id, p.p_pd_id, t.his_t_product_id,
+		pd.pd_name, t.his_t_seller, s.s_name,
+		t.his_t_buyer, b.b_name, t.his_t_price, t.his_t_paid,
+		t.his_t_sent, t.his_t_sell_date, t.his_t_send_price,
+		t.his_t_send_cost, t.his_t_version, t.his_t_user, t.his_t_record_timestamp
+		from trinventum.transactions_hist t
+		join trinventum.products p on p.p_id = t.his_t_product_id
+		join trinventum.product_definitions pd on pd.pd_id = p.p_pd_id
+		join trinventum.buyers b on b.b_id  = t.his_t_buyer
+		join trinventum.sellers s on s.s_id  = t.his_t_seller
+		where his_t_id = $1');
+	*/
+	define ('TRIN_QUERY_GET_TRANS_HIST_BY_ID',
+		'select t.his_t_id,
+		coalesce (p.p_pd_id, ph.his_p_pd_id, -1) as p_pd_id,
+		t.his_t_product_id,
+		coalesce (pd.pd_name, pdh.his_pd_name, \'?\') as pd_name,
+		t.his_t_seller,
+		coalesce (s.s_name, sh.his_s_name, \'?\') as s_name,
+		t.his_t_buyer,
+		coalesce (b.b_name, bh.his_b_name, \'?\') as b_name,
+		t.his_t_price,
+		t.his_t_paid,
+		t.his_t_sent,
+		t.his_t_sell_date,
+		t.his_t_send_price,
+		t.his_t_send_cost,
+		t.his_t_version,
+		t.his_t_user,
+		t.his_t_record_timestamp
+		from trinventum.transactions_hist t
+		left join trinventum.products p on p.p_id = t.his_t_product_id
+		left join trinventum.products_hist ph on ph.his_p_id = t.his_t_product_id
+		 and ph.his_p_version = (select max(his_p_version) from trinventum.products_hist where his_p_id = t.his_t_product_id)
+		left join trinventum.product_definitions pd on pd.pd_id = p.p_pd_id
+		left join trinventum.product_definitions_hist pdh on pdh.his_pd_id = ph.his_p_pd_id
+		 and pdh.his_pd_version = (select max(his_pd_version) from trinventum.product_definitions_hist
+		 where his_pd_id = ph.his_p_pd_id)
+		left join trinventum.buyers b on b.b_id  = t.his_t_buyer
+		left join trinventum.buyers_hist bh on bh.his_b_id  = t.his_t_buyer
+		 and bh.his_b_version = (select max(his_b_version) from trinventum.buyers_hist where his_b_id = t.his_t_buyer)
+		left join trinventum.sellers s on s.s_id  = t.his_t_seller
+		left join trinventum.sellers_hist sh on sh.his_s_id  = t.his_t_seller
+		 and sh.his_s_version = (select max(his_s_version) from trinventum.sellers_hist where his_s_id = t.his_t_seller)
+		where his_t_id = $1');
+
+	define ('TRIN_QUERY_DESTROY_DATABASE',
+		//'drop schema trinventum cascade; drop language plpgsql');
+		'drop schema trinventum cascade');
 
 	// ===============================================================
 
@@ -127,40 +281,83 @@
 		pg_close ($conn);
 	}
 
+	function trin_db_query ($conn, $query)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query ($conn, $query);
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_query_get_numrows ($res)
+	{
+		return pg_num_rows ($res);
+	}
+
+	function trin_db_query_get_numfields ($res)
+	{
+		return pg_num_fields ($res);
+	}
+
+	function trin_db_query_get_column_name ($res, $index)
+	{
+		return pg_field_name ($res, $index);
+	}
+
+	function trin_db_query_get_column_type ($res, $index)
+	{
+		return pg_field_type ($res, $index);
+	}
+
+	function trin_db_query_get_next_row ($res)
+	{
+		return pg_fetch_row ($res);
+	}
+
 	function trin_db_check ($conn)
 	{
+		trin_db_clear_last_error();
 		$result = pg_query ($conn, TRIN_QUERY_DB_CHECK);
+		trin_db_set_last_error();
 		return ($result !== FALSE);
 	}
 
 	function trin_db_get_version ($conn)
 	{
+		trin_db_clear_last_error();
 		$result = pg_query ($conn, TRIN_QUERY_DB_VERSION_CHECK);
+		trin_db_set_last_error();
 		if ($result !== FALSE)
 		{
-			$row = pg_fetch_row ($result);
+			$row = pg_fetch_assoc ($result);
 			if ($row !== FALSE)
 			{
-				return (int)$row[0];
+				return (int)$row['db_version'];
 			}
 		}
 		return 0;
 	}
 
+	// =================== Product definitions/types =====================
+
 	function trin_db_get_product_defs ($conn)
 	{
-		return pg_query ($conn, TRIN_QUERY_GET_PRODUCT_DEFS);
+		trin_db_clear_last_error();
+		$res = pg_query ($conn, TRIN_QUERY_GET_PRODUCT_DEFS);
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_create_photo_img_tag($prod_id)
 	{
 		return '<img src="get_photo.php?' .
-			TRIN_PROD_PHOTO_PARAM . '=' . $prod_id . '" alt="-"
-			class="prod_image">';
+			TRIN_PROD_PHOTO_PARAM . '=' . $prod_id
+			. '" alt="-" class="prod_image">';
 	}
 
 	function trin_db_get_next_product ($conn, $products)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] = '';
@@ -172,13 +369,14 @@
 		$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = '';
 
-		$product = pg_fetch_row ($products);
+		$product = pg_fetch_assoc ($products);
+		trin_db_set_last_error();
 		if ($product !== FALSE)
 		{
-			$pd_id = $product[0];
+			$pd_id = $product['pd_id'];
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $pd_id;
 			if (//pg_field_is_null ($products, 'pd_photo') == 0
-				$product[1] !== NULL)
+				$product['pd_photo'] !== NULL)
 			{
 				$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] =
 					trin_create_photo_img_tag ($pd_id);
@@ -187,18 +385,20 @@
 			{
 				$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] = '-';
 			}
-			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $product[2];
-			$result[TRIN_DB_PROD_DEF_FIELD_SIZE] = $product[3];
-			if ((float)$product[4] > 0.0) // pd_length
+			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $product['pd_name'];
+			$result[TRIN_DB_PROD_DEF_FIELD_SIZE] = $product['pd_size'];
+			if ((float)$product['pd_length'] > 0.0) // pd_length
 			{
-				$result[TRIN_DB_PROD_DEF_FIELD_SIZE] .= "<br>Length: $product[4]";
+				$result[TRIN_DB_PROD_DEF_FIELD_SIZE]
+					.= '<br>Length: ' . $product['pd_length'];
 			}
-			if ((float)$product[5] > 0.0) // pd_width
+			if ((float)$product['pd_width'] > 0.0) // pd_width
 			{
-				$result[TRIN_DB_PROD_DEF_FIELD_SIZE] .= "<br>Width: $product[5]";
+				$result[TRIN_DB_PROD_DEF_FIELD_SIZE]
+					.= '<br>Width: ' . $product['pd_width'];
 			}
-			$result[TRIN_DB_PROD_DEF_FIELD_GENDER] = $product[6];
-			$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = $product[7];
+			$result[TRIN_DB_PROD_DEF_FIELD_GENDER] = $product['pd_gender'];
+			$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = $product['pd_colour'];
 			$product_count_res = trin_db_count_products ($conn, $pd_id);
 			$count_html = '';
 			foreach ($product_count_res as $status => $count)
@@ -206,34 +406,132 @@
 				$count_html .= "$status: $count<br>";
 			}
 			$result[TRIN_DB_PROD_DEF_FIELD_COUNT] = $count_html;
-			$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = $product[8];
-			$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $product[9];
+			$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = $product['pd_comment'];
+			$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $product['pd_brand'];
 			return $result;
 		}
 		return FALSE;
 	}
 
+	function trin_create_historical_photo_img_tag($prod_id, $prod_version)
+	{
+		return '<img src="get_photo.php?'
+			. TRIN_PROD_PHOTO_PARAM_HIS . '=' . $prod_id
+			. '&amp;'
+			. TRIN_PROD_PHOTO_PARAM_HIS_VERSION . '=' . $prod_version
+			. '" alt="-" class="prod_image">';
+	}
+
+	function trin_db_get_product_history ($db, $id)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($db, TRIN_QUERY_GET_PRODUCT_HIST_BY_ID,
+			array ($id));
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_product_history_entry ($product_his)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_NAME] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_SIZE] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_GENDER] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_USER] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] = '';
+
+		$his_entry = pg_fetch_assoc ($product_his);
+		trin_db_set_last_error();
+		if ($his_entry !== FALSE)
+		{
+			$pd_id = $his_entry['his_pd_id'];
+			if (//pg_field_is_null ($products, 'pd_photo') == 0
+				$his_entry['his_pd_photo'] !== NULL)
+			{
+				$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] =
+					trin_create_historical_photo_img_tag (
+						$pd_id, $his_entry['his_pd_version']);
+			}
+			else
+			{
+				$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] = '-';
+			}
+			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $his_entry['his_pd_name'];
+			$result[TRIN_DB_PROD_DEF_FIELD_SIZE] = $his_entry['his_pd_size'];
+			if ((float)$his_entry['his_pd_length'] > 0.0) // pd_length
+			{
+				$result[TRIN_DB_PROD_DEF_FIELD_SIZE]
+					.= '<br>Length: ' . $his_entry['his_pd_length'];
+			}
+			if ((float)$his_entry['his_pd_width'] > 0.0) // pd_width
+			{
+				$result[TRIN_DB_PROD_DEF_FIELD_SIZE]
+					.= '<br>Width: ' . $his_entry['his_pd_width'];
+			}
+			$result[TRIN_DB_PROD_DEF_FIELD_GENDER] = $his_entry['his_pd_gender'];
+			$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = $his_entry['his_pd_colour'];
+			$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = $his_entry['his_pd_comment'];
+			$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $his_entry['his_pd_brand'];
+			$result[TRIN_DB_PROD_DEF_FIELD_USER] = $his_entry['his_pd_user'];
+			$result[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] = $his_entry['his_pd_record_timestamp'];
+			return $result;
+		}
+		return FALSE;
+	}
+
+	function fix_bytea_from_db ($data)
+	{
+		// contrary to what the manual says, it seems
+		// that the database value not only has to be
+		// un-escaped TWICE, but it also still has the
+		// single quotes doubled (i.e., escaped), so they
+		// must be taken care of, too. This may be the
+		// effect of using parameterized statements
+		//return pg_unescape_bytea
+		//		(pg_unescape_bytea
+		//			(str_replace ("''", "'", $data)));
+		return base64_decode(pg_unescape_bytea($data));
+	}
+
 	function trin_db_get_photo ($db, $id)
 	{
+		trin_db_clear_last_error();
 		$photo_result = pg_query_params ($db, TRIN_QUERY_GET_PRODUCT_PHOTO, array($id));
+		trin_db_set_last_error();
 		if ($photo_result !== FALSE)
 		{
 			if (! pg_field_is_null ($photo_result, 0, 'pd_photo'))
 			{
-				$photo_data = pg_fetch_row ($photo_result);
+				$photo_data = pg_fetch_assoc ($photo_result);
 				if ($photo_data !== FALSE)
 				{
-					// contrary to what the manual says, it seems
-					// that the database value not only has to be
-					// un-escaped TWICE, but it also still has the
-					// single quotes doubled (i.e., escaped), so they
-					// must be taken care of, too. This may be the
-					// effect of using parameterized statements
-// 					return 	pg_unescape_bytea
-// 						 (pg_unescape_bytea
-// 						  (str_replace ("''", "'", $photo_data[0])));
-					//return base64_decode($photo_data[0]);
-					return base64_decode(pg_unescape_bytea($photo_data[0]));
+					echo fix_bytea_from_db ($photo_data['pd_photo']);
+				}
+			}
+		}
+		return '';
+	}
+
+	function trin_db_get_history_photo ($db, $prod_id, $prod_ver)
+	{
+		trin_db_clear_last_error();
+		$photo_result = pg_query_params ($db,
+			TRIN_QUERY_GET_PRODUCT_HIST_PHOTO,
+			array($prod_id, $prod_ver));
+		trin_db_set_last_error();
+		if ($photo_result !== FALSE)
+		{
+			if (! pg_field_is_null ($photo_result, 0, 'his_pd_photo'))
+			{
+				$photo_data = pg_fetch_assoc ($photo_result);
+				if ($photo_data !== FALSE)
+				{
+					echo fix_bytea_from_db ($photo_data['his_pd_photo']);
 				}
 			}
 		}
@@ -245,10 +543,11 @@
 		$param_pd_colour, $param_pd_count, $param_pd_brand,
 		$param_pd_gender, $param_pd_comment, $param_pd_cost)
 	{
+		trin_db_clear_last_error();
 		if (is_uploaded_file ($_FILES[$param_pd_photo]['tmp_name']))
 		{
-// 			$photo_data = pg_escape_bytea (
-// 				file_get_contents ($_FILES[$param_pd_photo]['tmp_name']));
+			//$photo_data = pg_escape_bytea (
+			//	file_get_contents ($_FILES[$param_pd_photo]['tmp_name']));
 			$photo_data = base64_encode (
 				file_get_contents ($_FILES[$param_pd_photo]['tmp_name']));
 		}
@@ -264,11 +563,13 @@
 		$nextseq_res = pg_query ($db, TRIN_QUERY_GET_PRODUCT_NEXT_ID);
 		if ($nextseq_res === FALSE)
 		{
+			trin_db_set_last_error();
 			return FALSE;
 		}
 		$nextseq_val = pg_fetch_row ($nextseq_res);
 		if ($nextseq_val === FALSE)
 		{
+			trin_db_set_last_error();
 			return FALSE;
 		}
 		$pd_id = $nextseq_val[0];
@@ -276,6 +577,7 @@
 		$res = pg_query ($db, 'begin');
 		if ($res === FALSE)
 		{
+			trin_db_set_last_error();
 			return FALSE;
 		}
 
@@ -297,29 +599,34 @@
 				if ($result === FALSE)
 				{
 					$success = FALSE;
+					trin_db_set_last_error();
 					break;
 				}
 			}
 			if ($success)
 			{
-				pg_query ($db, 'commit');
-				return TRUE;
+				$res = pg_query ($db, 'commit');
+				trin_db_set_last_error();
+				return $res;
 			}
 			else
 			{
-				//pg_query ($db, 'rollback');
+				trin_db_set_last_error();
+				pg_query ($db, 'rollback');
 				return FALSE;
 			}
 		}
 		else
 		{
-			//pg_query ($db, 'rollback');
+			trin_db_set_last_error();
+			pg_query ($db, 'rollback');
 			return FALSE;
 		}
 	}
 
 	function trin_db_get_product_details ($db, $id)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] = '';
@@ -330,19 +637,21 @@
 		$result[TRIN_DB_PROD_DEF_FIELD_COUNT] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_VERSION] = 0;
 
 		$product_res = pg_query_params ($db,
 			TRIN_QUERY_GET_PRODUCT_DET, array ($id));
+		trin_db_set_last_error();
 
 		if ($product_res !== FALSE)
 		{
-			$product = pg_fetch_row ($product_res);
+			$product = pg_fetch_assoc ($product_res);
 			if ($product !== FALSE)
 			{
-				$pd_id = $product[0];
+				$pd_id = $product['pd_id'];
 				$result[TRIN_DB_PROD_DEF_FIELD_ID] = $pd_id;
 				if (//pg_field_is_null ($product_res, 'pd_photo') == 0
-					$product[1] !== NULL)
+					$product['pd_photo'] !== NULL)
 				{
 					$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] =
 						trin_create_photo_img_tag ($pd_id);
@@ -351,12 +660,12 @@
 				{
 					$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] = '-';
 				}
-				$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $product[2];
-				$result[TRIN_DB_PROD_DEF_FIELD_SIZE] = $product[3];
-				$result[TRIN_DB_PROD_DEF_FIELD_LENGTH] = $product[4];
-				$result[TRIN_DB_PROD_DEF_FIELD_WIDTH] = $product[5];
-				$result[TRIN_DB_PROD_DEF_FIELD_GENDER] = $product[6];
-				$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = $product[7];
+				$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $product['pd_name'];
+				$result[TRIN_DB_PROD_DEF_FIELD_SIZE] = $product['pd_size'];
+				$result[TRIN_DB_PROD_DEF_FIELD_LENGTH] = $product['pd_length'];
+				$result[TRIN_DB_PROD_DEF_FIELD_WIDTH] = $product['pd_width'];
+				$result[TRIN_DB_PROD_DEF_FIELD_GENDER] = $product['pd_gender'];
+				$result[TRIN_DB_PROD_DEF_FIELD_COLOUR] = $product['pd_colour'];
 				$product_count_res = trin_db_count_products ($db, $pd_id);
 				$count_html = '';
 				foreach ($product_count_res as $status => $count)
@@ -365,23 +674,65 @@
 				}
 
 				$result[TRIN_DB_PROD_DEF_FIELD_COUNT] = $count_html;
-				$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = $product[8];
-				$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $product[9];
+				$result[TRIN_DB_PROD_DEF_FIELD_COMMENT] = $product['pd_comment'];
+				$result[TRIN_DB_PROD_DEF_FIELD_BRAND] = $product['pd_brand'];
+				$result[TRIN_DB_PROD_DEF_FIELD_VERSION] = $product['pd_version'];
 				return $result;
+			}
+			else
+			{
+				trin_db_set_last_error ('No data');
 			}
 		}
 		return FALSE;
 	}
 
-	function trin_db_update_product ($db, $pd_id, $param_pd_name, $param_pd_photo,
-		$param_pd_size, $param_pd_length, $param_pd_width,
-		$param_pd_colour, $param_pd_count, $param_pd_brand,
-		$param_pd_gender, $param_pd_comment, $param_pd_cost)
+	function trin_db_validate_product_version ($db, $pd_id, $param_pd_version)
 	{
+		$det = trin_db_get_product_details ($db, $pd_id);
+		if ($det === FALSE)
+		{
+			trin_db_set_last_error('Cannot read record before update');
+			return FALSE;
+		}
+		else if ((int)$det[TRIN_DB_PROD_DEF_FIELD_VERSION] != (int)$param_pd_version)
+		{
+			trin_db_set_last_error("Record version doesn't match: expected: "
+				. $det[TRIN_DB_PROD_DEF_FIELD_VERSION]
+				. ', got: ' . $param_pd_version);
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	function trin_db_update_product_name ($db, $pd_id,
+		$param_pd_name, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_NAME,
+			array($pd_id, $param_pd_name));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_photo ($db, $pd_id,
+		$param_pd_photo, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
 		if (is_uploaded_file ($_FILES[$param_pd_photo]['tmp_name']))
 		{
-// 			$photo_data = pg_escape_bytea (
-// 				file_get_contents ($_FILES[$param_pd_photo]['tmp_name']));
+			//$photo_data = pg_escape_bytea (
+			//	file_get_contents ($_FILES[$param_pd_photo]['tmp_name']));
 			$photo_data = base64_encode (
 				file_get_contents ($_FILES[$param_pd_photo]['tmp_name']));
 		}
@@ -389,13 +740,79 @@
 		{
 			$photo_data = NULL;
 		}
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_PHOTO,
+			array($pd_id, $photo_data));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_size ($db, $pd_id,
+		$param_pd_size, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_SIZE,
+			array($pd_id, $param_pd_size));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_length ($db, $pd_id,
+		$param_pd_length, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
 
 		$param_pd_length = str_replace (',', '.', $param_pd_length);
-		$param_pd_width = str_replace (',', '.', $param_pd_width);
-		$param_pd_cost = str_replace (',', '.', $param_pd_cost);
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_LENGTH,
+			array($pd_id, $param_pd_length));
+		trin_db_set_last_error();
+		return $result;
+	}
 
-		$res = pg_query ($db, 'begin');
-		if ($res === FALSE)
+	function trin_db_update_product_width ($db, $pd_id,
+		$param_pd_width, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$param_pd_width = str_replace (',', '.', $param_pd_width);
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_WIDTH,
+			array($pd_id, $param_pd_width));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_colour ($db, $pd_id,
+		$param_pd_colour, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_COLOUR,
+			array($pd_id, $param_pd_colour));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_count ($db, $pd_id, $param_pd_count,
+		$param_pd_version, $param_pd_cost = '0.0')
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
 		{
 			return FALSE;
 		}
@@ -408,113 +825,294 @@
 			if ($status === TRIN_PROD_COUNT_COLUMN_TOTAL)
 			{
 				$old_pd_count = (int)$count;
+				break;
 			}
 		}
+		// if the new count is smaller, don't change it
 		if ($old_pd_count > (int)$param_pd_count)
 		{
 			$param_pd_count = $old_pd_count;
 		}
-		// update the product definition:
-		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF,
-			array ($pd_id, $photo_data, $param_pd_name, $param_pd_size,
-			$param_pd_length, $param_pd_width, $param_pd_gender,
-			$param_pd_colour, $param_pd_comment, $param_pd_brand));
 
-		// update entries in trinventum.products (product instances):
-		if ($result !== FALSE)
+		$success = TRUE;
+		if ($old_pd_count < (int)$param_pd_count)
 		{
-			$success = TRUE;
-
-			for ($i = 0; $i < (int)$param_pd_count; $i++)
+			// new product instances to be added:
+			for ($i = 0; $i < (int)$param_pd_count - $old_pd_count; $i++)
 			{
 				$result = pg_query_params ($db,
-					TRIN_QUERY_UPDATE_PRODUCT_INSTANCE_COST,
-					array ($pd_id, $param_pd_cost));
+					TRIN_QUERY_ADD_PRODUCT_INSTANCE,
+					array ($pd_id, TRIN_PROD_STATUS_READY,
+						$param_pd_cost));
 				if ($result === FALSE)
 				{
+					trin_db_set_last_error();
 					$success = FALSE;
 					break;
 				}
 			}
-			if ($old_pd_count < (int)$param_pd_count)
-			{
-				// new product instances to be added:
-				for ($i = 0; $i < (int)$param_pd_count - $old_pd_count; $i++)
-				{
-					$result = pg_query_params ($db,
-						TRIN_QUERY_ADD_PRODUCT_INSTANCE,
-						array ($pd_id, TRIN_PROD_STATUS_READY,
-							$param_pd_cost));
-					if ($result === FALSE)
-					{
-						$success = FALSE;
-						break;
-					}
-				}
-			}
-			if ($success)
-			{
-				pg_query ($db, 'commit');
-				return TRUE;
-			}
-			else
-			{
-				//pg_query ($db, 'rollback');
-				return FALSE;
-			}
+		}
+		return $success;
+	}
+
+	function trin_db_update_product_brand ($db, $pd_id,
+		$param_pd_brand, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_BRAND,
+			array($pd_id, $param_pd_brand));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_gender ($db, $pd_id,
+		$param_pd_gender, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_GENDER,
+			array($pd_id, $param_pd_gender));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_comment ($db, $pd_id,
+		$param_pd_comment, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_COMMENT,
+			array($pd_id, $param_pd_comment));
+		trin_db_set_last_error();
+		return $result;
+	}
+
+	function trin_db_update_product_cost ($db, $pd_id,
+		$param_pd_cost, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$param_pd_cost = str_replace (',', '.', $param_pd_cost);
+
+		// update the cost of all instances
+		$result = pg_query_params ($db,
+			TRIN_QUERY_UPDATE_PRODUCT_INSTANCE_COST,
+			array ($pd_id, $param_pd_cost));
+		if ($result === FALSE)
+		{
+			trin_db_set_last_error();
+			return FALSE;
+		}
+		return $result;
+	}
+
+	function trin_db_update_product ($db, $pd_id, $param_pd_name,
+		$param_pd_photo, $param_pd_size,
+		$param_pd_length, $param_pd_width,
+		$param_pd_colour, $param_pd_count,
+		$param_pd_brand, $param_pd_gender,
+		$param_pd_comment, $param_pd_cost, $param_pd_version)
+	{
+		trin_db_clear_last_error();
+		if (! trin_db_validate_product_version ($db, $pd_id, $param_pd_version))
+		{
+			return FALSE;
+		}
+
+		$res = pg_query ($db, 'begin');
+		if ($res === FALSE)
+		{
+			trin_db_set_last_error();
+			return FALSE;
+		}
+
+		// update the product definition:
+		/*
+		$result = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_DEF,
+			array ($pd_id, $photo_data, $param_pd_name, $param_pd_size,
+			$param_pd_length, $param_pd_width, $param_pd_gender,
+			$param_pd_colour, $param_pd_comment, $param_pd_brand));
+		*/
+		$result = TRUE;
+		$result = $result && trin_db_update_product_name ($db, $pd_id,
+			$param_pd_name, $param_pd_version++);
+		$result = $result && trin_db_update_product_photo ($db, $pd_id,
+			$param_pd_photo, $param_pd_version++);
+		$result = $result && trin_db_update_product_size ($db, $pd_id,
+			$param_pd_size, $param_pd_version++);
+		$result = $result && trin_db_update_product_length ($db, $pd_id,
+			$param_pd_length, $param_pd_version++);
+		$result = $result && trin_db_update_product_width ($db, $pd_id,
+			$param_pd_width, $param_pd_version++);
+		$result = $result && trin_db_update_product_colour ($db, $pd_id,
+			$param_pd_colour, $param_pd_version++);
+		$result = $result && trin_db_update_product_count ($db, $pd_id,
+			$param_pd_count, $param_pd_version++, $param_pd_cost);
+		$result = $result && trin_db_update_product_brand ($db, $pd_id,
+			$param_pd_brand, $param_pd_version++);
+		$result = $result && trin_db_update_product_gender ($db, $pd_id,
+			$param_pd_gender, $param_pd_version++);
+		$result = $result && trin_db_update_product_comment ($db, $pd_id,
+			$param_pd_comment, $param_pd_version++);
+		$result = $result && trin_db_update_product_cost ($db, $pd_id,
+			$param_pd_cost, $param_pd_version++);
+
+		if ($result !== FALSE)
+		{
+			$res = pg_query ($db, 'commit');
+			trin_db_set_last_error();
+			return $res;
 		}
 		else
 		{
-			//pg_query ($db, 'rollback');
+			trin_db_set_last_error();
+			pg_query ($db, 'rollback');
 			return FALSE;
 		}
 	}
 
 	function trin_db_count_products ($conn, $id)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$count_result = pg_query_params ($conn,
 			TRIN_QUERY_GET_PRODUCT_COUNTS, array ($id));
+		trin_db_set_last_error();
+
 		if ($count_result !== FALSE)
 		{
 			while (TRUE)
 			{
-				$row = pg_fetch_row ($count_result);
+				$row = pg_fetch_assoc ($count_result);
 				if ($row === FALSE)
 				{
 					break;
 				}
-				$result[$row[0]] = $row[1];
+				$result[$row['p_status']] = $row['p_count'];
 			}
 		}
 		return $result;
 	}
 
+	function trin_db_count_all_products ($conn)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$count_result = pg_query ($conn,
+			TRIN_QUERY_GET_ALL_PRODUCT_COUNTS);
+		trin_db_set_last_error();
+
+		if ($count_result !== FALSE)
+		{
+			while (TRUE)
+			{
+				$row = pg_fetch_assoc ($count_result);
+				if ($row === FALSE)
+				{
+					break;
+				}
+				$result[$row['p_status']] = $row['p_count'];
+			}
+		}
+		return $result;
+	}
+
+	function trin_db_get_product_status_changes ($conn, $months_ago)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$count_result = pg_query_params ($conn,
+			TRIN_QUERY_GET_MONTH_HIST_PRODUCT_COUNTS,
+			array ($months_ago));
+		trin_db_set_last_error();
+
+		if ($count_result !== FALSE)
+		{
+			while (TRUE)
+			{
+				$row = pg_fetch_assoc ($count_result);
+				if ($row === FALSE)
+				{
+					break;
+				}
+				$result[$row['p_status']] = $row['p_count'];
+			}
+		}
+		return $result;
+	}
+
+
+	// =================== Product pieces =====================
+
 	function trin_db_get_product_instances ($conn, $pd_id)
 	{
-		return pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCES,
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCES,
 			array ($pd_id));
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_db_get_product_instances_with_status ($conn, $pd_id, $pd_status)
 	{
-		return pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCES_WITH_STATUS,
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCES_WITH_STATUS,
 			array ($pd_id, $pd_status));
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_all_product_instances ($conn, $offset = 0, $limit = 1000000000)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_ALL_PRODUCT_INSTANCES,
+			array ($offset, $limit));
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_db_get_next_product_instance ($product_insts)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_PROD_INST_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_NAME] = '';
 		$result[TRIN_DB_PROD_INST_FIELD_STATUS] = '';
 		$result[TRIN_DB_PROD_INST_FIELD_COST] = '';
 
-		$product = pg_fetch_row ($product_insts);
+		$product = pg_fetch_assoc ($product_insts);
+		trin_db_set_last_error();
 		if ($product !== FALSE)
 		{
-			$result[TRIN_DB_PROD_INST_FIELD_ID] = $product[0];
-			$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $product[1];
-			$result[TRIN_DB_PROD_INST_FIELD_COST] = $product[2];
+			$result[TRIN_DB_PROD_INST_FIELD_ID] = $product['p_id'];
+			$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $product['p_status'];
+			$result[TRIN_DB_PROD_INST_FIELD_COST] = $product['p_cost'];
+			if (isset ($product['p_pd_id']))
+			{
+				$result[TRIN_DB_PROD_DEF_FIELD_ID] = $product['p_pd_id'];
+			}
+			if (isset ($product['pd_name']))
+			{
+				$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $product['pd_name'];
+			}
 
 			return $result;
 		}
@@ -523,52 +1121,116 @@
 
 	function trin_db_get_product_instance_details ($db, $p_id)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_PROD_INST_FIELD_ID] = '';
 		$result[TRIN_DB_PROD_INST_FIELD_STATUS] = '';
 		$result[TRIN_DB_PROD_INST_FIELD_COST] = '';
+		$result[TRIN_DB_PROD_INST_FIELD_VERSION] = 0;
 
 		$pinst_res = pg_query_params ($db,
 			TRIN_QUERY_GET_PRODUCT_INSTANCE_DET, array ($p_id));
+		trin_db_set_last_error();
 
 		if ($pinst_res !== FALSE)
 		{
-			$p_inst = pg_fetch_row ($pinst_res);
+			$p_inst = pg_fetch_assoc ($pinst_res);
 			if ($p_inst !== FALSE)
 			{
-				$result[TRIN_DB_PROD_INST_FIELD_ID] = $p_inst[0];
-				$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $p_inst[1];
-				$result[TRIN_DB_PROD_INST_FIELD_COST] = $p_inst[2];
+				$result[TRIN_DB_PROD_INST_FIELD_ID] = $p_inst['p_id'];
+				$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $p_inst['p_status'];
+				$result[TRIN_DB_PROD_INST_FIELD_COST] = $p_inst['p_cost'];
+				$result[TRIN_DB_PROD_INST_FIELD_VERSION] = $p_inst['p_version'];
 				return $result;
+			}
+			else
+			{
+				trin_db_set_last_error ('No data');
 			}
 		}
 		return FALSE;
 	}
 
-	function trin_db_update_product_instance ($db, $p_id, $status, $cost)
+	function trin_db_update_product_instance ($db, $p_id,
+		$status, $cost, $version)
 	{
+		trin_db_clear_last_error();
+		$det = trin_db_get_product_instance_details ($db, $p_id);
+		if ($det === FALSE)
+		{
+			trin_db_set_last_error('Cannot read record before update');
+			return FALSE;
+		}
+		else if ((int)$det[TRIN_DB_PROD_INST_FIELD_VERSION] != (int)$version)
+		{
+			trin_db_set_last_error("Record version doesn't match: expected: "
+				. $det[TRIN_DB_PROD_INST_FIELD_VERSION]
+				. ', got: ' . $version);
+			return FALSE;
+		}
+
 		$cost = str_replace (',', '.', $cost);
-		return pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_INSTANCE,
+		$res = pg_query_params ($db, TRIN_QUERY_UPDATE_PRODUCT_INSTANCE,
 			array ($p_id, $status, $cost));
+		trin_db_set_last_error();
+		return $res;
 	}
 
+	function trin_db_get_product_instance_history ($conn, $pd_id)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_INSTANCE_HIST_BY_ID,
+			array ($pd_id));
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_product_instance_hist_entry ($product_inst_his)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_INST_FIELD_STATUS] = '';
+		$result[TRIN_DB_PROD_INST_FIELD_COST] = '';
+		$result[TRIN_DB_PROD_INST_FIELD_USER] = '';
+		$result[TRIN_DB_PROD_INST_FIELD_TIMESTAMP] = '';
+
+		$product_his = pg_fetch_assoc ($product_inst_his);
+		trin_db_set_last_error();
+		if ($product_his !== FALSE)
+		{
+			$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $product_his['his_p_status'];
+			$result[TRIN_DB_PROD_INST_FIELD_COST] = $product_his['his_p_cost'];
+			$result[TRIN_DB_PROD_INST_FIELD_USER] = $product_his['his_p_user'];
+			$result[TRIN_DB_PROD_INST_FIELD_TIMESTAMP] = $product_his['his_p_record_timestamp'];
+
+			return $result;
+		}
+		return FALSE;
+	}
+
+	// =================== Sellers =====================
 
 	function trin_db_get_sellers ($conn)
 	{
-		return pg_query ($conn, TRIN_QUERY_GET_SELLERS);
+		trin_db_clear_last_error();
+		$res = pg_query ($conn, TRIN_QUERY_GET_SELLERS);
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_db_get_next_seller ($sellers)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_SELLER_PARAM_ID] = '';
 		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
 
-		$seller = pg_fetch_row ($sellers);
+		$seller = pg_fetch_assoc ($sellers);
+		trin_db_set_last_error();
 		if ($seller !== FALSE)
 		{
-			$result[TRIN_DB_SELLER_PARAM_ID] = $seller[0];
-			$result[TRIN_DB_SELLER_PARAM_NAME] = $seller[1];
+			$result[TRIN_DB_SELLER_PARAM_ID] = $seller['s_id'];
+			$result[TRIN_DB_SELLER_PARAM_NAME] = $seller['s_name'];
 
 			return $result;
 		}
@@ -577,44 +1239,108 @@
 
 	function trin_db_add_seller ($db, $name)
 	{
-		return pg_query_params ($db, TRIN_QUERY_ADD_SELLER, array ($name));
+		trin_db_clear_last_error();
+		$res = pg_query_params ($db, TRIN_QUERY_ADD_SELLER, array ($name));
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_db_get_seller_details ($db, $id)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_SELLER_PARAM_ID] = '';
 		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
+		$result[TRIN_DB_SELLER_PARAM_VERSION] = 0;
 
 		$seller_res = pg_query_params ($db,
 			TRIN_QUERY_GET_SELLER_DET, array ($id));
+		trin_db_set_last_error();
 
 		if ($seller_res !== FALSE)
 		{
-			$seller = pg_fetch_row ($seller_res);
+			$seller = pg_fetch_assoc ($seller_res);
 			if ($seller !== FALSE)
 			{
-				$result[TRIN_DB_SELLER_PARAM_ID] = $seller[0];
-				$result[TRIN_DB_SELLER_PARAM_NAME] = $seller[1];
+				$result[TRIN_DB_SELLER_PARAM_ID] = $seller['s_id'];
+				$result[TRIN_DB_SELLER_PARAM_NAME] = $seller['s_name'];
+				$result[TRIN_DB_SELLER_PARAM_VERSION] = $seller['s_version'];
 				return $result;
+			}
+			else
+			{
+				trin_db_set_last_error ('No data');
 			}
 		}
 		return FALSE;
 	}
 
-	function trin_db_update_seller ($db, $s_id, $name)
+	function trin_db_update_seller ($db, $s_id, $name, $version)
 	{
-		return pg_query_params ($db, TRIN_QUERY_UPDATE_SELLER,
+		trin_db_clear_last_error();
+		$det = trin_db_get_seller_details ($db, $s_id);
+		if ($det === FALSE)
+		{
+			trin_db_set_last_error('Cannot read record before update');
+			return FALSE;
+		}
+		else if ((int)$det[TRIN_DB_SELLER_PARAM_VERSION] != (int)$version)
+		{
+			trin_db_set_last_error("Record version doesn't match: expected: "
+				. $det[TRIN_DB_SELLER_PARAM_VERSION]
+				. ', got: ' . $version);
+			return FALSE;
+		}
+
+		$res = pg_query_params ($db, TRIN_QUERY_UPDATE_SELLER,
 			array ($s_id, $name));
+		trin_db_set_last_error();
+		return $res;
 	}
+
+	function trin_db_get_seller_history ($conn, $s_id)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_SELLER_HIST_BY_ID,
+			array ($s_id));
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_seller_hist_entry ($seller_his)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
+		$result[TRIN_DB_SELLER_PARAM_USER] = '';
+		$result[TRIN_DB_SELLER_PARAM_TIMESTAMP] = '';
+
+		$s_his = pg_fetch_assoc ($seller_his);
+		trin_db_set_last_error();
+		if ($s_his !== FALSE)
+		{
+			$result[TRIN_DB_SELLER_PARAM_NAME] = $s_his['his_s_name'];
+			$result[TRIN_DB_SELLER_PARAM_USER] = $s_his['his_s_user'];
+			$result[TRIN_DB_SELLER_PARAM_TIMESTAMP] = $s_his['his_s_record_timestamp'];
+
+			return $result;
+		}
+		return FALSE;
+	}
+
+	// =================== Buyers =====================
 
 	function trin_db_get_buyers ($conn)
 	{
-		return pg_query ($conn, TRIN_QUERY_GET_BUYERS);
+		trin_db_clear_last_error();
+		$res = pg_query ($conn, TRIN_QUERY_GET_BUYERS);
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_db_get_next_buyer ($buyers)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_BUYER_PARAM_ID] = '';
 		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
@@ -623,15 +1349,16 @@
 		$result[TRIN_DB_BUYER_PARAM_EMAIL] = '';
 		$result[TRIN_DB_BUYER_PARAM_COMMENT] = '';
 
-		$buyer = pg_fetch_row ($buyers);
+		$buyer = pg_fetch_assoc ($buyers);
+		trin_db_set_last_error();
 		if ($buyer !== FALSE)
 		{
-			$result[TRIN_DB_BUYER_PARAM_ID] = $buyer[0];
-			$result[TRIN_DB_BUYER_PARAM_NAME] = $buyer[1];
-			$result[TRIN_DB_BUYER_PARAM_ADDRESS] = $buyer[2];
-			$result[TRIN_DB_BUYER_PARAM_LOGIN] = $buyer[3];
-			$result[TRIN_DB_BUYER_PARAM_EMAIL] = $buyer[4];
-			$result[TRIN_DB_BUYER_PARAM_COMMENT] = $buyer[5];
+			$result[TRIN_DB_BUYER_PARAM_ID] = $buyer['b_id'];
+			$result[TRIN_DB_BUYER_PARAM_NAME] = $buyer['b_name'];
+			$result[TRIN_DB_BUYER_PARAM_ADDRESS] = $buyer['b_postal_address'];
+			$result[TRIN_DB_BUYER_PARAM_LOGIN] = $buyer['b_login'];
+			$result[TRIN_DB_BUYER_PARAM_EMAIL] = $buyer['b_email_address'];
+			$result[TRIN_DB_BUYER_PARAM_COMMENT] = $buyer['b_comment'];
 
 			return $result;
 		}
@@ -640,12 +1367,16 @@
 
 	function trin_db_add_buyer ($db, $name, $address, $login, $email, $comment)
 	{
-		return pg_query_params ($db, TRIN_QUERY_ADD_BUYER,
+		trin_db_clear_last_error();
+		$res = pg_query_params ($db, TRIN_QUERY_ADD_BUYER,
 			array ($name, $address, $login, $email, $comment));
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_db_get_buyer_details ($db, $id)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_BUYER_PARAM_ID] = '';
 		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
@@ -653,46 +1384,119 @@
 		$result[TRIN_DB_BUYER_PARAM_LOGIN] = '';
 		$result[TRIN_DB_BUYER_PARAM_EMAIL] = '';
 		$result[TRIN_DB_BUYER_PARAM_COMMENT] = '';
+		$result[TRIN_DB_BUYER_PARAM_VERSION] = 0;
 
 		$buyer_res = pg_query_params ($db,
 			TRIN_QUERY_GET_BUYER_DET, array ($id));
+		trin_db_set_last_error();
 
 		if ($buyer_res !== FALSE)
 		{
-			$buyer = pg_fetch_row ($buyer_res);
+			$buyer = pg_fetch_assoc ($buyer_res);
 			if ($buyer !== FALSE)
 			{
-				$result[TRIN_DB_BUYER_PARAM_ID] = $buyer[0];
-				$result[TRIN_DB_BUYER_PARAM_NAME] = $buyer[1];
-				$result[TRIN_DB_BUYER_PARAM_ADDRESS] = $buyer[2];
-				$result[TRIN_DB_BUYER_PARAM_LOGIN] = $buyer[3];
-				$result[TRIN_DB_BUYER_PARAM_EMAIL] = $buyer[4];
-				$result[TRIN_DB_BUYER_PARAM_COMMENT] = $buyer[5];
+				$result[TRIN_DB_BUYER_PARAM_ID] = $buyer['b_id'];
+				$result[TRIN_DB_BUYER_PARAM_NAME] = $buyer['b_name'];
+				$result[TRIN_DB_BUYER_PARAM_ADDRESS] = $buyer['b_postal_address'];
+				$result[TRIN_DB_BUYER_PARAM_LOGIN] = $buyer['b_login'];
+				$result[TRIN_DB_BUYER_PARAM_EMAIL] = $buyer['b_email_address'];
+				$result[TRIN_DB_BUYER_PARAM_COMMENT] = $buyer['b_comment'];
+				$result[TRIN_DB_BUYER_PARAM_VERSION] = $buyer['b_version'];
 				return $result;
+			}
+			else
+			{
+				trin_db_set_last_error ('No data');
 			}
 		}
 		return FALSE;
 	}
 
-	function trin_db_update_buyer ($db, $b_id, $name, $address, $login, $email, $comment)
+	function trin_db_update_buyer ($db, $b_id, $name, $address,
+		$login, $email, $comment, $version)
 	{
-		return pg_query_params ($db, TRIN_QUERY_UPDATE_BUYER,
+		trin_db_clear_last_error();
+		$det = trin_db_get_buyer_details ($db, $b_id);
+		if ($det === FALSE)
+		{
+			trin_db_set_last_error('Cannot read record before update');
+			return FALSE;
+		}
+		else if ((int)$det[TRIN_DB_BUYER_PARAM_VERSION] != (int)$version)
+		{
+			trin_db_set_last_error("Record version doesn't match: expected: "
+				. $det[TRIN_DB_BUYER_PARAM_VERSION]
+				. ', got: ' . $version);
+			return FALSE;
+		}
+
+		$res = pg_query_params ($db, TRIN_QUERY_UPDATE_BUYER,
 			array ($b_id, $name, $address, $login, $email, $comment));
+		trin_db_set_last_error();
+		return $res;
 	}
 
-	function trin_db_get_transactions ($conn)
+	function trin_db_get_buyer_history ($conn, $b_id)
 	{
-		return pg_query ($conn, TRIN_QUERY_GET_TRANSACTIONS);
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_BUYER_HIST_BY_ID,
+			array ($b_id));
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_buyer_hist_entry ($buyer_his)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
+		$result[TRIN_DB_BUYER_PARAM_ADDRESS] = '';
+		$result[TRIN_DB_BUYER_PARAM_LOGIN] = '';
+		$result[TRIN_DB_BUYER_PARAM_EMAIL] = '';
+		$result[TRIN_DB_BUYER_PARAM_COMMENT] = '';
+		$result[TRIN_DB_BUYER_PARAM_USER] = '';
+		$result[TRIN_DB_BUYER_PARAM_TIMESTAMP] = '';
+
+		$b_his = pg_fetch_assoc ($buyer_his);
+		trin_db_set_last_error();
+		if ($b_his !== FALSE)
+		{
+			$result[TRIN_DB_BUYER_PARAM_NAME] = $b_his['his_b_name'];
+			$result[TRIN_DB_BUYER_PARAM_ADDRESS] = $b_his['his_b_postal_address'];
+			$result[TRIN_DB_BUYER_PARAM_LOGIN] = $b_his['his_b_login'];
+			$result[TRIN_DB_BUYER_PARAM_EMAIL] = $b_his['his_b_email_address'];
+			$result[TRIN_DB_BUYER_PARAM_COMMENT] = $b_his['his_b_comment'];
+			$result[TRIN_DB_BUYER_PARAM_USER] = $b_his['his_b_user'];
+			$result[TRIN_DB_BUYER_PARAM_TIMESTAMP] = $b_his['his_b_record_timestamp'];
+
+			return $result;
+		}
+		return FALSE;
+	}
+
+	// =================== Transactions =====================
+
+	function trin_db_get_transactions ($conn, $offset = 0, $limit = 1000000000)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_TRANSACTIONS,
+			array ($offset, $limit));
+		trin_db_set_last_error();
+		return $res;
 	}
 
 	function trin_db_get_next_transaction ($trans)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_TRANS_PARAM_ID] = '';
 		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
 		$result[TRIN_DB_PROD_INST_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_NAME] = '';
 		$result[TRIN_DB_SELLER_PARAM_ID] = '';
+		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
 		$result[TRIN_DB_BUYER_PARAM_ID] = '';
+		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
 		$result[TRIN_DB_TRANS_PARAM_PRICE] = '';
 		$result[TRIN_DB_TRANS_PARAM_PAID] = '';
 		$result[TRIN_DB_TRANS_PARAM_SENT] = '';
@@ -700,20 +1504,24 @@
 		$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = '';
 		$result[TRIN_DB_TRANS_PARAM_SEND_COST] = '';
 
-		$tran = pg_fetch_row ($trans);
+		$tran = pg_fetch_assoc ($trans);
+		trin_db_set_last_error();
 		if ($tran !== FALSE)
 		{
-			$result[TRIN_DB_TRANS_PARAM_ID] = $tran[0];
-			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $tran[1];
-			$result[TRIN_DB_PROD_INST_FIELD_ID] = $tran[2];
-			$result[TRIN_DB_SELLER_PARAM_ID] = $tran[3];
-			$result[TRIN_DB_BUYER_PARAM_ID] = $tran[4];
-			$result[TRIN_DB_TRANS_PARAM_PRICE] = $tran[5];
-			$result[TRIN_DB_TRANS_PARAM_PAID] = $tran[6];
-			$result[TRIN_DB_TRANS_PARAM_SENT] = $tran[7];
-			$result[TRIN_DB_TRANS_PARAM_SELLDATE] = $tran[8];
-			$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = $tran[9];
-			$result[TRIN_DB_TRANS_PARAM_SEND_COST] = $tran[10];
+			$result[TRIN_DB_TRANS_PARAM_ID] = $tran['t_id'];
+			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $tran['p_pd_id'];
+			$result[TRIN_DB_PROD_INST_FIELD_ID] = $tran['t_product_id'];
+			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $tran['pd_name'];
+			$result[TRIN_DB_SELLER_PARAM_ID] = $tran['t_seller'];
+			$result[TRIN_DB_SELLER_PARAM_NAME] = $tran['s_name'];
+			$result[TRIN_DB_BUYER_PARAM_ID] = $tran['t_buyer'];
+			$result[TRIN_DB_BUYER_PARAM_NAME] = $tran['b_name'];
+			$result[TRIN_DB_TRANS_PARAM_PRICE] = $tran['t_price'];
+			$result[TRIN_DB_TRANS_PARAM_PAID] = $tran['t_paid'];
+			$result[TRIN_DB_TRANS_PARAM_SENT] = $tran['t_sent'];
+			$result[TRIN_DB_TRANS_PARAM_SELLDATE] = $tran['t_sell_date'];
+			$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = $tran['t_send_price'];
+			$result[TRIN_DB_TRANS_PARAM_SEND_COST] = $tran['t_send_cost'];
 
 			return $result;
 		}
@@ -723,7 +1531,9 @@
 	function trin_db_add_transaction ($db, $t_product_id, $t_seller, $t_buyer,
 		$t_price, $t_paid, $t_sent, $t_sell_date, $t_send_price, $t_send_cost)
 	{
+		trin_db_clear_last_error();
 		$res = pg_query ($db, 'begin');
+		trin_db_set_last_error();
 
 		if ($res !== FALSE)
 		{
@@ -742,17 +1552,21 @@
 					array ($t_product_id, TRIN_PROD_STATUS_SOLD));
 				if ($res !== FALSE)
 				{
-					pg_query ($db, 'commit');
+					$res = pg_query ($db, 'commit');
+					trin_db_set_last_error();
+					return $res;
 				}
 				else
 				{
-					//pg_query ($db, 'rollback');
+					trin_db_set_last_error();
+					pg_query ($db, 'rollback');
 					return FALSE;
 				}
 			}
 			else
 			{
-				//pg_query ($db, 'rollback');
+				trin_db_set_last_error();
+				pg_query ($db, 'rollback');
 				return FALSE;
 			}
 		}
@@ -761,37 +1575,53 @@
 
 	function trin_db_get_transaction_details ($db, $id)
 	{
+		trin_db_clear_last_error();
 		$result = array ();
 		$result[TRIN_DB_TRANS_PARAM_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
 		$result[TRIN_DB_PROD_INST_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_NAME] = '';
 		$result[TRIN_DB_SELLER_PARAM_ID] = '';
+		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
 		$result[TRIN_DB_BUYER_PARAM_ID] = '';
+		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
 		$result[TRIN_DB_TRANS_PARAM_PRICE] = '';
 		$result[TRIN_DB_TRANS_PARAM_PAID] = '';
 		$result[TRIN_DB_TRANS_PARAM_SENT] = '';
 		$result[TRIN_DB_TRANS_PARAM_SELLDATE] = '';
 		$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = '';
 		$result[TRIN_DB_TRANS_PARAM_SEND_COST] = '';
+		$result[TRIN_DB_TRANS_PARAM_VERSION] = 0;
 
 		$trans_res = pg_query_params ($db,
 			TRIN_QUERY_GET_TRANSACTION_DET, array ($id));
+		trin_db_set_last_error();
 
 		if ($trans_res !== FALSE)
 		{
-			$trans = pg_fetch_row ($trans_res);
+			$trans = pg_fetch_assoc ($trans_res);
 			if ($trans !== FALSE)
 			{
-				$result[TRIN_DB_TRANS_PARAM_ID] = $trans[0];
-				$result[TRIN_DB_PROD_INST_FIELD_ID] = $trans[1];
-				$result[TRIN_DB_SELLER_PARAM_ID] = $trans[2];
-				$result[TRIN_DB_BUYER_PARAM_ID] = $trans[3];
-				$result[TRIN_DB_TRANS_PARAM_PRICE] = $trans[4];
-				$result[TRIN_DB_TRANS_PARAM_PAID] = $trans[5];
-				$result[TRIN_DB_TRANS_PARAM_SENT] = $trans[6];
-				$result[TRIN_DB_TRANS_PARAM_SELLDATE] = $trans[7];
-				$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = $trans[8];
-				$result[TRIN_DB_TRANS_PARAM_SEND_COST] = $trans[9];
+				$result[TRIN_DB_TRANS_PARAM_ID] = $trans['t_id'];
+				$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['p_pd_id'];
+				$result[TRIN_DB_PROD_INST_FIELD_ID] = $trans['t_product_id'];
+				$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $trans['pd_name'];
+				$result[TRIN_DB_SELLER_PARAM_ID] = $trans['t_seller'];
+				$result[TRIN_DB_SELLER_PARAM_NAME] = $trans['s_name'];
+				$result[TRIN_DB_BUYER_PARAM_ID] = $trans['t_buyer'];
+				$result[TRIN_DB_BUYER_PARAM_NAME] = $trans['b_name'];
+				$result[TRIN_DB_TRANS_PARAM_PRICE] = $trans['t_price'];
+				$result[TRIN_DB_TRANS_PARAM_PAID] = $trans['t_paid'];
+				$result[TRIN_DB_TRANS_PARAM_SENT] = $trans['t_sent'];
+				$result[TRIN_DB_TRANS_PARAM_SELLDATE] = $trans['t_sell_date'];
+				$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = $trans['t_send_price'];
+				$result[TRIN_DB_TRANS_PARAM_SEND_COST] = $trans['t_send_cost'];
+				$result[TRIN_DB_TRANS_PARAM_VERSION] = $trans['t_version'];
 				return $result;
+			}
+			else
+			{
+				trin_db_set_last_error ('No data');
 			}
 		}
 		return FALSE;
@@ -799,87 +1629,354 @@
 
 	function trin_db_update_transaction ($db, $trans_id, $t_product_id,
 		$t_seller, $t_buyer, $t_price, $t_paid, $t_sent, $t_sell_date,
-		$t_send_price, $t_send_cost)
+		$t_send_price, $t_send_cost, $t_version)
 	{
+		trin_db_clear_last_error();
 		$res = pg_query ($db, 'begin');
+		trin_db_set_last_error();
 
 		if ($res !== FALSE)
 		{
-			$t_price = str_replace (',', '.', $t_price);
-			$t_send_price = str_replace (',', '.', $t_send_price);
-			$t_send_cost = str_replace (',', '.', $t_send_cost);
-			$res = pg_query_params ($db, TRIN_QUERY_UPDATE_TRANSACTION,
-				array ($trans_id, $t_product_id, $t_seller,
-					$t_buyer, $t_price, $t_paid, $t_sent,
-					$t_sell_date, $t_send_price, $t_send_cost));
+			$trans = trin_db_get_transaction_details ($db, $trans_id);
+			if ($trans === FALSE)
+			{
+				trin_db_set_last_error('Cannot read record before update');
+				pg_query ($db, 'rollback');
+				return FALSE;
+			}
+			else if ((int)$trans[TRIN_DB_TRANS_PARAM_VERSION] != (int)$t_version)
+			{
+				trin_db_set_last_error("Record version doesn't match: expected: "
+					. $trans[TRIN_DB_TRANS_PARAM_VERSION]
+					. ', got: ' . $t_version);
+				pg_query ($db, 'rollback');
+				return FALSE;
+			}
+
+			// mark the old product instance as READY
+			$res = pg_query_params ($db,
+				TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
+				array ($trans[TRIN_DB_PROD_INST_FIELD_ID],
+					TRIN_PROD_STATUS_READY));
 			if ($res !== FALSE)
 			{
-				// mark the old product instance as READY
-				$trans = trin_db_get_transaction_details ($db, $trans_id);
-				if ($trans !== FALSE)
+				$t_price = str_replace (',', '.', $t_price);
+				$t_send_price = str_replace (',', '.', $t_send_price);
+				$t_send_cost = str_replace (',', '.', $t_send_cost);
+				$res = pg_query_params ($db, TRIN_QUERY_UPDATE_TRANSACTION,
+					array ($trans_id, $t_product_id, $t_seller,
+						$t_buyer, $t_price, $t_paid, $t_sent,
+						$t_sell_date, $t_send_price, $t_send_cost));
+				if ($res !== FALSE)
 				{
+					// mark new product instance as sold
 					$res = pg_query_params ($db,
 						TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
-						array ($trans[TRIN_DB_PROD_INST_FIELD_ID],
-							TRIN_PROD_STATUS_READY));
+						array ($t_product_id, TRIN_PROD_STATUS_SOLD));
 					if ($res !== FALSE)
 					{
-						// mark new product instance as sold
-						$res = pg_query_params ($db,
-							TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
-							array ($t_product_id, TRIN_PROD_STATUS_SOLD));
-						if ($res !== FALSE)
-						{
-							pg_query ($db, 'commit');
-						}
-						else
-						{
-							//pg_query ($db, 'rollback');
-							return FALSE;
-						}
+						$res = pg_query ($db, 'commit');
+						trin_db_set_last_error();
+						return $res;
 					}
 					else
 					{
-						//pg_query ($db, 'rollback');
+						trin_db_set_last_error();
+						pg_query ($db, 'rollback');
 						return FALSE;
 					}
 				}
 				else
 				{
-					//pg_query ($db, 'rollback');
+					trin_db_set_last_error();
+					pg_query ($db, 'rollback');
 					return FALSE;
 				}
 			}
 			else
 			{
-				//pg_query ($db, 'rollback');
+				trin_db_set_last_error();
+				pg_query ($db, 'rollback');
 				return FALSE;
 			}
 		}
 		return $res;
 	}
 
-	function trin_db_get_product_sales ($conn, $pd_id)
+	function trin_db_delete_transaction ($db, $t_id)
 	{
-		return pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_SALES,
-			array ($pd_id));
+		trin_db_clear_last_error();
+		$res = pg_query ($db, 'begin');
+		trin_db_set_last_error();
+
+		if ($res !== FALSE)
+		{
+			$trans_det = trin_db_get_transaction_details ($db, $t_id);
+			$res = pg_query_params ($db, TRIN_QUERY_DELETE_TRANSACTION,
+				array ($t_id));
+			if ($res !== FALSE)
+			{
+				// mark product instance as ready
+				$res = pg_query_params ($db,
+					TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
+					array ($trans_det[TRIN_DB_PROD_INST_FIELD_ID],
+						TRIN_PROD_STATUS_READY));
+				if ($res !== FALSE)
+				{
+					$res = pg_query ($db, 'commit');
+					trin_db_set_last_error();
+					return $res;
+				}
+				else
+				{
+					trin_db_set_last_error();
+					pg_query ($db, 'rollback');
+					return FALSE;
+				}
+			}
+			else
+			{
+				trin_db_set_last_error();
+				pg_query ($db, 'rollback');
+				return FALSE;
+			}
+		}
+		return $res;
 	}
 
-	function trin_db_get_next_product_sale ($sales)
+	function trin_db_get_transaction_history ($conn, $t_id)
 	{
-		$result = array ();
-		$result[TRIN_DB_BUYER_PARAM_ID] = '';
-		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_TRANS_HIST_BY_ID,
+			array ($t_id));
+		trin_db_set_last_error();
+		return $res;
+	}
 
-		$sale = pg_fetch_row ($sales);
-		if ($sale !== FALSE)
+	function trin_db_get_next_transaction_hist_entry ($trans_his)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_INST_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_NAME] = '';
+		$result[TRIN_DB_SELLER_PARAM_ID] = '';
+		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
+		$result[TRIN_DB_BUYER_PARAM_ID] = '';
+		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
+		$result[TRIN_DB_TRANS_PARAM_PRICE] = '';
+		$result[TRIN_DB_TRANS_PARAM_PAID] = '';
+		$result[TRIN_DB_TRANS_PARAM_SENT] = '';
+		$result[TRIN_DB_TRANS_PARAM_SELLDATE] = '';
+		$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = '';
+		$result[TRIN_DB_TRANS_PARAM_SEND_COST] = '';
+		$result[TRIN_DB_TRANS_PARAM_USER] = '';
+		$result[TRIN_DB_TRANS_PARAM_TIMESTAMP] = '';
+
+		$t_his = pg_fetch_assoc ($trans_his);
+		trin_db_set_last_error();
+		if ($t_his !== FALSE)
 		{
-			$result[TRIN_DB_BUYER_PARAM_ID] = $sale[0];
-			$result[TRIN_DB_TRANS_PARAM_COUNT] = $sale[1];
+			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $t_his['p_pd_id'];
+			$result[TRIN_DB_PROD_INST_FIELD_ID] = $t_his['his_t_product_id'];
+			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $t_his['pd_name'];
+			$result[TRIN_DB_SELLER_PARAM_ID] = $t_his['his_t_seller'];
+			$result[TRIN_DB_SELLER_PARAM_NAME] = $t_his['s_name'];
+			$result[TRIN_DB_BUYER_PARAM_ID] = $t_his['his_t_buyer'];
+			$result[TRIN_DB_BUYER_PARAM_NAME] = $t_his['b_name'];
+			$result[TRIN_DB_TRANS_PARAM_PRICE] = $t_his['his_t_price'];
+			$result[TRIN_DB_TRANS_PARAM_PAID] = $t_his['his_t_paid'];
+			$result[TRIN_DB_TRANS_PARAM_SENT] = $t_his['his_t_sent'];
+			$result[TRIN_DB_TRANS_PARAM_SELLDATE] = $t_his['his_t_sell_date'];
+			$result[TRIN_DB_TRANS_PARAM_SEND_PRICE] = $t_his['his_t_send_price'];
+			$result[TRIN_DB_TRANS_PARAM_SEND_COST] = $t_his['his_t_send_cost'];
+			$result[TRIN_DB_TRANS_PARAM_USER] = $t_his['his_t_user'];
+			$result[TRIN_DB_TRANS_PARAM_TIMESTAMP] = $t_his['his_t_record_timestamp'];
 
 			return $result;
 		}
 		return FALSE;
 	}
 
+	// =================== Analytics =====================
+
+	function trin_db_get_product_buys ($conn, $pd_id)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_BUYS,
+			array ($pd_id));
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_product_buy ($buys)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_BUYER_PARAM_ID] = '';
+		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
+		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
+
+		$buy = pg_fetch_assoc ($buys);
+		trin_db_set_last_error();
+		if ($buy !== FALSE)
+		{
+			$result[TRIN_DB_BUYER_PARAM_ID] = $buy['b_id'];
+			$result[TRIN_DB_BUYER_PARAM_NAME] = $buy['b_name'];
+			$result[TRIN_DB_TRANS_PARAM_COUNT] = $buy['b_count'];
+
+			return $result;
+		}
+		return FALSE;
+	}
+
+	function trin_db_get_product_sales ($conn, $pd_id)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query_params ($conn, TRIN_QUERY_GET_PRODUCT_SELLINGS,
+			array ($pd_id));
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_product_sale ($sales)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_SELLER_PARAM_ID] = '';
+		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
+		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
+
+		$sale = pg_fetch_assoc ($sales);
+		trin_db_set_last_error();
+		if ($sale !== FALSE)
+		{
+			$result[TRIN_DB_SELLER_PARAM_ID] = $sale['s_id'];
+			$result[TRIN_DB_SELLER_PARAM_NAME] = $sale['s_name'];
+			$result[TRIN_DB_TRANS_PARAM_COUNT] = $sale['s_count'];
+
+			return $result;
+		}
+		return FALSE;
+	}
+
+	function trin_db_get_seller_transactions ($conn)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query ($conn,
+			TRIN_QUERY_GET_SELLER_TRANSACTIONS);
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_seller_transaction ($seller_trans)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_NAME] = '';
+		$result[TRIN_DB_SELLER_PARAM_ID] = '';
+		$result[TRIN_DB_SELLER_PARAM_NAME] = '';
+		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
+
+		$trans = pg_fetch_assoc ($seller_trans);
+		trin_db_set_last_error();
+		if ($trans !== FALSE)
+		{
+			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['pd_id'];
+			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $trans['pd_name'];
+			$result[TRIN_DB_SELLER_PARAM_ID] = $trans['s_id'];
+			$result[TRIN_DB_SELLER_PARAM_NAME] = $trans['s_name'];
+			$result[TRIN_DB_TRANS_PARAM_COUNT] = $trans['st_count'];
+
+			return $result;
+		}
+		return FALSE;
+	}
+
+	function trin_db_get_buyer_transactions ($conn)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query ($conn,
+			TRIN_QUERY_GET_BUYER_TRANSACTIONS);
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_get_next_buyer_transaction ($buyer_trans)
+	{
+		trin_db_clear_last_error();
+		$result = array ();
+		$result[TRIN_DB_PROD_DEF_FIELD_ID] = '';
+		$result[TRIN_DB_PROD_DEF_FIELD_NAME] = '';
+		$result[TRIN_DB_BUYER_PARAM_ID] = '';
+		$result[TRIN_DB_BUYER_PARAM_NAME] = '';
+		$result[TRIN_DB_TRANS_PARAM_COUNT] = '';
+
+		$trans = pg_fetch_assoc ($buyer_trans);
+		trin_db_set_last_error();
+		if ($trans !== FALSE)
+		{
+			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['pd_id'];
+			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $trans['pd_name'];
+			$result[TRIN_DB_BUYER_PARAM_ID] = $trans['b_id'];
+			$result[TRIN_DB_BUYER_PARAM_NAME] = $trans['b_name'];
+			$result[TRIN_DB_TRANS_PARAM_COUNT] = $trans['bt_count'];
+
+			return $result;
+		}
+		return FALSE;
+	}
+
+	// =================== Management =====================
+
+	function trin_db_destroy_schema ($conn)
+	{
+		trin_db_clear_last_error();
+		$res = pg_query ($conn,
+			TRIN_QUERY_DESTROY_DATABASE);
+		trin_db_set_last_error();
+		return $res;
+	}
+
+	function trin_db_clear_last_error()
+	{
+		unset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]);
+	}
+
+	function trin_db_set_last_error($error = '')
+	{
+		if (isset ($_SESSION[TRIN_SESS_DB_LAST_ERROR])
+			&& $_SESSION[TRIN_SESS_DB_LAST_ERROR] != '')
+		{
+			// error already set, don't overwrite it
+			return;
+		}
+		$last_error = pg_last_error ();
+		if ($last_error === '' || $last_error === FALSE)
+		{
+			$last_error = $error;
+		}
+		$_SESSION[TRIN_SESS_DB_LAST_ERROR] = $last_error;
+	}
+
+	function trin_db_get_last_error()
+	{
+		$db_error = pg_last_error ();
+		$db_sess_error = '';
+		if (!$db_error && isset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]))
+		{
+			$db_sess_error = $_SESSION[TRIN_SESS_DB_LAST_ERROR];
+			unset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]);
+		}
+		if ($db_error)
+		{
+			return $db_error;
+		}
+		if ($db_sess_error)
+		{
+			return $db_sess_error;
+		}
+		return '-Unknown error-';
+	}
 ?>

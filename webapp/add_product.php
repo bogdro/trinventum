@@ -20,11 +20,13 @@
 	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	*/
 
-	error_reporting (E_ALL|E_NOTICE);
 	session_start();
 
 	include_once ('constants.php');
 	include_once ('functions.php');
+
+	trin_error_reporting();
+
 	include_once ('db_functions.php');
 
 	$t_lastmod = getlastmod ();
@@ -33,6 +35,7 @@
 	$display_form = FALSE;
 	$error = '';
 	$db = NULL;
+	$validation_failed_fields = array();
 
 	if (! trin_validate_session ())
 	{
@@ -52,30 +55,47 @@
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
 		{
-			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-				$_SESSION[TRIN_SESS_DB_PASS],
-				$_SESSION[TRIN_SESS_DB_DBNAME],
-				$_SESSION[TRIN_SESS_DB_HOST]);
-			if (!$db)
+			$form_validators = array(
+				TRIN_DB_PROD_PARAM_LENGTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+				TRIN_DB_PROD_PARAM_WIDTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+				TRIN_DB_PROD_PARAM_COUNT => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
+				TRIN_DB_PROD_PARAM_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER
+				);
+			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
+			if (count($validation_failed_fields) != 0)
 			{
 				$display_form = TRUE;
-				$error = 'Cannot connect to database';
+				$error = 'Form validation failed - check field values: '
+					. implode(', ', $validation_failed_fields);
 			}
-			if (! trin_db_add_product ($db,
-				$_POST[TRIN_DB_PROD_PARAM_NAME],
-				TRIN_DB_PROD_PARAM_PHOTO,
-				$_POST[TRIN_DB_PROD_PARAM_SIZE],
-				$_POST[TRIN_DB_PROD_PARAM_LENGTH],
-				$_POST[TRIN_DB_PROD_PARAM_WIDTH],
-				$_POST[TRIN_DB_PROD_PARAM_COLOUR],
-				$_POST[TRIN_DB_PROD_PARAM_COUNT],
-				$_POST[TRIN_DB_PROD_PARAM_BRAND],
-				$_POST[TRIN_DB_PROD_PARAM_GENDER],
-				$_POST[TRIN_DB_PROD_PARAM_COMMENT],
-				$_POST[TRIN_DB_PROD_PARAM_COST]))
+			else
 			{
-				$display_form = TRUE;
-				$error = 'Cannot add product to the database: ' . pg_last_error ();
+				$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
+					$_SESSION[TRIN_SESS_DB_PASS],
+					$_SESSION[TRIN_SESS_DB_DBNAME],
+					$_SESSION[TRIN_SESS_DB_HOST]);
+				if (!$db)
+				{
+					$display_form = TRUE;
+					$error = 'Cannot connect to database';
+				}
+				if (! trin_db_add_product ($db,
+					$_POST[TRIN_DB_PROD_PARAM_NAME],
+					TRIN_DB_PROD_PARAM_PHOTO,
+					$_POST[TRIN_DB_PROD_PARAM_SIZE],
+					$_POST[TRIN_DB_PROD_PARAM_LENGTH],
+					$_POST[TRIN_DB_PROD_PARAM_WIDTH],
+					$_POST[TRIN_DB_PROD_PARAM_COLOUR],
+					$_POST[TRIN_DB_PROD_PARAM_COUNT],
+					$_POST[TRIN_DB_PROD_PARAM_BRAND],
+					$_POST[TRIN_DB_PROD_PARAM_GENDER],
+					$_POST[TRIN_DB_PROD_PARAM_COMMENT],
+					$_POST[TRIN_DB_PROD_PARAM_COST]))
+				{
+					$display_form = TRUE;
+					$error = 'Cannot add product to the database: '
+						. trin_db_get_last_error ();
+				}
 			}
 			if (! $display_form)
 			{
@@ -98,10 +118,10 @@
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
 			trin_meta_lastmod ($t_lastmod);
+			trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 <META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
-<LINK rel="stylesheet" type="text/css" href="trinventum.css">
 
 <TITLE> Trinventum - add new product </TITLE>
 
@@ -114,13 +134,9 @@
 
 <?php
 			include ('header.php');
+			include ('menu.php');
 
-			if ($error !== '')
-			{
-?>
-Error: <?php echo $error.'<br>'; ?><br>
-<?php
-			}
+			trin_display_error($error);
 ?>
 <div class="login_box">
 <?php
@@ -135,6 +151,7 @@ Error: <?php echo $error.'<br>'; ?><br>
 			$param_pd_gender = '-';
 			$param_pd_comment = '';
 			$param_pd_cost = '';
+			$param_pd_version = 0;
 
 			if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME]))
 			{
@@ -180,6 +197,10 @@ Error: <?php echo $error.'<br>'; ?><br>
 			{
 				$param_pd_cost = $_POST[TRIN_DB_PROD_PARAM_COST];
 			}
+			if (isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			{
+				$param_pd_version = $_POST[TRIN_DB_PROD_PARAM_VERSION];
+			}
 
 			trin_create_product_def_form (
 				trin_get_self_action (), 'Add product',
@@ -193,7 +214,9 @@ Error: <?php echo $error.'<br>'; ?><br>
 				TRIN_DB_PROD_PARAM_BRAND, $param_pd_brand,
 				TRIN_DB_PROD_PARAM_GENDER, $param_pd_gender,
 				TRIN_DB_PROD_PARAM_COMMENT, $param_pd_comment,
-				TRIN_DB_PROD_PARAM_COST, $param_pd_cost
+				TRIN_DB_PROD_PARAM_COST, $param_pd_cost,
+				TRIN_DB_PROD_PARAM_VERSION, $param_pd_version,
+				$validation_failed_fields, FALSE
 			);
 ?>
 </div>
@@ -203,6 +226,7 @@ Error: <?php echo $error.'<br>'; ?><br>
 </div>
 
 <?php
+			include ('menu.php');
 			include ('footer.php');
 ?>
 

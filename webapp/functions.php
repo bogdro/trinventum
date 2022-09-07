@@ -22,6 +22,12 @@
 
 	include_once ('constants.php');
 
+	function trin_error_reporting ()
+	{
+		//error_reporting (E_ALL|E_NOTICE);
+		error_reporting (0);
+	}
+
 	function trin_header_lastmod ($last_mod)
 	{
 		// must be gmdate(), and not date(), because the HTTP specification says this
@@ -38,6 +44,13 @@
 <?php
 	}
 
+	function trin_include_css ()
+	{
+?>
+<LINK rel="stylesheet" type="text/css" href="rsrc/trinventum.css">
+<?php
+	}
+
 	function trin_validate_session ()
 	{
 		if (isset ($_SESSION[TRIN_SESS_DB_LOGIN])
@@ -48,6 +61,100 @@
 			return TRUE;
 		}
 		return FALSE;
+	}
+
+	function trin_create_text_input ($type, $size, $name, $value,
+		$validation_failed_fields, $title = '')
+	{
+		echo "<input type=\"$type\"\n
+			value=\"$value\"\n
+			name=\"$name\"\n";
+		if ($size != '')
+		{
+			echo "size=\"$size\"\n";
+		}
+		if ($title != '')
+		{
+			echo "title=\"$title\"\n";
+		}
+		if (in_array ($name, $validation_failed_fields))
+		{
+			echo "class=\"red_frame\"\n";
+		}
+		echo ">\n";
+	}
+
+	function trin_create_text_textarea ($rows, $cols, $name, $value,
+		$validation_failed_fields, $title = '')
+	{
+		echo "<textarea cols=\"$cols\"\n
+			rows=\"$rows\"\n
+			name=\"$name\"\n";
+		if ($title != '')
+		{
+			echo "title=\"$title\"\n";
+		}
+		$tclass = 'vert_mid';
+		if (in_array ($name, $validation_failed_fields))
+		{
+			$tclass .= ' red_frame';
+		}
+		echo "class=\"$tclass\">$value</textarea>\n";
+	}
+
+	function trin_create_select ($name, $value, $option_names,
+		$option_values, $validation_failed_fields, $title = '')
+	{
+		echo "<select name=\"$name\"\n";
+		if ($title != '')
+		{
+			echo "title=\"$title\"\n";
+		}
+		if (in_array ($name, $validation_failed_fields))
+		{
+			echo "class=\"red_frame\"\n";
+		}
+		echo ">\n";
+
+		$nopts = count($option_values);
+		if ($nopts == 0)
+		{
+			// add a dummy/empty value (required by HTML)
+			echo "<option value=\"-\">-</option>\n";
+		}
+		else
+		{
+			for ($i = 0; $i < $nopts; $i++)
+			{
+				echo '<option value="' . $option_values[$i] . '"';
+				if ($value == $option_values[$i])
+				{
+					echo ' selected="selected"';
+				}
+				echo '>' . $option_names[$i] . "</option>\n";
+			}
+		}
+		echo "</select>\n";
+	}
+
+	function trin_create_submits ($name, $value, $add_reset,
+		$title = '')
+	{
+		echo "<input type=\"submit\"
+			value=\"$value\"\n";
+		if ($name != '')
+		{
+			echo "name=\"$name\"\n";
+		}
+		if ($title != '')
+		{
+			echo "title=\"$title\"\n";
+		}
+		echo ">\n";
+		if ($add_reset === TRUE)
+		{
+			echo '<input type="reset" value="Reset">';
+		}
 	}
 
 	function trin_create_product_def_form (
@@ -62,131 +169,250 @@
 		$param_brand_name, $param_brand_value,
 		$param_gender_name, $param_gender_value,
 		$param_comment_name, $param_comment_value,
-		$param_cost_name, $param_cost_value
+		$param_cost_name, $param_cost_value,
+		$param_version_name, $param_version_value,
+		$validation_failed_fields,
+		$separate_forms
 		)
 	{
 ?>
-
-<form enctype="multipart/form-data"
-action="<?php echo $action; ?>" method="POST">
-
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+?>
 <p>
 Product name:
-<input type="text" size="20"
-	value="<?php echo $param_name_value; ?>" name="<?php echo $param_name_name; ?>">
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_name_name,
+			$param_name_value, $validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_name_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Photo/image:
-<input type="file" size="50"
-	value="<?php echo $param_photo_value; ?>" name="<?php echo $param_photo_name; ?>">
 </p>
+<?php
+		trin_create_text_input('file', '50', $param_photo_name,
+			$param_photo_value, $validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_photo_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Size (like XL, M, etc., if applicable):
-<input type="text" size="20"
-	value="<?php echo $param_size_value; ?>" name="<?php echo $param_size_name; ?>">
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_size_name,
+			$param_size_value, $validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_size_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Length (if applicable):
-<input type="text" size="20"
-	value="<?php echo $param_length_value; ?>" name="<?php echo $param_length_name; ?>">
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_length_name,
+			$param_length_value, $validation_failed_fields,
+			'Only decimal values allowed, no unit names');
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_length_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Width (if applicable):
-<input type="text" size="20"
-	value="<?php echo $param_width_value; ?>" name="<?php echo $param_width_name; ?>">
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_width_name,
+			$param_width_value, $validation_failed_fields,
+			'Only decimal values allowed, no unit names');
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_width_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Colour:
-<input type="text" size="20"
-	value="<?php echo $param_colour_value; ?>" name="<?php echo $param_colour_name; ?>">
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_colour_name,
+			$param_colour_value, $validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_colour_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
-Count (number of pieces in store):
-<input type="text" size="20"
-	value="<?php echo $param_count_value; ?>" name="<?php echo $param_count_name; ?>">
+Count (number of pieces):
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_count_name,
+			$param_count_value, $validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_count_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Brand:
-<input type="text" size="20"
-	value="<?php echo $param_brand_value; ?>" name="<?php echo $param_brand_name; ?>">
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_brand_name,
+			$param_brand_value, $validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_brand_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Gender (Male/Female/Child, if applicable):
-<select name="<?php echo $param_gender_name; ?>">
-
-<option value="M"
-<?php
-		if ($param_gender_value == 'M')
-		{
-?>
-	selected="selected"
-<?php
-		}
-?>
->M</option>
-
-<option value="F"
-<?php
-		if ($param_gender_value == 'F')
-		{
-?>
-	selected="selected"
-<?php
-		}
-?>
->F</option>
-
-<option value="C"
-<?php
-		if ($param_gender_value == 'C')
-		{
-?>
-	selected="selected"
-<?php
-		}
-?>
->C</option>
-
-<option value="-"
-<?php
-		if ($param_gender_value == '-')
-		{
-?>
-	selected="selected"
-<?php
-		}
-?>
->-</option>
-
-</select>
 </p>
+<?php
+		trin_create_select($param_gender_name, $param_gender_value,
+			array('M', 'F', 'C', '-'),
+			array('M', 'F', 'C', '-'),
+			$validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_gender_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
 Comment or description (can be empty):
-<input type="text" size="20"
-	value="<?php echo $param_comment_value; ?>" name="<?php echo $param_comment_name; ?>">
 </p>
+<?php
+		trin_create_text_textarea('5', '20', $param_comment_name,
+			$param_comment_value, $validation_failed_fields);
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_comment_name,
+				'Update', TRUE);
+?>
+</form>
+<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<?php
+		}
+?>
+<hr>
 <p>
-Cost:
-<input type="text" size="20"
-	value="<?php echo $param_cost_value; ?>" name="<?php echo $param_cost_name; ?>">
+Cost of each piece:
 </p>
+<?php
+		trin_create_text_input('text', '20', $param_cost_name,
+			$param_cost_value, $validation_failed_fields,
+			'Only decimal values allowed, no currency names');
 
+		if ($separate_forms === TRUE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_cost_name,
+				'Update', TRUE);
+?>
+</form>
+<?php
+		}
+		else //if ($separate_forms === FALSE)
+		{
+			trin_create_text_input('hidden', '', $param_version_name,
+				$param_version_value, $validation_failed_fields);
+?>
+<hr>
 <p>
 <input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
 </p>
-
 </form>
 <?php
+		}
 	}
 
 	function trin_create_buyer_form (
@@ -195,7 +421,9 @@ Cost:
 		$param_buyer_address, $param_buyer_address_value,
 		$param_buyer_login, $param_buyer_login_value,
 		$param_buyer_email, $param_buyer_email_value,
-		$param_buyer_comment, $param_buyer_comment_value
+		$param_buyer_comment, $param_buyer_comment_value,
+		$param_version_name, $param_version_value,
+		$validation_failed_fields
 		)
 	{
 ?>
@@ -203,35 +431,49 @@ Cost:
 
 <p>
 Buyer name:
-<input type="text" size="20"
-	value="<?php echo $param_buyer_name_value; ?>" name="<?php echo $param_buyer_name; ?>">
+<?php
+		trin_create_text_input('text', '20', $param_buyer_name,
+			$param_buyer_name_value, $validation_failed_fields);
+?>
 </p>
 
 <p>
 Buyer postal address:
-<input type="text" size="20"
-	value="<?php echo $param_buyer_address_value; ?>" name="<?php echo $param_buyer_address; ?>">
+<?php
+		trin_create_text_input('text', '20', $param_buyer_address,
+			$param_buyer_address_value, $validation_failed_fields);
+?>
 </p>
 
 <p>
 Buyer login (ID):
-<input type="text" size="20"
-	value="<?php echo $param_buyer_login_value; ?>" name="<?php echo $param_buyer_login; ?>">
+<?php
+		trin_create_text_input('text', '20', $param_buyer_login,
+			$param_buyer_login_value, $validation_failed_fields);
+?>
 </p>
 
 <p>
 Buyer e-mail address:
-<input type="text" size="20"
-	value="<?php echo $param_buyer_email_value; ?>" name="<?php echo $param_buyer_email; ?>">
+<?php
+		trin_create_text_input('text', '20', $param_buyer_email,
+			$param_buyer_email_value, $validation_failed_fields);
+?>
 </p>
 
 <p>
 Buyer comment:
-<input type="text" size="20"
-	value="<?php echo $param_buyer_comment_value; ?>" name="<?php echo $param_buyer_comment; ?>">
+<?php
+		trin_create_text_textarea('5', '20', $param_buyer_comment,
+			$param_buyer_comment_value, $validation_failed_fields)
+?>
 </p>
 
 <p>
+<?php
+		trin_create_text_input('hidden', '', $param_version_name,
+			$param_version_value, $validation_failed_fields);
+?>
 <input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
 </p>
 
@@ -242,7 +484,9 @@ Buyer comment:
 
 	function trin_create_seller_form (
 		$action, $button_title,
-		$param_seller_name, $param_seller_name_value
+		$param_seller_name, $param_seller_name_value,
+		$param_version_name, $param_version_value,
+		$validation_failed_fields
 		)
 	{
 ?>
@@ -250,11 +494,17 @@ Buyer comment:
 
 <p>
 Seller name:
-<input type="text" size="20"
-	value="<?php echo $param_seller_name_value; ?>" name="<?php echo $param_seller_name; ?>">
+<?php
+		trin_create_text_input('text', '20', $param_seller_name,
+			$param_seller_name_value, $validation_failed_fields);
+?>
 </p>
 
 <p>
+<?php
+		trin_create_text_input('hidden', '', $param_version_name,
+			$param_version_value, $validation_failed_fields);
+?>
 <input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
 </p>
 
@@ -282,5 +532,58 @@ Seller name:
 			$action .= '?' . str_replace ('&', '&amp;', $_SERVER['QUERY_STRING']);
 		}
 		return $action;
+	}
+
+	function trin_get_gender_name ($abbrev)
+	{
+		if ($abbrev == 'M')
+		{
+			return 'Male';
+		}
+		if ($abbrev == 'F')
+		{
+			return 'Female';
+		}
+		if ($abbrev == 'C')
+		{
+			return 'Child';
+		}
+		if ($abbrev == '-')
+		{
+			return 'N/A';
+		}
+		return '?';
+	}
+
+	function trin_validate_form ($values, $validators)
+	{
+		$failed_fields = array();
+		foreach ($validators as $field_name => $field_type)
+		{
+			if (isset($values[$field_name]))
+			{
+				if ($field_type == TRIN_VALIDATION_FIELD_TYPE_NUMBER)
+				{
+					$value = str_replace (',', '.', $values[$field_name]);
+					if (! is_numeric ($value))
+					{
+						$failed_fields[] = $field_name;
+					}
+				}
+			}
+		}
+		return $failed_fields;
+	}
+
+	function trin_display_error ($message)
+	{
+		if ($message !== '')
+		{
+?>
+<div class="error">
+Error: <?php echo $message ?>
+</div>
+<?php
+		}
 	}
 ?>
