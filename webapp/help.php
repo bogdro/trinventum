@@ -1,24 +1,26 @@
 <?php
 	/*
-	Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
-
-	This file is part of Trinventum (Transaction and Inventory Unified Manager),
-	 a software that helps manage an e-commerce business.
-	Trinventum homepage: https://trinventum.sourceforge.io/
-
-	 This program is free software: you can redistribute it and/or modify
-	 it under the terms of the GNU Affero General Public License as published by
-	 the Free Software Foundation, either version 3 of the License, or
-	 (at your option) any later version.
-
-	 This program is distributed in the hope that it will be useful,
-	 but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 GNU Affero General Public License for more details.
-
-	 You should have received a copy of the GNU Affero General Public License
-	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	*/
+	 * Trinventum - the help page.
+	 *
+	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 *
+	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
+	 *  a software that helps manage an e-commerce business.
+	 * Trinventum homepage: https://trinventum.sourceforge.io/
+	 *
+	 * This program is free software: you can redistribute it and/or modify
+	 * it under the terms of the GNU Affero General Public License as published by
+	 * the Free Software Foundation, either version 3 of the License, or
+	 * (at your option) any later version.
+	 *
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU Affero General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU Affero General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
 
 	session_start();
 
@@ -32,7 +34,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <HTML lang="en">
-<HEAD>
+<HEAD profile="http://www.w3.org/2005/10/profile">
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
@@ -40,9 +42,9 @@
 	trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
-<META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
 
 <TITLE> Trinventum - help </TITLE>
+<link rel="icon" type="image/svg+xml" href="rsrc/trinventum-icon.svg">
 
 <META NAME="Author" CONTENT="Bogdan D.">
 <META NAME="Description" CONTENT="Trinventum e-commerce manager">
@@ -54,13 +56,23 @@
 To use Trinventum, the following steps must be performed:
 <ol>
  <li>a supported database (currently: PostgreSQL) must be running.<br>
-	On a Linux system, you would do:
+	On a Linux system, you would do one of:
 	<pre>
+	(login to the system as the database user 'postgres', usually do
+	<code>su - postgres</code> as root)
+	pg_ctl start</pre>
+	<pre>
+	(login as 'root')
+	systemctl start postgresqlXX (XX being the version)</pre>
+	<pre>
+	(login as 'root')
 	service postgresql start</pre>
 	</li>
 
  <li>a web (HTTP) server with PHP support (like Apache httpd with mod_php installed) must be running.<br>
-	On a Linux system, you would do:
+	On a Linux system, you would do one of (as 'root'):
+	<pre>
+	systemctl start httpd-prefork</pre>
 	<pre>
 	service httpd start</pre>
 	</li>
@@ -76,17 +88,16 @@ To use Trinventum, the following steps must be performed:
 	<br><br></li>
 
  <li>a logical database must be created within the database server.<br>
-	On PostgreSQL, you would do:
-	<pre>
-	createdb trinventum</pre>
-	(for the current user to be the database owner) or
+	On PostgreSQL, you would login to the system as the database user (usually do
+	<code>su - postgres</code> as root) and do:
 	<pre>
 	createdb -O some_username trinventum</pre>
 	(for the specified user to be the database owner)
 	</li>
 
- <li>the PL/pgSQL procedural language must be installed in the logical database.<br>
-	On PostgreSQL, you would do:
+ <li>a procedural language suitable for the database must be installed in the logical database.<br>
+	On PostgreSQL, you would login to the system as the database user (usually do
+	<code>su - postgres</code> as root) and do:
 	<pre>
 	createlang plpgsql trinventum</pre>
 	(don't wory if it says that the language already exists).
@@ -95,21 +106,26 @@ To use Trinventum, the following steps must be performed:
 	On PostgreSQL, you would do (change XXXX to the database username created earlier):
 	<pre>
 	cp /var/lib/pgsql/data/pg_hba.conf ~
-	echo local trinventum XXXX md5 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
-	echo host all all 127.0.0.1/32 md5 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf</pre>
-	(Note the double "&gt;&gt;" - it's CRUCIAL to use double "&gt;",
-	a single "&gt;" would OVERWRITE the target file).<br>
+	echo local trinventum XXXX scram-sha-256 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
+	echo host all all 127.0.0.1/32 scram-sha-256 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf</pre>
+	(Note the double "<code>&gt;&gt;</code>" - it's <em>CRUCIAL</em> to use double "<code>&gt;</code>",
+	a single "<code>&gt;</code>" would OVERWRITE the target file).<br>
+	On older PostgreSQL versions replace <code>scram-sha-256</code> with <code>md5</code>.<br>
 	If you'll need to access the database from another computer:
 	<ul>
-	 <li>a line similar to the <code>host all all 127.0.0.1/32 md5</code>
+	 <li>a line similar to the <code>host all all 127.0.0.1/32 scram-sha-256</code>
 	  should be added to pg_hba.conf, containing the correct IP address</li>
 	 <li>firewall rules may need to be adjusted</li>
 	 <li>the <code>/etc/hosts.allow</code> file (tcpwrappers) may need to be adjusted</li>
 	</ul></li>
 
  <li>after changing the access rules for the database server, restart it.<br>
-	On Linux with PostgreSQL, you would do (as root):
+	On Linux with PostgreSQL, you would do one of:
 	<pre>
+	(login to the system as the database user 'postgres')
+	pg_ctl reload</pre>
+	<pre>
+	(login as 'root')
 	service postgresql restart</pre>
 
 </ol>
@@ -141,13 +157,13 @@ Use the "Categories" link to add new product type categories (this is optional).
 To add a new product, use the "Add a new product" link. Supply all the details and press "Add product".
 Remember that the photos you add will take at least the same amount of space in the database as on disk,
 so keep the photographs smaller than usual. You can use the <code>convert</code> utility from the
-ImageMagick package to shink image sizes:
+<a href="https://imagemagick.org" hreflang="en">ImageMagick</a> package to shrink image sizes:
 </p>
 <pre>
 	convert original.jpg -resize 50% smaller_copy.jpg</pre>
 <p>
 The "50%" means to shrink both the width and height to 50% of the original size (thus effectively
-making the image have 4 times less pixels). To shrink all images in the current directory, run
+making the image have 4 times fewer pixels). To shrink all images in the current directory, run
 </p>
 <pre>
 	for i in *.jpg; do convert "$i" -resize 50% "$i-small.jpg"; done</pre>
@@ -162,7 +178,7 @@ visible.
 </p>
 
 <p>
-Click the product ID or the photo (intentionally shrinked) to modify the product type.
+Click the product ID or the photo (intentionally shrunk) to modify the product type.
 </p>
 
 <p>
@@ -192,7 +208,7 @@ Depending on the settings, you can perform one of these operations:
 In both cases:
 </p>
 <ul>
- <li>if you modify the cost, the cost of all product pieces will be modifed,</li>
+ <li>if you modify the cost, the cost of all product pieces will be modified,</li>
  <li>you cannot decrease the number of product pieces, but you can increase it.</li>
 </ul>
 
@@ -200,7 +216,7 @@ In both cases:
 Below the product type details, you'll see a list of current product pieces of the given type.
 To modify a piece, click on its ID. You can only change the status between READY and SELLING
 (which means that the product is put for sale). When the piece is SOLD, you can't change it back
-to READY or SELLING, you can update only the cost then,  unless:
+to READY or SELLING, you can update only the cost then, unless:
 </p>
 <ul>
  <li>the piece's transaction is modified to actually select another piece, or</li>
@@ -258,7 +274,7 @@ double-check the values, re-enter your changes and retry the operation.
 After finishing work, click the "Logout" link to cleanup the session on the server.
 Depending on the server settings, you may get logged-out automatically after some period
 of inactivity. See the <code>session.cookie_lifetime</code> entry in your php.ini
-file (/etc/php.ini on Linux) to see how long does the session cooie live for (in seconds).
+file (<code>/etc/php.ini</code> on Linux) to see how long does the session cookie live for (in seconds).
 </p>
 
 <hr>
@@ -282,7 +298,7 @@ and provide the DATABASE user password.
 </p>
 
 <p>
-To delete and re-crete the database schema, run (for PostgreSQL):
+To delete and re-create the database schema, run (for PostgreSQL):
 </p>
 	<pre>
 	psql trinventum
@@ -301,7 +317,9 @@ To delete and re-crete the whole database, run (for PostgreSQL):
 After this, you need to re-login to Trinventum to re-create the structures.
 </p>
 
-
+<div class="menu">
+<a href="main.php">Return to the main page</a>
+</div>
 
 <?php
 		include ('footer.php');

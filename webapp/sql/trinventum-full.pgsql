@@ -1,23 +1,25 @@
 /*
-Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
-
-This file is part of Trinventum (Transaction and Inventory Unified Manager),
- a software that helps manage an e-commerce business.
-Trinventum homepage: https://trinventum.sourceforge.io/
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Trinventum - the full database script.
+ *
+ * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+ *
+ * This file is part of Trinventum (Transaction and Inventory Unified Manager),
+ *  a software that helps manage an e-commerce business.
+ * Trinventum homepage: https://trinventum.sourceforge.io/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
 createdb trinventum
@@ -31,7 +33,7 @@ create language plpgsql;
 */
 
 /*
-Required for indices and their comments and triggers.
+Required for indices, triggers and their comments.
 */
 set schema 'trinventum';
 
@@ -40,6 +42,20 @@ comment on type trinventum.t_gender is 'The gender/sex enumeration';
 
 create type trinventum.t_status as enum ('READY', 'SELLING', 'SOLD');
 comment on type trinventum.t_status is 'The possible product piece statuses';
+
+create or replace function trinventum.trg_protect_history()
+returns trigger as
+$trg_protect_history$
+begin
+	raise 'Modifying history not allowed'
+		using hint = 'Do not perform an UPDATE or DELETE on the table',
+		errcode = 'prohibited_sql_statement_attempted';
+	return null;
+end;
+$trg_protect_history$ language plpgsql;
+
+comment on function trinventum.trg_protect_history() is
+ 'Function for the triggers that prevent from modifying history data.';
 
 ------------------ PRODUCT CATEGORIES ---------------------
 
@@ -98,6 +114,13 @@ for each row execute procedure trinventum.trg_product_categories_proc();
 comment on trigger trg_product_categories on trinventum.product_categories is
  'Trigger that saves products category history';
 
+create trigger trg_protect_product_categories_hist
+before update or delete or truncate on trinventum.product_categories_hist
+execute procedure trinventum.trg_protect_history();
+
+comment on trigger trg_protect_product_categories_hist on trinventum.product_categories_hist is
+ 'Trigger that prevents modification of product category history';
+
 insert into trinventum.product_categories (pc_id, pc_name) values (0, 'Uncategorised products');
 
 ------------------ PRODUCT TYPES/DEFINITIONS ---------------------
@@ -131,7 +154,7 @@ comment on column trinventum.product_definitions.pd_width is 'Product width';
 comment on column trinventum.product_definitions.pd_colour is 'Product colour';
 comment on column trinventum.product_definitions.pd_brand is 'Product brand name';
 comment on column trinventum.product_definitions.pd_gender is 'Product target gender/sex';
-comment on column trinventum.product_definitions.pd_comment is 'Product comment/descrption';
+comment on column trinventum.product_definitions.pd_comment is 'Product comment/description';
 comment on column trinventum.product_definitions.pd_pc_id is 'Product category';
 comment on column trinventum.product_definitions.pd_version is 'Record version';
 
@@ -163,7 +186,7 @@ comment on column trinventum.product_definitions_hist.his_pd_width is 'Product w
 comment on column trinventum.product_definitions_hist.his_pd_colour is 'Product colour';
 comment on column trinventum.product_definitions_hist.his_pd_brand is 'Product brand name';
 comment on column trinventum.product_definitions_hist.his_pd_gender is 'Product target gender/sex';
-comment on column trinventum.product_definitions_hist.his_pd_comment is 'Product comment/descrption';
+comment on column trinventum.product_definitions_hist.his_pd_comment is 'Product comment/description';
 comment on column trinventum.product_definitions_hist.his_pd_comment is 'Product category';
 comment on column trinventum.product_definitions_hist.his_pd_version is 'Record version';
 comment on column trinventum.product_definitions_hist.his_pd_user is 'History record creation user';
@@ -199,6 +222,13 @@ for each row execute procedure trinventum.trg_product_definitions_proc();
 
 comment on trigger trg_product_definitions on trinventum.product_definitions is
  'Trigger that saves product_definitions record history';
+
+create trigger trg_protect_product_definitions_hist
+before update or delete or truncate on trinventum.product_definitions_hist
+execute procedure trinventum.trg_protect_history();
+
+comment on trigger trg_protect_product_definitions_hist on trinventum.product_definitions_hist is
+ 'Trigger that prevents modification of product definition history';
 
 ------------------------- PRODUCT PIECES --------------------------
 
@@ -269,6 +299,13 @@ for each row execute procedure trinventum.trg_products_proc();
 comment on trigger trg_products on trinventum.products is
  'Trigger that saves products record history';
 
+create trigger trg_protect_products_hist
+before update or delete or truncate on trinventum.products_hist
+execute procedure trinventum.trg_protect_history();
+
+comment on trigger trg_protect_products_hist on trinventum.products_hist is
+ 'Trigger that prevents modification of product history';
+
 ------------------------------- SELLERS -----------------------------
 
 create table trinventum.sellers
@@ -328,6 +365,13 @@ for each row execute procedure trinventum.trg_sellers_proc();
 
 comment on trigger trg_sellers on trinventum.sellers is
  'Trigger that saves seller record history';
+
+create trigger trg_protect_sellers_hist
+before update or delete or truncate on trinventum.sellers_hist
+execute procedure trinventum.trg_protect_history();
+
+comment on trigger trg_protect_sellers_hist on trinventum.sellers_hist is
+ 'Trigger that prevents modification of seller history';
 
 ------------------------------- BUYERS -----------------------------
 
@@ -405,6 +449,13 @@ for each row execute procedure trinventum.trg_buyers_proc();
 
 comment on trigger trg_buyers on trinventum.buyers is
  'Trigger that saves buyer record history';
+
+create trigger trg_protect_buyers_hist
+before update or delete or truncate on trinventum.buyers_hist
+execute procedure trinventum.trg_protect_history();
+
+comment on trigger trg_protect_buyers_hist on trinventum.buyers_hist is
+ 'Trigger that prevents modification of buyer history';
 
 ------------------------------- TRANSACTIONS -----------------------------
 
@@ -503,6 +554,13 @@ for each row execute procedure trinventum.trg_transactions_proc();
 comment on trigger trg_transactions on trinventum.transactions is
  'Trigger that saves transaction record history';
 
+create trigger trg_protect_transactions_hist
+before update or delete or truncate on trinventum.transactions_hist
+execute procedure trinventum.trg_protect_history();
+
+comment on trigger trg_protect_transactions_hist on trinventum.transactions_hist is
+ 'Trigger that prevents modification of transaction history';
+
 ------------------------------- OTHER OBJECTS -------------------------
 
 create or replace function trinventum.months_ago(m integer)
@@ -539,4 +597,4 @@ create table trinventum.versions
 comment on table trinventum.versions is 'The table containing the database version';
 comment on column trinventum.versions.db_version is 'The current database version';
 
-insert into trinventum.versions (db_version) values ('4');
+insert into trinventum.versions (db_version) values ('5');

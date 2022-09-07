@@ -1,24 +1,26 @@
 <?php
 	/*
-	Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
-
-	This file is part of Trinventum (Transaction and Inventory Unified Manager),
-	 a software that helps manage an e-commerce business.
-	Trinventum homepage: https://trinventum.sourceforge.io/
-
-	 This program is free software: you can redistribute it and/or modify
-	 it under the terms of the GNU Affero General Public License as published by
-	 the Free Software Foundation, either version 3 of the License, or
-	 (at your option) any later version.
-
-	 This program is distributed in the hope that it will be useful,
-	 but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 GNU Affero General Public License for more details.
-
-	 You should have received a copy of the GNU Affero General Public License
-	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	*/
+	 * Trinventum - database management page.
+	 *
+	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 *
+	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
+	 *  a software that helps manage an e-commerce business.
+	 * Trinventum homepage: https://trinventum.sourceforge.io/
+	 *
+	 * This program is free software: you can redistribute it and/or modify
+	 * it under the terms of the GNU Affero General Public License as published by
+	 * the Free Software Foundation, either version 3 of the License, or
+	 * (at your option) any later version.
+	 *
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU Affero General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU Affero General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
 
 	session_start();
 
@@ -99,7 +101,7 @@
 		else if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY])
 			&& isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY2]))
 		{
-			// destroy and logout if successul
+			// destroy and logout if successful
 			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
 				$_SESSION[TRIN_SESS_DB_PASS],
 				$_SESSION[TRIN_SESS_DB_DBNAME],
@@ -124,7 +126,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <HTML lang="en">
-<HEAD>
+<HEAD profile="http://www.w3.org/2005/10/profile">
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
@@ -132,9 +134,9 @@
 		trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
-<META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
 
 <TITLE> Trinventum - management </TITLE>
+<link rel="icon" type="image/svg+xml" href="rsrc/trinventum-icon.svg">
 
 <META NAME="Author" CONTENT="Bogdan D.">
 <META NAME="Description" CONTENT="Trinventum e-commerce manager">
@@ -156,7 +158,7 @@
 
 <!-- ========================== Database query =========================== -->
 
-<h1 class="c">Database query</h1>
+<h2 class="c">Database query</h2>
 
 <p>
 Use this form to perform generic database queries.
@@ -218,14 +220,14 @@ Sample queries:
 	union all select 'Total' as p_status,
 	count(*) as p_count from trinventum.products order by p_status</pre>
 	</li>
- <li>List product buyings:
+ <li>List product buys:
 	<pre>
 	select b_id, b_name, count(*) as b_count from trinventum.transactions
 	join trinventum.buyers on b_id = t_buyer where t_product_id in
 	(select p_id from trinventum.products)
 	group by b_id, b_name order by count(*) desc</pre>
 	</li>
- <li>List product sellings:
+ <li>List product sales:
 	<pre>
 	select s_id, s_name, count(*) as s_count from trinventum.transactions
 	join trinventum.sellers on s_id = t_seller where t_product_id in
@@ -262,6 +264,7 @@ Sample queries:
 </ul>
 
 <form action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
+<label for="<?php echo TRIN_FORM_PARAM_DB_QUERY ?>">Query:</label>
 <?php
 			$param_db_query_value = '';
 			if (isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]))
@@ -359,15 +362,11 @@ Sample queries:
 <hr>
 
 <?php
-// <!-- ========================== Database destroy confirmation =========================== -->
-
-
-		} // count ($_POST) == 0 || isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]
 
 /*
 <!-- ========================== Database dump =========================== -->
 
-<h1 class="c">Database dump</h1>
+<h2 class="c">Database dump</h2>
 
 <form action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
 <input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DUMP; ?>" value="Download database dump">
@@ -377,7 +376,7 @@ Sample queries:
 
 <!-- ========================== Database restore =========================== -->
 
-<h1 class="c">Database restore</h1>
+<h2 class="c">Database restore</h2>
 
 <form enctype="multipart/form-data" action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
 <input type="file" name="<?php echo TRIN_FORM_PARAM_DB_RESTORE_FILE; ?>"><br>
@@ -389,43 +388,43 @@ Sample queries:
 
 <!-- ========================== Connection parameters =========================== -->
 
-<h1 class="c">Connection parameters</h1>
+<h2 class="c">Connection parameters</h2>
 
 <?php
-	$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-		$_SESSION[TRIN_SESS_DB_PASS],
-		$_SESSION[TRIN_SESS_DB_DBNAME],
-		$_SESSION[TRIN_SESS_DB_HOST]);
+			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
+				$_SESSION[TRIN_SESS_DB_PASS],
+				$_SESSION[TRIN_SESS_DB_DBNAME],
+				$_SESSION[TRIN_SESS_DB_HOST]);
 
-	echo '<p>Database login: ' . $_SESSION[TRIN_SESS_DB_LOGIN] . "</p>\n";
+			echo '<p>Database login: ' . $_SESSION[TRIN_SESS_DB_LOGIN] . "</p>\n";
 
-	echo '<p>Database name: ' . $_SESSION[TRIN_SESS_DB_DBNAME] . "</p>\n";
+			echo '<p>Database name: ' . $_SESSION[TRIN_SESS_DB_DBNAME] . "</p>\n";
 
-	echo '<p>Database host: ' . $_SESSION[TRIN_SESS_DB_HOST] . "</p>\n";
+			echo '<p>Database host: ' . $_SESSION[TRIN_SESS_DB_HOST] . "</p>\n";
 
-	echo '<p>Connection options, if any: ' . pg_options ($db) . "</p>\n";
+			echo '<p>Connection options, if any: ' . pg_options ($db) . "</p>\n";
 
-	echo '<p>Backend PID for this call: ' . pg_get_pid ($db) . "</p>\n";
+			echo '<p>Backend PID for this call: ' . pg_get_pid ($db) . "</p>\n";
 
-	echo "<p>Parameters:</p>\n<ul>\n";
-	echo ' <li>server_version = ' . pg_parameter_status ($db, 'server_version') . "</li>\n";
-	echo ' <li>server_encoding = ' . pg_parameter_status ($db, 'server_encoding') . "</li>\n";
-	echo ' <li>client_encoding = ' . pg_parameter_status ($db, 'client_encoding') . "</li>\n";
-	echo ' <li>is_superuser = ' . pg_parameter_status ($db, 'is_superuser') . "</li>\n";
-	echo ' <li>session_authorization = ' . pg_parameter_status ($db, 'session_authorization') . "</li>\n";
-	echo ' <li>DateStyle = ' . pg_parameter_status ($db, 'DateStyle') . "</li>\n";
-	echo ' <li>TimeZone = ' . pg_parameter_status ($db, 'TimeZone') . "</li>\n";
-	echo ' <li>integer_datetimes = ' . pg_parameter_status ($db, 'integer_datetimes') . "</li>\n";
-	echo "</ul>\n";
+			echo "<p>Parameters:</p>\n<ul>\n";
+			echo ' <li>server_version = ' . pg_parameter_status ($db, 'server_version') . "</li>\n";
+			echo ' <li>server_encoding = ' . pg_parameter_status ($db, 'server_encoding') . "</li>\n";
+			echo ' <li>client_encoding = ' . pg_parameter_status ($db, 'client_encoding') . "</li>\n";
+			echo ' <li>is_superuser = ' . pg_parameter_status ($db, 'is_superuser') . "</li>\n";
+			echo ' <li>session_authorization = ' . pg_parameter_status ($db, 'session_authorization') . "</li>\n";
+			echo ' <li>DateStyle = ' . pg_parameter_status ($db, 'DateStyle') . "</li>\n";
+			echo ' <li>TimeZone = ' . pg_parameter_status ($db, 'TimeZone') . "</li>\n";
+			echo ' <li>integer_datetimes = ' . pg_parameter_status ($db, 'integer_datetimes') . "</li>\n";
+			echo "</ul>\n";
 
-	echo '<p>Host and port (if applicable): ' . pg_host ($db)
-		. ':' . pg_port ($db) . "</p>\n";
+			echo '<p>Host and port (if applicable): ' . pg_host ($db)
+				. ':' . pg_port ($db) . "</p>\n";
 
-	echo "<p>Version information:</p>\n<pre>";
-	print_r (pg_version ($db));
-	echo "</pre>\n";
+			echo "<p>Version information:</p>\n<pre>";
+			print_r (pg_version ($db));
+			echo "</pre>\n";
 
-	//echo '<p>Client encoding: ' . pg_client_encoding ($db) . "</p>\n"; // same as in "Parameters"
+			//echo '<p>Client encoding: ' . pg_client_encoding ($db) . "</p>\n"; // same as in "Parameters"
 ?>
 
 <!-- ========================== Database destroy =========================== -->
@@ -433,11 +432,15 @@ Sample queries:
 <hr>
 
 <?php
+// <!-- ========================== Database destroy confirmation =========================== -->
+
+
+		} // count ($_POST) == 0 || isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]
 		if (! isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY]))
 		{
 ?>
 
-<h1 class="c nok">Database destroy</h1>
+<h2 class="c nok">Database destroy</h2>
 
 <p class="error">
 This operation deletes all structures and data in the database and cannot be reversed.

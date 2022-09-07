@@ -1,24 +1,26 @@
 <?php
 	/*
-	Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
-
-	This file is part of Trinventum (Transaction and Inventory Unified Manager),
-	 a software that helps manage an e-commerce business.
-	Trinventum homepage: https://trinventum.sourceforge.io/
-
-	 This program is free software: you can redistribute it and/or modify
-	 it under the terms of the GNU Affero General Public License as published by
-	 the Free Software Foundation, either version 3 of the License, or
-	 (at your option) any later version.
-
-	 This program is distributed in the hope that it will be useful,
-	 but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 GNU Affero General Public License for more details.
-
-	 You should have received a copy of the GNU Affero General Public License
-	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	*/
+	 * Trinventum - non-database functions.
+	 *
+	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 *
+	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
+	 *  a software that helps manage an e-commerce business.
+	 * Trinventum homepage: https://trinventum.sourceforge.io/
+	 *
+	 * This program is free software: you can redistribute it and/or modify
+	 * it under the terms of the GNU Affero General Public License as published by
+	 * the Free Software Foundation, either version 3 of the License, or
+	 * (at your option) any later version.
+	 *
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU Affero General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU Affero General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
 
 	include_once ('constants.php');
 
@@ -68,7 +70,8 @@
 	{
 		echo "<input type=\"$type\"\n
 			value=\"$value\"\n
-			name=\"$name\"\n";
+			name=\"$name\"\n
+			id=\"$name\"\n";
 		if ($size != '')
 		{
 			echo "size=\"$size\"\n";
@@ -89,7 +92,8 @@
 	{
 		echo "<textarea cols=\"$cols\"\n
 			rows=\"$rows\"\n
-			name=\"$name\"\n";
+			name=\"$name\"
+			id=\"$name\"\n\n";
 		if ($title != '')
 		{
 			echo "title=\"$title\"\n";
@@ -105,7 +109,8 @@
 	function trin_create_select ($name, $value, $option_names,
 		$option_values, $validation_failed_fields, $title = '')
 	{
-		echo "<select name=\"$name\"\n";
+		echo "<select name=\"$name\"
+			id=\"$name\"\n\n";
 		if ($title != '')
 		{
 			echo "title=\"$title\"\n";
@@ -181,7 +186,7 @@
 <?php
 ?>
 <p>
-Product name:
+<label for="<?php echo $param_name_name ?>">Product name:</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_name_name,
@@ -201,7 +206,7 @@ Product name:
 ?>
 <hr>
 <p>
-Product category:
+<label for="<?php echo $param_category_name ?>">Product category:</label>
 </p>
 <?php
 		$param_category_option_names = array();
@@ -229,7 +234,7 @@ Product category:
 ?>
 <hr>
 <p>
-Photo/image:
+<label for="<?php echo $param_photo_name ?>">Photo/image:</label>
 </p>
 <?php
 		trin_create_text_input('file', '50', $param_photo_name,
@@ -249,7 +254,7 @@ Photo/image:
 ?>
 <hr>
 <p>
-Size (like XL, M, etc., if applicable):
+<label for="<?php echo $param_size_name ?>">Size (like XL, M, etc., if applicable):</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_size_name,
@@ -269,7 +274,7 @@ Size (like XL, M, etc., if applicable):
 ?>
 <hr>
 <p>
-Length (if applicable):
+<label for="<?php echo $param_length_name ?>">Length (if applicable):</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_length_name,
@@ -290,7 +295,7 @@ Length (if applicable):
 ?>
 <hr>
 <p>
-Width (if applicable):
+<label for="<?php echo $param_width_name ?>">Width (if applicable):</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_width_name,
@@ -311,7 +316,7 @@ Width (if applicable):
 ?>
 <hr>
 <p>
-Colour:
+<label for="<?php echo $param_colour_name ?>">Colour:</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_colour_name,
@@ -331,7 +336,7 @@ Colour:
 ?>
 <hr>
 <p>
-Count (number of pieces):
+<label for="<?php echo $param_count_name ?>">Count (number of pieces):</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_count_name,
@@ -351,7 +356,7 @@ Count (number of pieces):
 ?>
 <hr>
 <p>
-Brand:
+<label for="<?php echo $param_brand_name ?>">Brand:</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_brand_name,
@@ -371,7 +376,7 @@ Brand:
 ?>
 <hr>
 <p>
-Gender (Male/Female/Child, if applicable):
+<label for="<?php echo $param_gender_name ?>">Gender (Male/Female/Child, if applicable):</label>
 </p>
 <?php
 		trin_create_select($param_gender_name, $param_gender_value,
@@ -393,7 +398,7 @@ Gender (Male/Female/Child, if applicable):
 ?>
 <hr>
 <p>
-Comment or description (can be empty):
+<label for="<?php echo $param_comment_name ?>">Comment or description (can be empty):</label>
 </p>
 <?php
 		trin_create_text_textarea('5', '20', $param_comment_name,
@@ -413,7 +418,7 @@ Comment or description (can be empty):
 ?>
 <hr>
 <p>
-Cost of each piece:
+<label for="<?php echo $param_cost_name ?>">Cost of each piece:</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_cost_name,
@@ -460,7 +465,7 @@ Cost of each piece:
 
 <p>
 <span class="par_name">
-Buyer name:
+<label for="<?php echo $param_buyer_name ?>">Buyer name:</label>
 </span>
 <span class="par_value">
 <?php
@@ -472,7 +477,7 @@ Buyer name:
 
 <p>
 <span class="par_name">
-Buyer postal address:
+<label for="<?php echo $param_buyer_address ?>">Buyer postal address:</label>
 </span>
 <span class="par_value">
 <?php
@@ -484,7 +489,7 @@ Buyer postal address:
 
 <p>
 <span class="par_name">
-Buyer login (ID):
+<label for="<?php echo $param_buyer_login ?>">Buyer login (ID):</label>
 </span>
 <span class="par_value">
 <?php
@@ -496,7 +501,7 @@ Buyer login (ID):
 
 <p>
 <span class="par_name">
-Buyer e-mail address:
+<label for="<?php echo $param_buyer_email ?>">Buyer e-mail address:</label>
 </span>
 <span class="par_value">
 <?php
@@ -508,7 +513,7 @@ Buyer e-mail address:
 
 <p>
 <span class="par_name">
-Buyer comment:
+<label for="<?php echo $param_buyer_comment ?>">Buyer comment:</label>
 </span>
 <span class="par_value">
 <?php
@@ -543,7 +548,7 @@ Buyer comment:
 
 <p>
 <span class="par_name">
-Seller name:
+<label for="<?php echo $param_seller_name ?>">Seller name:</label>
 </span>
 <span class="par_value">
 <?php
@@ -578,7 +583,7 @@ Seller name:
 
 <p>
 <span class="par_name">
-Category name:
+<label for="<?php echo $param_category_name ?>">Category name:</label>
 </span>
 <span class="par_value">
 <?php
@@ -603,13 +608,14 @@ Category name:
 
 	function trin_get_current_date_string ()
 	{
-		$curr_time = getdate ();
+		return date("Y-m-d H:i:s"); // better with leading zeros
+		/*$curr_time = getdate ();
 		return $curr_time['year'] . '-'
 			. $curr_time['mon'] . '-'
 			. $curr_time['mday'] . ' '
 			. $curr_time['hours'] . ':'
 			. $curr_time['minutes'] . ':'
-			. $curr_time['seconds'];
+			. $curr_time['seconds'];*/
 	}
 
 	function trin_get_self_action ()

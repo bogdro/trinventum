@@ -15,17 +15,19 @@
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU Affero General Public License for more details.
-# 
+#
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 NAME = trinventum
-VER = 0.4
+VER = 0.5
 
 RMDIR = /bin/rm -fr
-MKDIR = /bin/mkdir
-COPY = /bin/cp -r
+# when using '-p', no error is generated when the directory exists
+MKDIR = /bin/mkdir -p
+COPY = /bin/cp -pRf
+CHMOD = /bin/chmod
 
 PACK1 = /bin/tar --format gnutar -vcf
 PACK1_EXT = .tar
@@ -51,4 +53,11 @@ $(NAME)-$(VER)$(PACK1_EXT)$(PACK2_EXT): AUTHORS ChangeLog COPYING NEWS \
 	$(PACK2) $(NAME)-$(VER)$(PACK1_EXT)
 	$(RMDIR) $(NAME)-$(VER)
 
-.PHONY: all dist
+install:
+	$(MKDIR) $(PREFIX)/$(NAME)
+	$(COPY) webapp/* webapp/.htaccess $(PREFIX)/$(NAME)/
+	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php $(PREFIX)/$(NAME)/.htaccess \
+		$(PREFIX)/$(NAME)/sql/* $(PREFIX)/$(NAME)/rsrc/*
+	$(CHMOD) 705 $(PREFIX)/$(NAME) $(PREFIX)/$(NAME)/sql $(PREFIX)/$(NAME)/rsrc
+
+.PHONY: all dist install

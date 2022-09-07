@@ -1,3 +1,42 @@
+2022-03-18	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
+
+	* Trinventum version 0.5:
+	  Disallow changing history. Fixes in initial installation. Added a
+	  program icon and license. Simplified installation. Page layout,
+	  accessibility and compatibility improvements. Hidden files cannot
+	  be accessed directly now. Updates in help.
+	* add_product.php, add_transaction.php, categories.php, functions.php
+	  (trin_create_text_input, trin_create_text_textarea,
+	  trin_create_select, trin_create_product_def_form,
+	  trin_create_buyer_form, trin_create_seller_form), login.php,
+	  management.php, pieces.php, sellers.php, transactions.php: Added
+	  <label>s to form elements for better accessibility.
+	* header.php: Moved the program name after the initial bar and make
+	  it an HTML header.
+	* management.php: Moved the headers one level lower after changes in
+	  header.php. Hiding everything else when confirming database destroy.
+	* help.php: Updated with more up-to-date information, like newer
+	  versions of commands. Added a link to the main page.
+	* sql/trinventum-{full,v5}.pgsql: Added triggers that disallow
+	  changing or deleting history entries.
+	* db_check.php: Explicitly disabled error reporting to prevent the
+	  obvious error about the missing 'versions' table from stopping the
+	  installation on fresh databases.
+	* functions.php (trin_get_current_date_string): Use date() instead of
+	  manual formatting - works better when leading zeros are needed.
+	* rsrc/trinventum-icon.svg: A new SVG application icon created using
+	  Inkscape (https://inkscape.org).
+	* *.php: Removed the "X-Frame-Options" META element. Added an
+	  application icon. Fixed some typos. Added license comments.
+	* *.pgsql: Fixed some typos. Added license comments.
+	* .htaccess: Forbade access to internal-use-only files: constants.php,
+	  db_functions.php, footer.php, functions.php, header.php and menu.php.
+	  Added a license comment. Adapt CSP to the SVG icon.
+	* rsrc/GNU-agpl-3.0-standalone.html: Added the license file.
+	* footer.php: Added a link to the license file.
+	* Makefile: Added an 'install' target.
+	* INSTALL-Trinventum.txt: Added the new installation method.
+
 2016-09-04	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 
 	* Trinventum version 0.4:
@@ -41,7 +80,7 @@
 	  PostgreSQL database.
 	* help.php: added information that the PL/pgSQL procedural language
 	  must be installed in the logical PostgreSQL database. Added
-	  information about session timeout. Updated infomation about
+	  information about session timeout. Updated information about
 	  transaction and product modifying. Minor editorial corrections.
 	* db_check.php: stopping on first error, reading the error before
 	  rolling back the transaction, displaying a nice page in case of an
@@ -68,7 +107,7 @@
 	  default of 60 seconds.
 	* trinventum.css, login.php: improved form element alignment on the
 	  login page
-	* add_transaction.php: fixed the possiblity to continue when no
+	* add_transaction.php: fixed the possibility to continue when no
 	  product or product instance is selected
 
 2016-02-26	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
@@ -109,7 +148,7 @@
 	* buyers.php: make buyer e-mail address clickable. Display how many
 	  products have been bought by each buyer, per product type
 	* details.php: displaying buyer's name instead of ID in the
-	  product sellings' list, displaying also product sellers, added a
+	  product sales' list, displaying also product sellers, added a
 	  title to the photo. Allow editing product properties one by one.
 	  Displaying product definition history of changes.
 	* functions.php (trin_create_product_def_form), add_transaction.php,

@@ -1,24 +1,26 @@
 <?php
 	/*
-	Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
-
-	This file is part of Trinventum (Transaction and Inventory Unified Manager),
-	 a software that helps manage an e-commerce business.
-	Trinventum homepage: https://trinventum.sourceforge.io/
-
-	 This program is free software: you can redistribute it and/or modify
-	 it under the terms of the GNU Affero General Public License as published by
-	 the Free Software Foundation, either version 3 of the License, or
-	 (at your option) any later version.
-
-	 This program is distributed in the hope that it will be useful,
-	 but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 GNU Affero General Public License for more details.
-
-	 You should have received a copy of the GNU Affero General Public License
-	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	*/
+	 * Trinventum - transaction adding page.
+	 *
+	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 *
+	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
+	 *  a software that helps manage an e-commerce business.
+	 * Trinventum homepage: https://trinventum.sourceforge.io/
+	 *
+	 * This program is free software: you can redistribute it and/or modify
+	 * it under the terms of the GNU Affero General Public License as published by
+	 * the Free Software Foundation, either version 3 of the License, or
+	 * (at your option) any later version.
+	 *
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU Affero General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU Affero General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
 
 	session_start();
 
@@ -113,7 +115,7 @@
 				}
 				else
 				{
-					// seller, buer and the other parameters not selected
+					// seller, buyer and the other parameters not selected
 					$display_form = TRUE;
 					$button_title = 'Add transaction';
 				}
@@ -136,7 +138,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <HTML lang="en">
-<HEAD>
+<HEAD profile="http://www.w3.org/2005/10/profile">
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
@@ -144,9 +146,9 @@
 			trin_include_css ();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
-<META HTTP-EQUIV="X-Frame-Options"    CONTENT="DENY">
 
 <TITLE> Trinventum - register a transaction </TITLE>
+<link rel="icon" type="image/svg+xml" href="rsrc/trinventum-icon.svg">
 
 <META NAME="Author" CONTENT="Bogdan D.">
 <META NAME="Description" CONTENT="Trinventum e-commerce manager">
@@ -176,7 +178,7 @@
 					$products = trin_db_get_product_defs ($db);
 					if ($products !== FALSE)
 					{
-						echo "<p>Product type:\n";
+						echo '<p><label for=' . TRIN_PROD_DETAIL_PARAM . ">Product type:</label>\n";
 
 						$product_names = array();
 						$product_values = array();
@@ -232,7 +234,7 @@
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
 						if ($products !== FALSE)
 						{
-							echo "<p>Product piece:\n";
+							echo '<p><label for=' . TRIN_DB_PROD_INST_FIELD_ID . ">Product piece:</label>\n";
 
 							$product_options = array();
 							while (TRUE)
@@ -284,7 +286,7 @@
 					$buyers = trin_db_get_buyers ($db);
 					if ($buyers !== FALSE)
 					{
-						echo "<p>Buyer:\n";
+						echo '<p><label for=' . TRIN_DB_BUYER_PARAM_ID . ">Buyer:</label>\n";
 
 						$buyer_names = array();
 						$buyer_values = array();
@@ -322,7 +324,7 @@
 					$sellers = trin_db_get_sellers ($db);
 					if ($sellers !== FALSE)
 					{
-						echo "<p>Seller:\n";
+						echo '<p><label for=' . TRIN_DB_SELLER_PARAM_ID . ">Seller:</label>\n";
 
 						$seller_names = array();
 						$seller_values = array();
@@ -425,7 +427,7 @@
 				trin_display_error($error);
 ?>
 <p>
-Sell price:
+<label for="<?php echo TRIN_DB_TRANS_PARAM_PRICE ?>">Sell price:</label>
 <?php
 				trin_create_text_input('text', '20',
 					TRIN_DB_TRANS_PARAM_PRICE,
@@ -436,7 +438,7 @@ Sell price:
 </p>
 
 <p>
-Was the product paid for:
+<label for="<?php echo TRIN_DB_TRANS_PARAM_PAID ?>">Was the product paid for:</label>
 <?php
 				trin_create_select(TRIN_DB_TRANS_PARAM_PAID,
 					$param_trans_paid,
@@ -447,7 +449,7 @@ Was the product paid for:
 </p>
 
 <p>
-Was the product sent:
+<label for="<?php echo TRIN_DB_TRANS_PARAM_SENT ?>">Was the product sent:</label>
 <?php
 				trin_create_select(TRIN_DB_TRANS_PARAM_SENT,
 					$param_trans_sent,
@@ -458,7 +460,7 @@ Was the product sent:
 </p>
 
 <p>
-Sell date:
+<label for="<?php echo TRIN_DB_TRANS_PARAM_SELLDATE ?>">Sell date:</label>
 <?php
 				trin_create_text_input('text', '20',
 					TRIN_DB_TRANS_PARAM_SELLDATE,
@@ -468,7 +470,7 @@ Sell date:
 </p>
 
 <p>
-Send price:
+<label for="<?php echo TRIN_DB_TRANS_PARAM_SEND_PRICE ?>">Send price:</label>
 <?php
 				trin_create_text_input('text', '20',
 					TRIN_DB_TRANS_PARAM_SEND_PRICE,
@@ -479,7 +481,7 @@ Send price:
 </p>
 
 <p>
-Send cost:
+<label for="<?php echo TRIN_DB_TRANS_PARAM_SEND_COST ?>">Send cost:</label>
 <?php
 				trin_create_text_input('text', '20',
 					TRIN_DB_TRANS_PARAM_SEND_COST,

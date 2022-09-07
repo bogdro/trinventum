@@ -1,16 +1,33 @@
 Trinventum e-commerce business manager installation instructions.
+-----------------------------------------------------------------
 
 To install:
 
 - create the database user to host the application's database,
-  e.g. run as 'postgres':
-  createuser -P trinventum
+  e.g. run as 'postgres' (you usually do 'su - postgres' as 'root' to login
+  to that account):
+
+	createuser -P trinventum
 
 - create the application's database, e.g. run as 'postgres':
-  createdb -O trinventum trinventum
+
+	createdb -O trinventum trinventum
 
 - copy the contents of the 'webapp' directory (including hidden files) to a
   chosen location reachable by the web server.
+  Alternatively, if you have the 'make' program and some common Unix/Linux
+  utilities, you can run 'make install', passing the prefix of the target
+  directory. Trinventum will be installed in "$(PREFIX)/trinventum". Examples:
+
+	make install PREFIX=/srv/www/html
+	make install PREFIX=/var/www/html
+	make install PREFIX=$HOME/public_html
+
+- the necessary database structures will be created by the application
+  itself upon the first successful login. There is no need to run any
+  SQL scripts manually.
+
+-----------------------------------------------------------------
 
 To uninstall, if needed:
 
@@ -18,8 +35,10 @@ To uninstall, if needed:
   during installation,
 
 - delete the application's database - run as 'postgres':
-  dropdb trinventum
+
+	dropdb trinventum
 
 - delete the application's database user - run as 'postgres':
-  dropuser trinventum
+
+	dropuser trinventum
 
