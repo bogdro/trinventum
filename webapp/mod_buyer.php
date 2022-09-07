@@ -233,11 +233,11 @@
 						. $next_his[TRIN_DB_BUYER_PARAM_EMAIL]
 						. '</a>';
 					echo '<tr class="c">' .
-						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_NAME] . '</td>' .
-						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_ADDRESS] . '</td>' .
-						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_LOGIN] . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_BUYER_PARAM_NAME]) . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_BUYER_PARAM_ADDRESS]) . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_BUYER_PARAM_LOGIN]) . '</td>' .
 						'<td>' . $buyer_email . '</td>' .
-						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_COMMENT] . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_BUYER_PARAM_COMMENT]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_BUYER_PARAM_TIMESTAMP] . '</td></tr>'
 						. "\n";

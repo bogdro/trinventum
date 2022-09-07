@@ -273,7 +273,7 @@ Sample queries:
 					$_POST[TRIN_FORM_PARAM_DB_QUERY];
 			}
 
-			trin_create_text_textarea ('15', '70', TRIN_FORM_PARAM_DB_QUERY,
+			trin_create_textarea ('15', '70', TRIN_FORM_PARAM_DB_QUERY,
 				$param_db_query_value, $validation_failed_fields)
 ?>
 

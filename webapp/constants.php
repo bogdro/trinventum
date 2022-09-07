@@ -22,7 +22,7 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	define ('TRIN_VERSION', '0.5');
+	define ('TRIN_VERSION', '0.7');
 
 	define ('TRIN_HTTP_DATE_FORMAT', 'D, j M Y G:i:s T');
 

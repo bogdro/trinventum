@@ -148,8 +148,8 @@ OR
 							"<td><a href=\"$det_link\">"
 								. $next_prod[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
 							"<td><a href=\"$prod_link\">"
-								. $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME] . '</a></td>' .
-							'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_STATUS] . '</td>' .
+								. trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
+							'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_INST_FIELD_STATUS]) . '</td>' .
 							'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_COST] . '</td></tr>'
 							. "\n";
 					}

@@ -202,7 +202,7 @@
 					}
 					$have_cat = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . $next_his[TRIN_DB_PROD_CAT_FIELD_NAME] . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_CAT_FIELD_NAME]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_CAT_FIELD_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_CAT_FIELD_TIMESTAMP] . '</td></tr>'
 						. "\n";

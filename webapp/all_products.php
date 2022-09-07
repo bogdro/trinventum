@@ -120,14 +120,14 @@
 					echo "<tr class=\"$rowclass\">" .
 						"<td><a href=\"$prod_det_link\">" . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID] . '</a></td>' .
 						"<td><a href=\"$prod_det_link\">" . $next_prod[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</a></td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME] . '</td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_CATEGORY] . '</td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_BRAND] . '</td>' .
+						'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</td>' .
+						'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_CATEGORY]) . '</td>' .
+						'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_BRAND]) . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_SIZE] . '</td>' .
 						'<td>' . trin_get_gender_name($next_prod[TRIN_DB_PROD_DEF_FIELD_GENDER]) . '</td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COLOUR] . '</td>' .
+						'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_COLOUR]) . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COUNT] . '</td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COMMENT] . '<hr></td></tr>'
+						'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_COMMENT]) . '<hr></td></tr>'
 						. "\n";
 				}
 			}

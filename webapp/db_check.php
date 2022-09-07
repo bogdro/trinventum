@@ -50,11 +50,25 @@
 			$file = file_get_contents ("sql/trinventum-full.pgsql");
 			if ($file !== FALSE)
 			{
-				if (! trin_db_query ($conn, $file))
+				if (! trin_db_query ($conn, 'begin'))
 				{
 					$error_msg = "Can't update database version from $trin_db_ver to "
 						. TRIN_EXPECTED_DB_VERSION
-						. ': ' . trin_db_get_last_error ($conn);
+						. ' - cannot start transaction: '
+						. trin_db_get_last_error ($conn);
+				}
+				else
+				{
+					if (! trin_db_query ($conn, $file))
+					{
+						$error_msg = "Can't update database version from $trin_db_ver to "
+							. TRIN_EXPECTED_DB_VERSION
+							. ': ' . trin_db_get_last_error ($conn);
+					}
+					else
+					{
+						trin_db_query ($conn, 'commit');
+					}
 				}
 			}
 			else

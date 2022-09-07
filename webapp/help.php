@@ -53,63 +53,79 @@
 
 </HEAD><BODY>
 
+<?php
+	if (trin_validate_session ())
+	{
+		include ('header.php');
+		include ('menu.php');
+	}
+?>
+
+<h1 class="header">Installation and usage instructions</h1>
+
+<h2>Installation - initial steps</h2>
+
 To use Trinventum, the following steps must be performed:
 <ol>
- <li>a supported database (currently: PostgreSQL) must be running.<br>
+ <li>A supported database (currently: <a href="https://www.postgresql.org/" hreflang="en">PostgreSQL</a>) must be running.<br>
 	On a Linux system, you would do one of:
-	<pre>
-	(login to the system as the database user 'postgres', usually do
-	<code>su - postgres</code> as root)
-	pg_ctl start</pre>
-	<pre>
-	(login as 'root')
-	systemctl start postgresqlXX (XX being the version)</pre>
-	<pre>
-	(login as 'root')
-	service postgresql start</pre>
+	<ul>
+	 <li>login to the system as the database user <code>postgres</code> (you can
+		do <code>su - postgres</code> as <code>root</code> to login to that account on Linux) and run:
+	  <pre>	pg_ctl start</pre>
+	  </li>
+	 <li>login as <code>root</code> and run:
+	  <pre>	systemctl start postgresqlXX (XX being the version)</pre>
+	  </li>
+	 <li>login as <code>root</code> and run:
+	  <pre>	service postgresql start</pre>
+	  </li></ul>
 	</li>
 
- <li>a web (HTTP) server with PHP support (like Apache httpd with mod_php installed) must be running.<br>
-	On a Linux system, you would do one of (as 'root'):
+ <li>A web (HTTP) server with <a href="https://www.php.net" hreflang="en">PHP</a> support
+ 	(like the <a href="https://httpd.apache.org" hreflang="en">Apache HTTP Server</a> with mod_php installed) must be running.<br>
+	On a Linux system, you would do one of (as <code>root</code>):
 	<pre>
 	systemctl start httpd-prefork</pre>
 	<pre>
 	service httpd start</pre>
 	</li>
 
- <li>a database user must be created within the database server.<br>
-	On PostgreSQL, you would login to the system as the database user (usually do
-	<code>su - postgres</code> as root) and do:
+ <li>A database user must be created within the database server.<br>
+	On PostgreSQL, you would login to the system as the database user <code>postgres</code> and run:
 	<pre>
-	createuser -S -l -P -d -R -I some_username</pre>
+	createuser -P trinventum</pre>
 	It's advised for the user to be the owner of the database that will be created.<br>
 	It's easiest to create a user with the same name as the system user name and
-	create the database as the system user.
+	create the database as the system user.<br>
+	You can create other database users later, and give them full or less privileges
+	so that those users can execute all the activities or just the ones they have
+	access to.
 	<br><br></li>
 
- <li>a logical database must be created within the database server.<br>
-	On PostgreSQL, you would login to the system as the database user (usually do
-	<code>su - postgres</code> as root) and do:
+ <li>A logical database must be created within the database server.<br>
+	On PostgreSQL, you would login to the system as the database user <code>postgres</code> and run:
 	<pre>
-	createdb -O some_username trinventum</pre>
+	createdb -O trinventum trinventum</pre>
 	(for the specified user to be the database owner)
-	</li>
+	<br><br></li>
 
- <li>a procedural language suitable for the database must be installed in the logical database.<br>
-	On PostgreSQL, you would login to the system as the database user (usually do
-	<code>su - postgres</code> as root) and do:
+ <li>A procedural language suitable for the database must be installed in the logical database.<br>
+	On PostgreSQL versions earlier than 9.0, you would login to the system as the database user <code>postgres</code> and run:
 	<pre>
 	createlang plpgsql trinventum</pre>
-	(don't wory if it says that the language already exists).
+	(don't worry if it says that the language already exists).<br>
+	Later PostgreSQL have the language already built-in by default.
+	<br><br></li>
 
- <li>database access rules must be created within the database server.<br>
-	On PostgreSQL, you would do (change XXXX to the database username created earlier):
+ <li>Database access rules must be created within the database server unless you wish to leave the default rules.<br>
+	On PostgreSQL, you would do (as the database user <code>postgres</code> or <code>root</code>):
 	<pre>
-	cp /var/lib/pgsql/data/pg_hba.conf ~
-	echo local trinventum XXXX scram-sha-256 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
+	cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf-backup
+	echo local trinventum trinventum scram-sha-256 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
 	echo host all all 127.0.0.1/32 scram-sha-256 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf</pre>
-	(Note the double "<code>&gt;&gt;</code>" - it's <em>CRUCIAL</em> to use double "<code>&gt;</code>",
-	a single "<code>&gt;</code>" would OVERWRITE the target file).<br>
+	(Note the double "<code>&gt;&gt;</code>" - it's <em class="important">CRUCIAL</em> to use double "<code>&gt;&gt;</code>",
+	a single "<code>&gt;</code>" would <em class="important">OVERWRITE</em> the target file).<br>
 	On older PostgreSQL versions replace <code>scram-sha-256</code> with <code>md5</code>.<br>
 	If you'll need to access the database from another computer:
 	<ul>
@@ -117,31 +133,88 @@ To use Trinventum, the following steps must be performed:
 	  should be added to pg_hba.conf, containing the correct IP address</li>
 	 <li>firewall rules may need to be adjusted</li>
 	 <li>the <code>/etc/hosts.allow</code> file (tcpwrappers) may need to be adjusted</li>
-	</ul></li>
+	</ul><br></li>
 
- <li>after changing the access rules for the database server, restart it.<br>
+ <li>After changing the access rules for the database server, restart it.<br>
 	On Linux with PostgreSQL, you would do one of:
-	<pre>
-	(login to the system as the database user 'postgres')
-	pg_ctl reload</pre>
-	<pre>
-	(login as 'root')
-	service postgresql restart</pre>
+	<ul>
+	 <li>login to the system as the database user <code>postgres</code> and run:
+	  <pre>	pg_ctl reload</pre>
+	 </li>
+	 <li>login as <code>root</code> and run:
+	  <pre>	systemctl restart postgresqlXX (XX being the version)</pre>
+	 </li>
+	 <li>login as <code>root</code> and run:
+	  <pre>	service postgresql restart</pre>
+	 </li></ul></li>
 
 </ol>
-After having done all of this, point your browser to the Trinventum login page, like
-<?php echo 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php'; ?>. You enter 4 parameters there:
+
+<hr>
+
+<h2>Installation - web application</h2>
+
+To install the web application part:
+
+<ol>
+ <li><p>Copy the contents of the <code>webapp</code> directory (<em class="important">including hidden files</em>) to a
+  chosen location reachable by the web server and adjust the access modes accordingly so that the web server
+  can actually run the files.</p>
+  <p>
+  Alternatively, if you have the <code>make</code> program and some common Linux
+  utilities, you can run <code>make install</code>, passing the prefix of the target
+  directory. Trinventum will be installed in <code>$(PREFIX)/trinventum</code>. Examples:</p>
+	<pre>
+	make install PREFIX=/srv/www/html
+	make install PREFIX=/var/www/html
+	make install PREFIX=$HOME/public_html</pre>
+	</li>
+
+  <p>To install the documentation, you can add a chosen directory as the <code>DOCDIR</code>
+  parameter to <code>make install</code>. Documentation will be installed in
+  <code>$(DOCDIR)/trinventum</code>. Examples:</p>
+	<pre>
+	make install PREFIX=/srv/www/html DOCDIR=/usr/share/doc
+	make install PREFIX=/var/www/html DOCDIR=/usr/share/doc
+	make install PREFIX=$HOME/public_html DOCDIR=$HOME/tools/doc</pre>
+	</li>
+
+ <li>The necessary database structures will be created by the application
+  itself upon the first successful login of a user <em class="important">with full access to the database schema</em>
+  (like the schema owner <code>trinventum</code> created earlier).<br>
+  There is <em class="important">NO NEED</em> to run any SQL scripts manually.</li>
+</ol>
+
+If you're reading this in a browser through a web server, this step most probably succeeded.
+
+<hr>
+
+<h2>Usage</h2>
+
+After having done the installation, point your browser to the Trinventum login page, like
+<a href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php'; ?>"
+><?php echo 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php'; ?></a>.
+You enter 4 parameters there:
 <ol>
  <li>the username of the DATABASE (not system) user you've created</li>
  <li>the password of the DATABASE user you've created</li>
- <li>the database address (IP address or hostname, can also be "/tmp" if the database
- 	is running locally using the default settings)</li>
+ <li>the database address: IP address or hostname, can also be the local socket's
+ 	directory (<code>/run/postgresql</code> in some versions, <code>/tmp</code> in other)
+	if the database is running locally using the default settings</li>
  <li>the database name, which would be <code>trinventum</code></li>
 </ol>
 
 <p>
-After the first successful login, the database structures are created. If the current database
+After the first successful login as a user
+<em class="important">with full access to the database schema</em>
+(like the schema owner <code>trinventum</code> created earlier),
+the database structures are created. If the current database
 needs to be upgraded, the required scripts are run.
+</p>
+
+<p>
+Each upgrade also requires that a user <em class="important">with full access
+ to the database schema</em> logs in to the application before others.
 </p>
 
 <p>
@@ -202,7 +275,7 @@ Depending on the settings, you can perform one of these operations:
  <li>Update the product details one by one.<br>
 	You can use the "Update" button in every field to change the value of
 	just that field in the product.
-	<br><br></li>
+	</li>
 </ol>
 <p>
 In both cases:
@@ -279,6 +352,12 @@ file (<code>/etc/php.ini</code> on Linux) to see how long does the session cooki
 
 <hr>
 
+<h2>Management</h2>
+
+<p>
+There is a <a href="management.php">dedicated management page</a> with some
+of the activities you may wish to perform, including database queries.
+</p>
 <p>
 To backup the database, for PostgreSQL, you would do:
 </p>
@@ -301,20 +380,27 @@ and provide the DATABASE user password.
 To delete and re-create the database schema, run (for PostgreSQL):
 </p>
 	<pre>
-	psql trinventum
-	drop schema trinventum cascade;</pre>
+	bash$ psql trinventum
+	trinventum=&gt; drop schema trinventum cascade; quit;</pre>
 <p>
-After this, you need to re-login to Trinventum to re-create the structures.
+After this, you need to re-login to Trinventum as a user
+<em class="important">with full access to the database schema</em>
+(like the schema owner <code>trinventum</code> created earlier)
+to re-create the structures.
 </p>
 
 <p>
-To delete and re-crete the whole database, run (for PostgreSQL):
+To delete and re-crete the whole database, run (for PostgreSQL,
+login to the system as the database user <code>postgres</code> and run):
 </p>
 	<pre>
 	dropdb trinventum
 	createdb trinventum</pre>
 <p>
-After this, you need to re-login to Trinventum to re-create the structures.
+After this, you need to re-login to Trinventum as a user
+<em class="important">with full access to the database schema</em>
+(like the schema owner <code>trinventum</code> created earlier)
+to re-create the structures.
 </p>
 
 <div class="menu">

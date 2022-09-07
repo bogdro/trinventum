@@ -157,7 +157,7 @@
 						. '=' . $next_seller[TRIN_DB_SELLER_PARAM_ID];
 					echo '<tr class="c">' .
 						"<td><a href=\"$seller_det_link\">" . $next_seller[TRIN_DB_SELLER_PARAM_ID] . '</a></td>' .
-						"<td><a href=\"$seller_det_link\">" . $next_seller[TRIN_DB_SELLER_PARAM_NAME] . '</a></td></tr>'
+						"<td><a href=\"$seller_det_link\">" . trin_html_escape ($next_seller[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td></tr>'
 						. "\n";
 				}
 			}
@@ -217,7 +217,7 @@
 					echo '<tr class="c">' .
 						'<td>' . $next_sale[TRIN_DB_SELLER_PARAM_NAME] . '</td>' .
 						"<td><a href=\"$product_link\">"
-							. $next_sale[TRIN_DB_PROD_DEF_FIELD_NAME] . '</a></td>' .
+							. trin_html_escape ($next_sale[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
 						'<td>' . $next_sale[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
 						. "\n";
 				}

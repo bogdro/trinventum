@@ -407,16 +407,16 @@
 				}
 
 				echo 	"<ul>\n <li><p>Photo: $photo</p></li>\n" .
-					' <li><p>Name: ' . $param_pd_name . "</p></li>\n" .
-					' <li><p>Category: ' . $param_pd_category . "</p></li>\n" .
-					' <li><p>Brand: ' . $param_pd_brand . "</p></li>\n" .
+					' <li><p>Name: ' . trin_html_escape ($param_pd_name) . "</p></li>\n" .
+					' <li><p>Category: ' . trin_html_escape ($param_pd_category) . "</p></li>\n" .
+					' <li><p>Brand: ' . trin_html_escape ($param_pd_brand) . "</p></li>\n" .
 					' <li><p>Size: ' . $param_pd_size . "</p></li>\n" .
-					' <li><p>Length: ' . $param_pd_length . "</p></li>\n" .
-					' <li><p>Width: ' . $param_pd_width . "</p></li>\n" .
-					' <li><p>Gender: ' . trin_get_gender_name($param_pd_gender) . "</p></li>\n" .
-					' <li><p>Colour: ' . $param_pd_colour . "</p></li>\n" .
+					' <li><p>Length: ' . trin_html_escape ($param_pd_length) . "</p></li>\n" .
+					' <li><p>Width: ' . trin_html_escape ($param_pd_width) . "</p></li>\n" .
+					' <li><p>Gender: ' . trin_html_escape (trin_get_gender_name($param_pd_gender)) . "</p></li>\n" .
+					' <li><p>Colour: ' . trin_html_escape ($param_pd_colour) . "</p></li>\n" .
 					' <li><p>Count:</p><p>' . $param_pd_count . "</p></li>\n" .
-					' <li><p>Comment: ' . $param_pd_comment . "</p></li>\n" .
+					' <li><p>Comment: ' . trin_html_escape ($param_pd_comment) . "</p></li>\n" .
 					"</ul>\n";
 			}
 			else
@@ -628,7 +628,7 @@ Update product details:
 					$have_buy = TRUE;
 					echo '<tr class="c">' .
 						"<td><a href=\"$buyer_link\">"
-							. $next_buy[TRIN_DB_BUYER_PARAM_NAME] . '</a></td>' .
+							. trin_html_escape ($next_buy[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
 						'<td>' . $next_buy[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
 						. "\n";
 				}
@@ -687,7 +687,7 @@ Update product details:
 					$have_sale = TRUE;
 					echo '<tr class="c">' .
 						"<td><a href=\"$seller_link\">"
-							. $next_sale[TRIN_DB_SELLER_PARAM_NAME] . '</a></td>' .
+							. trin_html_escape ($next_sale[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
 						'<td>' . $next_sale[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
 						. "\n";
 				}
@@ -752,13 +752,13 @@ Update product details:
 					$have_his = TRUE;
 					echo '<tr class="c">' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</td>' .
-						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_NAME] . '</td>' .
-						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_BRAND] . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_DEF_FIELD_BRAND]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_SIZE] . '</td>' .
-						'<td>' . trin_get_gender_name($next_his[TRIN_DB_PROD_DEF_FIELD_GENDER]) . '</td>' .
-						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_COLOUR] . '</td>' .
-						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_COMMENT] . '</td>' .
-						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_CATEGORY] . '</td>' .
+						'<td>' . trin_html_escape (trin_get_gender_name($next_his[TRIN_DB_PROD_DEF_FIELD_GENDER])) . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_DEF_FIELD_COLOUR]) . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_DEF_FIELD_COMMENT]) . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_DEF_FIELD_CATEGORY]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_TIMESTAMP] . '<hr></td></tr>'
 						. "\n";

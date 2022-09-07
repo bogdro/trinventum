@@ -216,7 +216,7 @@
 			}
 			else
 			{
-				echo 'Product type: ' . $_POST[TRIN_PROD_DETAIL_PARAM] . "<br>\n";
+				echo 'Product type: ' . trin_html_escape ($_POST[TRIN_PROD_DETAIL_PARAM]) . "<br>\n";
 				trin_create_text_input('hidden',
 					'',
 					TRIN_PROD_DETAIL_PARAM,

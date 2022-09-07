@@ -146,7 +146,7 @@
 				$param_pp_cost = $product_det[TRIN_DB_PROD_INST_FIELD_COST];
 				$param_pp_version = $product_det[TRIN_DB_PROD_INST_FIELD_VERSION];
 
-				echo 	'<p>Status: ' . $param_pp_status . '</p>' .
+				echo 	'<p>Status: ' . trin_html_escape ($param_pp_status) . '</p>' .
 					'<p>Cost: ' . $param_pp_cost . '</p>'
 					;
 			}
@@ -268,7 +268,7 @@ Cost:
 					}
 					$have_prod = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_STATUS] . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_INST_FIELD_STATUS]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_COST] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_TIMESTAMP] . '</td></tr>'

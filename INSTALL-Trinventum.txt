@@ -1,20 +1,118 @@
-Trinventum e-commerce business manager installation instructions.
+		Trinventum e-commerce business manager
+
+		      Installation instructions.
 -----------------------------------------------------------------
 
-To install:
+-----------------
+Project home page
+-----------------
 
-- create the database user to host the application's database,
-  e.g. run as 'postgres' (you usually do 'su - postgres' as 'root' to login
-  to that account):
+https://trinventum.sourceforge.io/
+
+---------------------------------
+Initial steps - most are one-time
+---------------------------------
+
+- A PostgreSQL database server must be running.
+  On a Linux system, you would do one of:
+
+  * login to the system as the database user 'postgres' (you usually do
+    'su - postgres' as 'root' to login to that account) and run:
+
+	pg_ctl start
+
+  * login as 'root' and run:
+
+	systemctl start postgresqlXX (XX being the version)
+
+  * login as 'root' and run:
+
+	service postgresql start
+
+- A web (HTTP) server with PHP support (like the Apache HTTP Server with
+  mod_php installed) must be running.
+  On a Linux system, you would do one of (as 'root'): 
+
+  * login as 'root' and run:
+
+	systemctl start httpd-prefork
+
+  * login as 'root' and run:
+
+	service httpd start
+
+- Create the database user to host the application's database,
+  e.g. run as 'postgres':
 
 	createuser -P trinventum
 
-- create the application's database, e.g. run as 'postgres':
+  It's advised for the user to be the owner of the database that will
+   be created.
+  It's easiest to create a user with the same name as the system user name
+   and create the database as the system user.
+  You can create other database users later, and give them full or less
+   privileges so that those users can execute all the activities or just
+   the ones they have access to.
+
+- Create the application's database, e.g. run as 'postgres':
 
 	createdb -O trinventum trinventum
 
+- A procedural language suitable for the database must be installed in the
+  logical database.
+  On PostgreSQL versions earlier than 9.0, you would login to the system as
+  the database user 'postgres' and run:
+
+	createlang plpgsql trinventum
+
+  (don't worry if it says that the language already exists).
+  Later PostgreSQL have the language already built-in by default.
+
+- Database access rules must be created within the database server unless you
+  wish to leave the default rules.
+  Login to the system as the database user 'postgres' or 'root' and run:
+
+	cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf-backup
+	echo local trinventum trinventum scram-sha-256 >> /var/lib/pgsql/data/pg_hba.conf
+	echo host all all 127.0.0.1/32 scram-sha-256 >> /var/lib/pgsql/data/pg_hba.conf
+
+  (Note the double ">>" - it's CRUCIAL to use double ">>", a single ">" would
+  OVERWRITE the target file).
+
+	On older PostgreSQL versions replace 'scram-sha-256' with 'md5'.
+
+  If you'll need to access the database from another computer:
+
+  * a line similar to the 'host all all 127.0.0.1/32 scram-sha-256' should
+    be added to pg_hba.conf, containing the correct IP address,
+  * firewall rules may need to be adjusted
+  * the '/etc/hosts.allow' file (tcpwrappers) may need to be adjusted
+
+- After changing the access rules for the database server, restart it.
+  On Linux, you would do one of:
+
+  * login to the system as the database user 'postgres' and run:
+
+	pg_ctl reload
+
+  * login as 'root' and run:
+
+	systemctl restart postgresqlXX (XX being the version)
+
+  * login as 'root' and run:
+
+	service postgresql restart
+
+------------------------
+Application installation
+------------------------
+
+To install:
+
 - copy the contents of the 'webapp' directory (including hidden files) to a
-  chosen location reachable by the web server.
+  chosen location reachable by the web server and adjust the access modes
+  accordingly so that the web server can actually run the files.
+
   Alternatively, if you have the 'make' program and some common Unix/Linux
   utilities, you can run 'make install', passing the prefix of the target
   directory. Trinventum will be installed in "$(PREFIX)/trinventum". Examples:
@@ -23,16 +121,32 @@ To install:
 	make install PREFIX=/var/www/html
 	make install PREFIX=$HOME/public_html
 
+  To install the documentation, you can add a chosen directory as the DOCDIR
+  parameter to 'make install'. Documentation will be installed in
+  "$(DOCDIR)/trinventum". Examples:
+
+	make install PREFIX=/srv/www/html DOCDIR=/usr/share/doc
+	make install PREFIX=/var/www/html DOCDIR=/usr/share/doc
+	make install PREFIX=$HOME/public_html DOCDIR=$HOME/tools/doc
+
 - the necessary database structures will be created by the application
-  itself upon the first successful login. There is no need to run any
-  SQL scripts manually.
+  itself upon the first successful login as a user WITH FULL ACCESS TO THE
+  DATABASE SCHEMA (like the schema owner 'trinventum' created earlier).
+  There is no need to run any SQL scripts manually.
+
+Each upgrade also requires that a user WITH FULL ACCESS TO THE DATABASE SCHEMA
+ logs in to the application before others.
 
 -----------------------------------------------------------------
+
+Uninstallation
+--------------
 
 To uninstall, if needed:
 
 - remove the contents of the 'webapp' directory from the location chosen
-  during installation,
+  during installation (you can also run 'make uninstall', passing the same
+  prefix as during the installation),
 
 - delete the application's database - run as 'postgres':
 

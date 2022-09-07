@@ -1,3 +1,45 @@
+2022-06-21	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
+
+	* Trinventum version 0.7:
+	  Fixed invalid HTML when special characters are present in user data.
+	  Initial installation of the database structures is now atomic.
+	  Improvements in the build system. Improvements on the help page and
+	  in the documentation. Other small changes.
+	* db_check.php: Made running the full file also in a transaction.
+	* help.php: Updated with more up-to-date information and details.
+	  Display the standard header if the user is logged-in. Added a new
+	  local connection directory. Added headers and separated the
+	  installation steps from usage.
+	* footer.php: Added a link to the Trinventum page on SourceForge.
+	  Added the "Valid HTML" and "Valid CSS" images.
+	* header.php: Removed unnecessary, commented-out code.
+	* functions.php: Renamed 'trin_create_text_textarea' to just
+	  'trin_create_textarea'.
+	* functions.php (trin_html_escape): Added a function to prepare data
+	  for HTML display.
+	* functions.php (trin_create_text_input, trin_create_textarea,
+	  trin_create_select, trin_create_submits), add_transaction.php,
+	  all_products.php, buyers.php, categories.php, cat_products.php,
+	  details.php, main.php, mod_buyer.php, mod_category.php,
+	  mod_seller.php, mod_transaction.php, pieces.php, ppdetails.php,
+	  sellers.php, transactions.php): Use the new trin_html_escape()
+	  function to properly display data on web pages.
+	* Makefile: Added installing the documentation. Providing a default
+	  installation directory if none was specified on the command line.
+	  Added an 'uninstall' target. Removed forcing the GNU 'tar' format
+	  so that each 'tar' can be used for making packages.
+	* help.php, INSTALL-Trinventum.txt: Wrote that you can create other
+	  database user with less privileges later for performing just a part
+	  of the operations allowed in the system. Added that the database
+	  structures are created or upgraded upon login of a user with full
+	  access to the database schema. Added installing the documentation.
+	* trinventum.spec: Added a spec file for building RPM packages.
+	* INSTALL-Trinventum.txt: Added all the steps from the help file
+	  and the Trinventum website. Added a note about adjusting the file
+	  permissions after installation. Wrote that installing the PL/pgSQL
+	  language is required only for database earlier than 9.0. Added
+	  automatic uninstalling the application.
+
 2022-03-18	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 
 	* Trinventum version 0.5:
@@ -28,7 +70,7 @@
 	  Inkscape (https://inkscape.org).
 	* *.php: Removed the "X-Frame-Options" META element. Added an
 	  application icon. Fixed some typos. Added license comments.
-	* *.pgsql: Fixed some typos. Added license comments.
+	* sql/*.pgsql: Fixed some typos. Added license comments.
 	* .htaccess: Forbade access to internal-use-only files: constants.php,
 	  db_functions.php, footer.php, functions.php, header.php and menu.php.
 	  Added a license comment. Adapt CSP to the SVG icon.

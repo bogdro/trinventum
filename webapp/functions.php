@@ -69,9 +69,10 @@
 		$validation_failed_fields, $title = '')
 	{
 		echo "<input type=\"$type\"\n
-			value=\"$value\"\n
-			name=\"$name\"\n
-			id=\"$name\"\n";
+			value=\"" . trin_html_escape ($value) . "\"\n
+			name=\"$name\"\n"
+			//. "id=\"$name\"\n"
+			;
 		if ($size != '')
 		{
 			echo "size=\"$size\"\n";
@@ -87,7 +88,7 @@
 		echo ">\n";
 	}
 
-	function trin_create_text_textarea ($rows, $cols, $name, $value,
+	function trin_create_textarea ($rows, $cols, $name, $value,
 		$validation_failed_fields, $title = '')
 	{
 		echo "<textarea cols=\"$cols\"\n
@@ -103,7 +104,7 @@
 		{
 			$tclass .= ' red_frame';
 		}
-		echo "class=\"$tclass\">$value</textarea>\n";
+		echo "class=\"$tclass\">" . trin_html_escape ($value) . "</textarea>\n";
 	}
 
 	function trin_create_select ($name, $value, $option_names,
@@ -131,12 +132,12 @@
 		{
 			for ($i = 0; $i < $nopts; $i++)
 			{
-				echo '<option value="' . $option_values[$i] . '"';
+				echo '<option value="' . trin_html_escape ($option_values[$i]) . '"';
 				if ($value == $option_values[$i])
 				{
 					echo ' selected="selected"';
 				}
-				echo '>' . $option_names[$i] . "</option>\n";
+				echo '>' . trin_html_escape ($option_names[$i]) . "</option>\n";
 			}
 		}
 		echo "</select>\n";
@@ -146,7 +147,7 @@
 		$title = '')
 	{
 		echo "<input type=\"submit\"
-			value=\"$value\"\n";
+			value=\"" . trin_html_escape ($value) . "\"\n";
 		if ($name != '')
 		{
 			echo "name=\"$name\"\n";
@@ -401,7 +402,7 @@
 <label for="<?php echo $param_comment_name ?>">Comment or description (can be empty):</label>
 </p>
 <?php
-		trin_create_text_textarea('5', '20', $param_comment_name,
+		trin_create_textarea('5', '20', $param_comment_name,
 			$param_comment_value, $validation_failed_fields);
 
 		if ($separate_forms === TRUE)
@@ -517,7 +518,7 @@
 </span>
 <span class="par_value">
 <?php
-		trin_create_text_textarea('5', '20', $param_buyer_comment,
+		trin_create_textarea('5', '20', $param_buyer_comment,
 			$param_buyer_comment_value, $validation_failed_fields)
 ?>
 </span>
@@ -728,5 +729,10 @@ Error: <?php echo $message; ?>
 <?php
 		}
 		unset ($_SESSION[TRIN_SESS_LAST_SUCCESS]);
+	}
+
+	function trin_html_escape ($string)
+	{
+		return htmlspecialchars ($string, ENT_HTML401 | ENT_QUOTES);
 	}
 ?>

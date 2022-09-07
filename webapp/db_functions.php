@@ -346,7 +346,8 @@
 
 	function trin_db_open ($login, $pass, $dbname, $host, $timeout=60)
 	{
-		return pg_connect ("host=$host dbname=$dbname user=$login password=$pass connect_timeout=$timeout");
+		$conn = pg_connect ("host=$host dbname=$dbname user=$login password=$pass connect_timeout=$timeout");
+		return $conn;
 	}
 
 	function trin_db_close ($conn)

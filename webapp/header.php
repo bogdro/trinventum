@@ -22,19 +22,6 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 ?>
-<?php /*
-<div>
-<span class="l">
-Trinventum e-commerce management software
-</span>
-<span class="fright">
-<a href="help.php">Help</a>
-|
-<a href="logout.php">Logout</a>
-</span>
-<hr>
-</div>
-*/ ?>
 <div class="r">
 <a href="help.php">Help</a>
 |

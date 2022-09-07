@@ -36,13 +36,12 @@ Various versions of Trinventum were successfully used with the following
 	- 9.x (9.0 tested)
 	- 13.x (13.1 tested)
 	- 14.x (14.1 tested)
-	- other versions may also work
 2. Apache HTTP Server:
 	- 2.2.x (2.2.22 tested)
 	- 2.4.x (2.4.46 and 2.4.52 tested)
-	- other versions may also work
 3. PHP:
 	- 5.x (5.3.20 tested)
 	- 8.0.x (8.0.2 tested)
 	- 8.1.x (8.1.3 tested)
-	- other versions may also work
+
+Other versions may also work.

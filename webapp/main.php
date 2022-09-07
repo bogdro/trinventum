@@ -94,7 +94,7 @@
 					$cat_det_link = 'cat_products.php?' . TRIN_CAT_DETAIL_PARAM
 						. '=' . $next_cat[TRIN_DB_PROD_CAT_FIELD_ID];
 					echo "<li><a href=\"$cat_det_link\">"
-						. $next_cat[TRIN_DB_PROD_CAT_FIELD_NAME]
+						. trin_html_escape ($next_cat[TRIN_DB_PROD_CAT_FIELD_NAME])
 						. "</a></li>\n";
 				}
 				echo "</ul>\n";

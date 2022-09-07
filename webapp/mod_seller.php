@@ -198,7 +198,7 @@
 					}
 					$have_his = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . $next_his[TRIN_DB_SELLER_PARAM_NAME] . '</td>' .
+						'<td>' . trin_html_escape ($next_his[TRIN_DB_SELLER_PARAM_NAME]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_SELLER_PARAM_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_SELLER_PARAM_TIMESTAMP] . '</td></tr>'
 						. "\n";

@@ -195,11 +195,11 @@
 						. '</a>';
 					echo '<tr class="c">' .
 						"<td><a href=\"$buyer_det_link\">" . $next_buyer[TRIN_DB_BUYER_PARAM_ID] . '</a></td>' .
-						"<td><a href=\"$buyer_det_link\">" . $next_buyer[TRIN_DB_BUYER_PARAM_NAME] . '</a></td>' .
-						'<td>' . $next_buyer[TRIN_DB_BUYER_PARAM_ADDRESS] . '</td>' .
-						'<td>' . $next_buyer[TRIN_DB_BUYER_PARAM_LOGIN] . '</td>' .
+						"<td><a href=\"$buyer_det_link\">" . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
+						'<td>' . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_ADDRESS]) . '</td>' .
+						'<td>' . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_LOGIN]) . '</td>' .
 						'<td>' . $buyer_email . '</td>' .
-						'<td>' . $next_buyer[TRIN_DB_BUYER_PARAM_COMMENT] . '</td></tr>'
+						'<td>' . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_COMMENT]) . '</td></tr>'
 						. "\n";
 				}
 			}
@@ -257,9 +257,9 @@
 						. '=' . $next_sale[TRIN_DB_PROD_DEF_FIELD_ID];
 					$have_sale = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . $next_sale[TRIN_DB_BUYER_PARAM_NAME] . '</td>' .
+						'<td>' . trin_html_escape ($next_sale[TRIN_DB_BUYER_PARAM_NAME]) . '</td>' .
 						"<td><a href=\"$product_link\">"
-							. $next_sale[TRIN_DB_PROD_DEF_FIELD_NAME] . '</a></td>' .
+							. trin_html_escape ($next_sale[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
 						'<td>' . $next_sale[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
 						. "\n";
 				}
