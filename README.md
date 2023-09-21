@@ -25,18 +25,20 @@ Trinventum homepage: <https://trinventum.sourceforge.io/>
 
 Various versions of Trinventum were successfully used with the following components in the following versions:
 
-1. PostgreSQL:
-	- 8.x (8.4 tested)
-	- 9.x (9.0 tested)
-	- 13.x (13.1 tested)
-	- 14.x (14.1 tested)
-2. Apache HTTP Server:
-	- 2.2.x (2.2.22 tested)
-	- 2.4.x (2.4.46 and 2.4.52 tested)
-3. PHP:
-	- 5.x (5.3.20 tested)
-	- 8.0.x (8.0.2 tested)
-	- 8.1.x (8.1.3 tested)
+ 1. PostgreSQL:
+  - 8.x (8.4 tested)
+  - 9.x (9.0 tested)
+  - 13.x (13.1 tested)
+  - 14.x (14.1 tested)
+  - 15.x (15.1 tested)
+ 2. Apache HTTP Server:
+  - 2.2.x (2.2.22 tested)
+  - 2.4.x (2.4.46, 2.4.52 and 2.4.54 tested)
+ 3. PHP:
+  - 5.x (5.3.20 tested)
+  - 8.0.x (8.0.2 tested)
+  - 8.1.x (8.1.3 tested)
+  - 8.2.x (8.2.1 tested)
 
 Other versions may also work.
 
