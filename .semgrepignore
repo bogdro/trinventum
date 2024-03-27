@@ -1,0 +1,15 @@
+webapp/rsrc/GNU-agpl-3.0-standalone.html
+
+.gitignore
+.git/
+.github/
+.gitlab*
+
+:include .gitignore
+
+# Semgrep rules folder
+.semgrep
+
+# Semgrep-action log folder
+.semgrep_logs/
+

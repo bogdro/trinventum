@@ -192,8 +192,8 @@ If you're reading this in a browser through a web server, this step most probabl
 <h2>Usage</h2>
 
 After having done the installation, point your browser to the Trinventum login page, like
-<a href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php'; ?>"
-><?php echo 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php'; ?></a>.
+<a href="<?php echo $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php'; ?>"
+><?php echo $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php'; ?></a>.
 You enter 4 parameters there:
 <ol>
  <li>the username of the DATABASE (not system) user you've created</li>
