@@ -44,61 +44,7 @@
 	}
 	else
 	{
-		if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DUMP]))
-		{
-			$dump_file = tempnam (sys_get_temp_dir(), 'DUMP');
-			if ($dump_file !== FALSE)
-			{
-				$output = array();
-				$ret = 0;
-				$cmd = 'pg_dump -h '
-					. $_SESSION[TRIN_SESS_DB_HOST]
-					. ' -U '
-					. $_SESSION[TRIN_SESS_DB_LOGIN]
-					. ' -w -Fc '
-					. $_SESSION[TRIN_SESS_DB_DBNAME]
-					. "> $dump_file";
-				exec ($cmd, $output, $ret);
-
-				if ($ret != 0)
-				{
-					$error = "Error code $ret while saving the dump: "
-						. $cmd . nl2br (implode ('', $output));
-				}
-			}
-			else
-			{
-				$error = 'Cannot create temporary file';
-			}
-		}
-		else if (isset ($_POST[TRIN_FORM_SUBMIT_DB_RESTORE])
-			&& isset ($_FILES[TRIN_FORM_PARAM_DB_RESTORE_FILE]))
-		{
-			if (is_uploaded_file ($_FILES[TRIN_FORM_PARAM_DB_RESTORE_FILE]['tmp_name']))
-			{
-				$output = array();
-				$ret = 0;
-				$cmd = 'pg_restore -h '
-					. $_SESSION[TRIN_SESS_DB_HOST]
-					. ' -U '
-					. $_SESSION[TRIN_SESS_DB_LOGIN]
-					. ' -w -d '
-					. $_SESSION[TRIN_SESS_DB_DBNAME]
-					. ' ' . $_FILES[TRIN_FORM_PARAM_DB_RESTORE_FILE]['tmp_name'];
-				exec ($cmd, $output, $ret);
-
-				if ($ret != 0)
-				{
-					$error = "Error code $ret while restoring the dump: "
-						. $cmd . nl2br (implode ('', $output));
-				}
-			}
-			else
-			{
-				$error = 'No file uploaded';
-			}
-		}
-		else if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY])
+		if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY])
 			&& isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY2]))
 		{
 			// destroy and logout if successful
@@ -360,31 +306,6 @@ Sample queries:
 ?>
 
 <hr>
-
-<?php
-
-/*
-<!-- ========================== Database dump =========================== -->
-
-<h2 class="c">Database dump</h2>
-
-<form action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
-<input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DUMP; ?>" value="Download database dump">
-</form>
-
-<hr>
-
-<!-- ========================== Database restore =========================== -->
-
-<h2 class="c">Database restore</h2>
-
-<form enctype="multipart/form-data" action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
-<input type="file" name="<?php echo TRIN_FORM_PARAM_DB_RESTORE_FILE; ?>"><br>
-<input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_RESTORE; ?>" value="Restore database">
-</form>
-
-<hr>*/
-?>
 
 <!-- ========================== Connection parameters =========================== -->
 
