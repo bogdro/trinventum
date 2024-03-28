@@ -397,7 +397,7 @@
 				{
 					$photo = '<a href="get_photo.php?'
 						. TRIN_PROD_PHOTO_PARAM . '='
-						. $product_id
+						. trin_html_escape ($product_id)
 						. '" title="Click to see the original picture">'
 						. $product_det[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</a>';
 				}
