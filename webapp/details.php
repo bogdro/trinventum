@@ -353,7 +353,7 @@
 <a href="main.php">Return</a>
 </div>
 
-<p>Details of product <?php echo $product_id; ?>:</p>
+<p>Details of product <?php echo trin_html_escape($product_id); ?>:</p>
 <?php
 		$param_pd_name = '';
 		$param_pd_photo = '';
@@ -410,12 +410,12 @@
 					' <li><p>Name: ' . trin_html_escape ($param_pd_name) . "</p></li>\n" .
 					' <li><p>Category: ' . trin_html_escape ($param_pd_category) . "</p></li>\n" .
 					' <li><p>Brand: ' . trin_html_escape ($param_pd_brand) . "</p></li>\n" .
-					' <li><p>Size: ' . $param_pd_size . "</p></li>\n" .
+					' <li><p>Size: ' . trin_html_escape($param_pd_size) . "</p></li>\n" .
 					' <li><p>Length: ' . trin_html_escape ($param_pd_length) . "</p></li>\n" .
 					' <li><p>Width: ' . trin_html_escape ($param_pd_width) . "</p></li>\n" .
 					' <li><p>Gender: ' . trin_html_escape (trin_get_gender_name($param_pd_gender)) . "</p></li>\n" .
 					' <li><p>Colour: ' . trin_html_escape ($param_pd_colour) . "</p></li>\n" .
-					' <li><p>Count:</p><p>' . $param_pd_count . "</p></li>\n" .
+					' <li><p>Count:</p><p>' . trin_html_escape($param_pd_count) . "</p></li>\n" .
 					' <li><p>Comment: ' . trin_html_escape ($param_pd_comment) . "</p></li>\n" .
 					"</ul>\n";
 			}
@@ -567,7 +567,7 @@ Update product details:
 						. '=' . $next_prod[TRIN_DB_PROD_INST_FIELD_ID];
 					$have_prod = TRUE;
 					echo '<tr class="c">' .
-						"<td><a href=\"$det_link\">"
+						'<td><a href=\"' . trin_html_escape($det_link) . '">'
 							. $next_prod[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_STATUS] . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_COST] . '</td></tr>'

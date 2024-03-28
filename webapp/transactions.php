@@ -115,7 +115,7 @@
 </div>
 
 <div class="menu">
-<form action="<?php echo trin_get_self_action (); ?>" method="GET">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="GET">
 List
 <?php
 		trin_create_text_input('text', '11', TRIN_DB_TRANS_LIST_PARAM_COUNT,
@@ -130,7 +130,8 @@ List
 first ones - <input type="submit" value="Go!">
 </form>
 OR
-<a href="<?php echo $_SERVER['PHP_SELF'] . '?' . TRIN_DB_TRANS_PARAM_LIST . '=1'; ?>">List all transactions</a>
+<a href="<?php echo trin_html_escape($_SERVER['PHP_SELF']) . '?' . TRIN_DB_TRANS_PARAM_LIST . '=1'; ?>"
+>List all transactions</a>
 </div>
 
 <?php

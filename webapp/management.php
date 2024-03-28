@@ -209,7 +209,7 @@ Sample queries:
 	</li>
 </ul>
 
-<form action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
 <label for="<?php echo TRIN_FORM_PARAM_DB_QUERY ?>">Query:</label>
 <?php
 			$param_db_query_value = '';
@@ -367,7 +367,7 @@ Sample queries:
 This operation deletes all structures and data in the database and cannot be reversed.
 </p>
 
-<form action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
 <input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY; ?>" value="Destroy database">
 </form>
 
@@ -395,7 +395,7 @@ If you proceed, you will be logged-out as the application will no longer be usab
 After logging-in again, the database structures will be re-created, but with no data.
 </p>
 
-<form action="<?php echo trin_get_self_action (); ?>" method="POST" class="c">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
 <input type="hidden" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY; ?>" value="1">
 <input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY2; ?>" value="Proceed">
 </form>
