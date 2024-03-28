@@ -86,7 +86,7 @@
 ?>
 
 <div class="menu">
-<form action="<?php echo trin_get_self_action (); ?>" method="GET">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="GET">
 List
 <?php
 		trin_create_text_input('text', '11', TRIN_DB_PROD_INST_LIST_PARAM_COUNT,
@@ -101,7 +101,7 @@ List
 first ones - <input type="submit" value="Go!">
 </form>
 OR
-<a href="<?php echo $_SERVER['PHP_SELF'] . '?' . TRIN_DB_PROD_INST_PARAM_LIST . '=1'; ?>"
+<a href="<?php echo trin_html_escape($_SERVER['PHP_SELF']) . '?' . TRIN_DB_PROD_INST_PARAM_LIST . '=1'; ?>"
 >List all product pieces</a>
 </div>
 

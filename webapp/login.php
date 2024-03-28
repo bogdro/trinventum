@@ -133,7 +133,7 @@ Trinventum e-commerce management software
 </h1>
 
 <div class="login_box">
-<form action="<?php echo trin_get_self_action (); ?>" method="POST">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST">
 
 <p class="c">
 Database connection parameters:

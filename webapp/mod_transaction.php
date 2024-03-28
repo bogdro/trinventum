@@ -191,10 +191,10 @@
 <a href="<?php echo $return_link; ?>">Return</a>
 |
 <a href="<?php echo 'mod_transaction.php?' . TRIN_DB_TRANS_PARAM_ID
-	. '=' . $t_id; ?>">Start anew</a>
+	. '=' . trin_html_escape($t_id); ?>">Start anew</a>
 </div>
 
-<p>Details of transaction <?php echo $t_id; ?>:</p>
+<p>Details of transaction <?php echo trin_html_escape($t_id); ?>:</p>
 <?php
 			$param_trans_prod = '';
 			$param_trans_seller = '';
@@ -308,7 +308,7 @@
 Update details (warning - this updates ALL the given details):
 </p>
 <div class="login_box c">
-<form action="<?php echo trin_get_self_action (); ?>" method="POST">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST">
 <?php
 			$error = '';
 
@@ -360,7 +360,7 @@ Update details (warning - this updates ALL the given details):
 			}
 			else
 			{
-				echo 'Product type: ' . $_POST[TRIN_PROD_DETAIL_PARAM] . "<br>\n";
+				echo 'Product type: ' . trin_html_escape($_POST[TRIN_PROD_DETAIL_PARAM]) . "<br>\n";
 				trin_create_text_input('hidden',
 					'',
 					TRIN_PROD_DETAIL_PARAM,
@@ -423,7 +423,7 @@ Update details (warning - this updates ALL the given details):
 
 			if ($display_trans_params)
 			{
-				echo 'Product piece: ' . $_POST[TRIN_DB_PROD_INST_FIELD_ID] . "<br>\n";
+				echo 'Product piece: ' . trin_html_escape($_POST[TRIN_DB_PROD_INST_FIELD_ID]) . "<br>\n";
 				// display a list of sellers & buyers
 				// and the remaining fields for a transaction
 				if ($db)
@@ -750,7 +750,7 @@ Send cost:
 <a href="<?php echo $return_link; ?>">Return</a>
 |
 <a href="<?php echo 'mod_transaction.php?' . TRIN_DB_TRANS_PARAM_ID
-	. '=' . $t_id; ?>">Start anew</a>
+	. '=' . trin_html_escape($t_id); ?>">Start anew</a>
 </div>
 
 <?php

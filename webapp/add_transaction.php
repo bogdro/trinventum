@@ -164,7 +164,7 @@
 			trin_display_error($error);
 ?>
 <div class="login_box c">
-<form action="<?php echo trin_get_self_action (); ?>" method="POST">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST">
 <?php
 			$error = '';
 
@@ -278,7 +278,7 @@
 
 			if ($display_trans_params)
 			{
-				echo 'Product piece: ' . $_POST[TRIN_DB_PROD_INST_FIELD_ID] . "<br>\n";
+				echo 'Product piece: ' . trin_html_escape($_POST[TRIN_DB_PROD_INST_FIELD_ID]) . "<br>\n";
 				// display a list of sellers & buyers
 				// and the remaining fields for a transaction
 				if ($db)

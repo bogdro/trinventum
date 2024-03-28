@@ -124,10 +124,10 @@
 		trin_display_error($error);
 ?>
 <div class="menu">
-<a href="<?php echo $return_link; ?>">Return</a>
+<a href="<?php echo trin_html_escape($return_link); ?>">Return</a>
 </div>
 
-<p>Details of product piece <?php echo $product_inst_id; ?>:</p>
+<p>Details of product piece <?php echo trin_html_escape($product_inst_id); ?>:</p>
 <?php
 		$param_pp_status = '';
 		$param_pp_cost = '';
@@ -176,7 +176,7 @@ Update product piece details (warning - this updates ALL the given details):
 </p>
 
 <div class="login_box c">
-<form action="<?php echo trin_get_self_action (); ?>" method="POST">
+<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST">
 <?php
 		// if the product piece failed to be updated,
 		// refresh it from the DB and make the user
@@ -303,7 +303,7 @@ Cost:
 </table>
 
 <div class="menu">
-<a href="<?php echo $return_link; ?>">Return</a>
+<a href="<?php echo trin_html_escape($return_link); ?>">Return</a>
 </div>
 
 <?php

@@ -183,7 +183,7 @@
 		)
 	{
 ?>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 ?>
 <p>
@@ -201,7 +201,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -229,7 +229,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -249,7 +249,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -269,7 +269,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -290,7 +290,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -311,7 +311,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -331,7 +331,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -351,7 +351,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -371,7 +371,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -393,7 +393,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -413,7 +413,7 @@
 				'Update', TRUE);
 ?>
 </form>
-<form enctype="multipart/form-data" action="<?php echo $action; ?>" method="POST">
+<form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
 <?php
 		}
 ?>
@@ -443,7 +443,7 @@
 ?>
 <hr>
 <p>
-<input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
+<input type="submit" value="<?php echo trin_html_escape($button_title); ?>"> <input type="reset" value="Reset">
 </p>
 </form>
 <?php
@@ -462,7 +462,7 @@
 		)
 	{
 ?>
-<form action="<?php echo $action; ?>" method="POST">
+<form action="<?php echo trin_html_escape($action); ?>" method="POST">
 
 <p>
 <span class="par_name">
@@ -545,7 +545,7 @@
 		)
 	{
 ?>
-<form action="<?php echo $action; ?>" method="POST">
+<form action="<?php echo trin_html_escape($action); ?>" method="POST">
 
 <p>
 <span class="par_name">
@@ -580,7 +580,7 @@
 		)
 	{
 ?>
-<form action="<?php echo $action; ?>" method="POST">
+<form action="<?php echo trin_html_escape($action); ?>" method="POST">
 
 <p>
 <span class="par_name">
@@ -621,20 +621,20 @@
 
 	function trin_get_self_action ()
 	{
-		$action = $_SERVER['PHP_SELF'];
+		$action = trin_html_escape($_SERVER['PHP_SELF']);
 		if (isset ($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
 		{
-			$action .= '?' . str_replace ('&', '&amp;', $_SERVER['QUERY_STRING']);
+			$action .= '?' . trin_html_escape($_SERVER['QUERY_STRING']);
 		}
 		return $action;
 	}
 
 	function trin_get_self_location ()
 	{
-		$action = $_SERVER['PHP_SELF'];
+		$action = trin_html_escape($_SERVER['PHP_SELF']);
 		if (isset ($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
 		{
-			$action .= '?' . $_SERVER['QUERY_STRING'];
+			$action .= '?' . trin_html_escape($_SERVER['QUERY_STRING']);
 		}
 		return $action;
 	}
