@@ -128,7 +128,7 @@
 ?>
 
 <h1 class="title_box c">
-<img src="rsrc/trinventum-icon.svg" class="vert_mid">
+<img src="rsrc/trinventum-icon.svg" class="vert_mid" alt="[Trinventum logo]">
 Trinventum e-commerce management software
 </h1>
 
