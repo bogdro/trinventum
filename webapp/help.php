@@ -24,9 +24,9 @@
 
 	session_start();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
-	include_once ('db_functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
+	include_once 'db_functions.php';
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
@@ -56,8 +56,8 @@
 <?php
 	if (trin_validate_session ())
 	{
-		include ('header.php');
-		include ('menu.php');
+		include 'header.php';
+		include 'menu.php';
 	}
 ?>
 
@@ -413,7 +413,7 @@ to re-create the structures.
 </div>
 
 <?php
-		include ('footer.php');
+		include 'footer.php';
 ?>
 
 </BODY></HTML>

@@ -24,9 +24,9 @@
 
 	session_start();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
-	include_once ('db_functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
+	include_once 'db_functions.php';
 
 	if (! trin_validate_session ())
 	{
@@ -195,7 +195,7 @@ Fix the problem and <a href="login.php" hreflang="en">log-in again</a>.
 
 <?php
 		}
-		include ('footer.php');
+		include 'footer.php';
 ?>
 
 </BODY></HTML>

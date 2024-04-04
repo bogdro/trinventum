@@ -24,9 +24,9 @@
 
 	session_start();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
-	include_once ('db_functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
+	include_once 'db_functions.php';
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
@@ -63,8 +63,8 @@
 </HEAD><BODY>
 
 <?php
-		include ('header.php');
-		include ('menu.php');
+		include 'header.php';
+		include 'menu.php';
 
 		$offset = 0;
 		$limit = 1000000000;
@@ -312,8 +312,8 @@ OR
 
 <?php
 		} // for $m
-		include ('menu.php');
-		include ('footer.php');
+		include 'menu.php';
+		include 'footer.php';
 ?>
 
 </BODY></HTML>

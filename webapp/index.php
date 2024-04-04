@@ -24,11 +24,11 @@
 
 	session_start ();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
 
 	/*
-	include_once ('db_functions.php');
+	include_once 'db_functions.php';
 
 	function sess_open ($path, $name) {}
 

@@ -22,7 +22,7 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	include_once ('constants.php');
+	include_once 'constants.php';
 
 	define ('TRIN_QUERY_DB_CHECK', 'select now()');
 	define ('TRIN_QUERY_DB_VERSION_CHECK',
