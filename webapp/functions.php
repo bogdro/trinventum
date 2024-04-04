@@ -143,6 +143,28 @@
 		echo "</select>\n";
 	}
 
+	function trin_create_file_input ($name, $accept_type,
+		$validation_failed_fields, $title = '')
+	{
+		echo "<input type=\"file\"\n
+			name=\"$name\"\n"
+			//. "id=\"$name\"\n"
+			;
+		if ($title != '')
+		{
+			echo "title=\"$title\"\n";
+		}
+		if ($accept_type != '')
+		{
+			echo "accept=\"$accept_type\"\n";
+		}
+		if (in_array ($name, $validation_failed_fields))
+		{
+			echo "class=\"red_frame\"\n";
+		}
+		echo ">\n";
+	}
+
 	function trin_create_submits ($name, $value, $add_reset,
 		$title = '')
 	{
@@ -238,8 +260,8 @@
 <label for="<?php echo $param_photo_name ?>">Photo/image:</label>
 </p>
 <?php
-		trin_create_text_input('file', '50', $param_photo_name,
-			$param_photo_value, $validation_failed_fields);
+		trin_create_file_input($param_photo_name, 'image/*',
+			$validation_failed_fields);
 
 		if ($separate_forms === TRUE)
 		{
