@@ -178,7 +178,7 @@
 					$products = trin_db_get_product_defs ($db);
 					if ($products !== FALSE)
 					{
-						echo '<p><label for=' . TRIN_PROD_DETAIL_PARAM . ">Product type:</label>\n";
+						echo '<p><label for="' . TRIN_PROD_DETAIL_PARAM . '">Product type:</label>' . "\n";
 
 						$product_names = array();
 						$product_values = array();
@@ -234,7 +234,7 @@
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
 						if ($products !== FALSE)
 						{
-							echo '<p><label for=' . TRIN_DB_PROD_INST_FIELD_ID . ">Product piece:</label>\n";
+							echo '<p><label for="' . TRIN_DB_PROD_INST_FIELD_ID . '">Product piece:</label>' . "\n";
 
 							$product_options = array();
 							while (TRUE)
@@ -286,7 +286,7 @@
 					$buyers = trin_db_get_buyers ($db);
 					if ($buyers !== FALSE)
 					{
-						echo '<p><label for=' . TRIN_DB_BUYER_PARAM_ID . ">Buyer:</label>\n";
+						echo '<p><label for="' . TRIN_DB_BUYER_PARAM_ID . '">Buyer:</label>' . "\n";
 
 						$buyer_names = array();
 						$buyer_values = array();
@@ -324,7 +324,7 @@
 					$sellers = trin_db_get_sellers ($db);
 					if ($sellers !== FALSE)
 					{
-						echo '<p><label for=' . TRIN_DB_SELLER_PARAM_ID . ">Seller:</label>\n";
+						echo '<p><label for="' . TRIN_DB_SELLER_PARAM_ID . '">Seller:</label>' . "\n";
 
 						$seller_names = array();
 						$seller_values = array();
