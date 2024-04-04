@@ -1,6 +1,6 @@
 # Trinventum Makefile
 #
-# Copyright (C) 2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+# Copyright (C) 2022-2024 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
 #
 # This file is part of Trinventum (Transaction and Inventory Unified Manager),
 #  a software that helps manage an e-commerce business.
@@ -57,6 +57,7 @@ $(NAME)-$(VER)$(PACK1_EXT)$(PACK2_EXT): $(EXTRA_DIST) \
 	$(RMDIR) $(NAME)-$(VER)
 	$(MKDIR) $(NAME)-$(VER)
 	$(COPY) $(EXTRA_DIST) $(SUBDIRS) $(NAME)-$(VER)
+	$(RMDIR) $(NAME)-$(VER)$(PACK1_EXT)$(PACK2_EXT)
 	$(PACK1) $(NAME)-$(VER)$(PACK1_EXT) $(NAME)-$(VER)
 	$(PACK2) $(NAME)-$(VER)$(PACK1_EXT)
 	$(RMDIR) $(NAME)-$(VER)

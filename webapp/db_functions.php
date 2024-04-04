@@ -2,7 +2,7 @@
 	/*
 	 * Trinventum - database functions.
 	 *
-	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 * Copyright (C) 2015-2024 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
 	 *
 	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
 	 *  a software that helps manage an e-commerce business.
@@ -22,7 +22,7 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	include_once ('constants.php');
+	include_once 'constants.php';
 
 	define ('TRIN_QUERY_DB_CHECK', 'select now()');
 	define ('TRIN_QUERY_DB_VERSION_CHECK',

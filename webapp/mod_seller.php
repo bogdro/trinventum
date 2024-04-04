@@ -2,7 +2,7 @@
 	/*
 	 * Trinventum - modify seller page.
 	 *
-	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 * Copyright (C) 2015-2024 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
 	 *
 	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
 	 *  a software that helps manage an e-commerce business.
@@ -24,12 +24,12 @@
 
 	session_start();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
 
 	trin_error_reporting();
 
-	include_once ('db_functions.php');
+	include_once 'db_functions.php';
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
@@ -124,8 +124,8 @@
 </HEAD><BODY>
 
 <?php
-			include ('header.php');
-			include ('menu.php');
+			include 'header.php';
+			include 'menu.php';
 
 			trin_display_error($error);
 ?>
@@ -236,8 +236,8 @@
 </div>
 
 <?php
-			include ('menu.php');
-			include ('footer.php');
+			include 'menu.php';
+			include 'footer.php';
 ?>
 
 </BODY></HTML>

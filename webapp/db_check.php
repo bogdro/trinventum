@@ -2,7 +2,7 @@
 	/*
 	 * Trinventum - database check and upgrade script.
 	 *
-	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 * Copyright (C) 2015-2024 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
 	 *
 	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
 	 *  a software that helps manage an e-commerce business.
@@ -24,9 +24,9 @@
 
 	session_start();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
-	include_once ('db_functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
+	include_once 'db_functions.php';
 
 	if (! trin_validate_session ())
 	{
@@ -195,7 +195,7 @@ Fix the problem and <a href="login.php" hreflang="en">log-in again</a>.
 
 <?php
 		}
-		include ('footer.php');
+		include 'footer.php';
 ?>
 
 </BODY></HTML>

@@ -2,7 +2,7 @@
 	/*
 	 * Trinventum - the default page.
 	 *
-	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 * Copyright (C) 2015-2024 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
 	 *
 	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
 	 *  a software that helps manage an e-commerce business.
@@ -24,11 +24,11 @@
 
 	session_start ();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
 
 	/*
-	include_once ('db_functions.php');
+	include_once 'db_functions.php';
 
 	function sess_open ($path, $name) {}
 

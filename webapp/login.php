@@ -2,7 +2,7 @@
 	/*
 	 * Trinventum - the login page.
 	 *
-	 * Copyright (C) 2015-2022 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 * Copyright (C) 2015-2024 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
 	 *
 	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
 	 *  a software that helps manage an e-commerce business.
@@ -24,12 +24,12 @@
 
 	session_start();
 
-	include_once ('constants.php');
-	include_once ('functions.php');
+	include_once 'constants.php';
+	include_once 'functions.php';
 
 	trin_error_reporting();
 
-	include_once ('db_functions.php');
+	include_once 'db_functions.php';
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
@@ -128,7 +128,7 @@
 ?>
 
 <h1 class="title_box c">
-<img src="rsrc/trinventum-icon.svg" class="vert_mid">
+<img src="rsrc/trinventum-icon.svg" class="vert_mid" alt="[Trinventum logo]">
 Trinventum e-commerce management software
 </h1>
 
@@ -199,7 +199,7 @@ Database connection parameters:
 </div>
 
 <?php
-		include ('footer.php');
+		include 'footer.php';
 ?>
 
 </BODY></HTML>
