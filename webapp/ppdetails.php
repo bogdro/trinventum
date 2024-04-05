@@ -236,7 +236,9 @@ Cost:
 </p>
 
 <p>
-<input type="submit" value="Update product piece"> <input type="reset" value="Reset">
+<input type="submit" value="Update product piece">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 
 </form>

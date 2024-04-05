@@ -465,7 +465,9 @@
 ?>
 <hr>
 <p>
-<input type="submit" value="<?php echo trin_html_escape($button_title); ?>"> <input type="reset" value="Reset">
+<input type="submit" value="<?php echo trin_html_escape($button_title); ?>">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 </form>
 <?php
@@ -551,7 +553,9 @@
 		trin_create_text_input('hidden', '', $param_version_name,
 			$param_version_value, $validation_failed_fields);
 ?>
-<input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
+<input type="submit" value="<?php echo $button_title; ?>">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 
 </form>
@@ -586,7 +590,9 @@
 		trin_create_text_input('hidden', '', $param_version_name,
 			$param_version_value, $validation_failed_fields);
 ?>
-<input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
+<input type="submit" value="<?php echo $button_title; ?>">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 
 </form>
@@ -621,7 +627,9 @@
 		trin_create_text_input('hidden', '', $param_version_name,
 			$param_version_value, $validation_failed_fields);
 ?>
-<input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
+<input type="submit" value="<?php echo $button_title; ?>">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 
 </form>

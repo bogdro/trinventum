@@ -643,7 +643,9 @@ Send cost:
 		trin_create_text_input('hidden', '', TRIN_DB_TRANS_PARAM_VERSION,
 			$param_trans_version, $validation_failed_fields);
 ?>
-<input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
+<input type="submit" value="<?php echo $button_title; ?>">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 
 </form>
