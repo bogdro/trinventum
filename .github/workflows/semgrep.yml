@@ -16,8 +16,9 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
-  schedule:
-    - cron: '26 22 1 * *'
+  workflow_dispatch:
+  #schedule:
+  #  - cron: '26 22 1 * *'
 
 permissions:
   contents: read
