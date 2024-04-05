@@ -188,7 +188,9 @@ Database connection parameters:
 </p>
 
 <p class="c">
-<input type="submit" value="Login"> <input type="reset" value="Reset">
+<input type="submit" value="Login">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 
 </form>

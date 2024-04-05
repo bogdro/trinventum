@@ -496,7 +496,9 @@
 ?>
 
 <p>
-<input type="submit" value="<?php echo $button_title; ?>"> <input type="reset" value="Reset">
+<input type="submit" value="<?php echo $button_title; ?>">
+<label for="reset"></label>
+<input type="reset" id="reset" value="Reset">
 </p>
 
 </form>
