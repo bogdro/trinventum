@@ -189,8 +189,9 @@ Database connection parameters:
 
 <p class="c">
 <input type="submit" value="Login">
-<label for="reset"></label>
-<input type="reset" id="reset" value="Reset">
+<?php
+	trin_create_reset ("reset_login_form");
+?>
 </p>
 
 </form>

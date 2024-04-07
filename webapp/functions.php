@@ -165,6 +165,12 @@
 		echo ">\n";
 	}
 
+	function trin_create_reset ($name)
+	{
+		echo "<br><label for=\"reset_$name\">Reset form:</label>\n"
+			. "<input type=\"reset\" id=\"reset_$name\" value=\"Reset\">\n";
+	}
+
 	function trin_create_submits ($name, $value, $add_reset,
 		$title = '')
 	{
@@ -181,7 +187,7 @@
 		echo ">\n";
 		if ($add_reset === TRUE)
 		{
-			echo '<input type="reset" value="Reset">';
+			trin_create_reset ("reset_$name");
 		}
 	}
 
@@ -466,8 +472,9 @@
 <hr>
 <p>
 <input type="submit" value="<?php echo trin_html_escape($button_title); ?>">
-<label for="reset"></label>
-<input type="reset" id="reset" value="Reset">
+<?php
+	trin_create_reset ("reset_prod_def_form");
+?>
 </p>
 </form>
 <?php
@@ -554,8 +561,9 @@
 			$param_version_value, $validation_failed_fields);
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
-<label for="reset"></label>
-<input type="reset" id="reset" value="Reset">
+<?php
+	trin_create_reset ("reset_buyer_form");
+?>
 </p>
 
 </form>
@@ -591,8 +599,9 @@
 			$param_version_value, $validation_failed_fields);
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
-<label for="reset"></label>
-<input type="reset" id="reset" value="Reset">
+<?php
+	trin_create_reset ("reset_seller_form");
+?>
 </p>
 
 </form>
@@ -628,8 +637,9 @@
 			$param_version_value, $validation_failed_fields);
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
-<label for="reset"></label>
-<input type="reset" id="reset" value="Reset">
+<?php
+	trin_create_reset ("reset_category_form");
+?>
 </p>
 
 </form>
