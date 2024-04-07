@@ -645,7 +645,7 @@ Send cost:
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("reset_mod_tx");
+	trin_create_reset ("mod_transaction");
 ?>
 </p>
 

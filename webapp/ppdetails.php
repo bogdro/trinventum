@@ -237,8 +237,9 @@ Cost:
 
 <p>
 <input type="submit" value="Update product piece">
-<label for="reset"></label>
-<input type="reset" id="reset" value="Reset">
+<?php
+	trin_create_reset ("update_piece");
+?>
 </p>
 
 </form>

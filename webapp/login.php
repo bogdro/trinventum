@@ -190,7 +190,7 @@ Database connection parameters:
 <p class="c">
 <input type="submit" value="Login">
 <?php
-	trin_create_reset ("reset_login_form");
+	trin_create_reset ("login_form");
 ?>
 </p>
 
