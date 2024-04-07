@@ -187,7 +187,7 @@
 		echo ">\n";
 		if ($add_reset === TRUE)
 		{
-			trin_create_reset ("reset_$name");
+			trin_create_reset ($name);
 		}
 	}
 
@@ -473,7 +473,7 @@
 <p>
 <input type="submit" value="<?php echo trin_html_escape($button_title); ?>">
 <?php
-	trin_create_reset ("reset_prod_def_form");
+	trin_create_reset ("prod_def_form");
 ?>
 </p>
 </form>
@@ -562,7 +562,7 @@
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("reset_buyer_form");
+	trin_create_reset ("buyer_form");
 ?>
 </p>
 
@@ -600,7 +600,7 @@
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("reset_seller_form");
+	trin_create_reset ("seller_form");
 ?>
 </p>
 
@@ -638,7 +638,7 @@
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("reset_category_form");
+	trin_create_reset ("category_form");
 ?>
 </p>
 
