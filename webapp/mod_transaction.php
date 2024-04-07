@@ -644,8 +644,9 @@ Send cost:
 			$param_trans_version, $validation_failed_fields);
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
-<label for="reset"></label>
-<input type="reset" id="reset" value="Reset">
+<?php
+	trin_create_reset ("reset_mod_tx");
+?>
 </p>
 
 </form>
