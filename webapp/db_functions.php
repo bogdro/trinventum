@@ -393,7 +393,7 @@
 		trin_db_clear_last_error();
 		$result = pg_query ($conn, TRIN_QUERY_DB_CHECK);
 		trin_db_set_last_error($conn);
-		return ($result !== FALSE);
+		return $result !== FALSE;
 	}
 
 	function trin_db_get_version ($conn)
