@@ -384,9 +384,7 @@ and provide the DATABASE user password.
 <p>
 To delete and re-create the database schema, run (for PostgreSQL):
 </p>
-	<pre>
-	bash$ psql trinventum
-	trinventum=&gt; drop schema trinventum cascade; quit;</pre>
+	<pre>psql -U trinventum -d trinventum -c 'drop schema trinventum cascade'</pre>
 <p>
 After this, you need to re-login to Trinventum as a user
 <em class="important">with full access to the database schema</em>
@@ -395,7 +393,7 @@ to re-create the structures.
 </p>
 
 <p>
-To delete and re-crete the whole database, run (for PostgreSQL,
+To delete and recreate the whole database, run (for PostgreSQL,
 login to the system as the database user <code>postgres</code> and run):
 </p>
 	<pre>
