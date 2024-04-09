@@ -71,7 +71,7 @@ To use Trinventum, the following steps must be performed:
 	On a Linux system, you would do one of:
 	<ul>
 	 <li>login to the system as the database user <code>postgres</code> (you can
-		do <code>su - postgres</code> as <code>root</code> to login to that account on Linux) and run:
+		do <code>su - postgres</code> as <code>root</code> to log in to that account on Linux) and run:
 	  <pre>	pg_ctl start</pre>
 	  </li>
 	 <li>login as <code>root</code> and run:
@@ -92,7 +92,7 @@ To use Trinventum, the following steps must be performed:
 	</li>
 
  <li>A database user must be created within the database server.<br>
-	On PostgreSQL, you would login to the system as the database user <code>postgres</code> and run:
+	On PostgreSQL, login to the system as the database user <code>postgres</code> and run:
 	<pre>
 	createuser -P trinventum</pre>
 	It's advised for the user to be the owner of the database that will be created.<br>
@@ -104,14 +104,14 @@ To use Trinventum, the following steps must be performed:
 	<br><br></li>
 
  <li>A logical database must be created within the database server.<br>
-	On PostgreSQL, you would login to the system as the database user <code>postgres</code> and run:
+	On PostgreSQL, login to the system as the database user <code>postgres</code> and run:
 	<pre>
 	createdb -O trinventum trinventum</pre>
 	(for the specified user to be the database owner)
 	<br><br></li>
 
  <li>A procedural language suitable for the database must be installed in the logical database.<br>
-	On PostgreSQL versions earlier than 9.0, you would login to the system as the database user <code>postgres</code> and run:
+	On PostgreSQL versions earlier than 9.0, login to the system as the database user <code>postgres</code> and run:
 	<pre>
 	createlang plpgsql trinventum</pre>
 	(don't worry if it says that the language already exists).<br>
@@ -210,7 +210,7 @@ You enter 4 parameters there:
 </ol>
 
 <p>
-After the first successful login as a user
+After the first successful logon as a user
 <em class="important">with full access to the database schema</em>
 (like the schema owner <code>trinventum</code> created earlier),
 the database structures are created. If the current database
@@ -349,7 +349,7 @@ double-check the values, re-enter your changes and retry the operation.
 </p>
 
 <p>
-After finishing work, click the "Logout" link to cleanup the session on the server.
+After finishing work, click the "Logout" link to clean up the session on the server.
 Depending on the server settings, you may get logged-out automatically after some period
 of inactivity. See the <code>session.cookie_lifetime</code> entry in your php.ini
 file (<code>/etc/php.ini</code> on Linux) to see how long does the session cookie live for (in seconds).
