@@ -30,6 +30,7 @@
 	define ('TRIN_SESS_DB_LOGIN', 'trin_sess_db_login');
 	define ('TRIN_SESS_DB_PASS', 'trin_sess_db_pass');
 	define ('TRIN_SESS_DB_HOST', 'trin_sess_db_host');
+	define ('TRIN_SESS_DB_PORT', 'trin_sess_db_port');
 	define ('TRIN_SESS_DB_DBNAME', 'trin_sess_db_dbname');
 	define ('TRIN_SESS_DB_LAST_ERROR', 'trin_sess_db_last_error');
 	define ('TRIN_SESS_LAST_SUCCESS', 'trin_sess_last_success');

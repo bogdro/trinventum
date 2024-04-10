@@ -206,6 +206,8 @@ You enter 4 parameters there:
  <li>the database address: IP address or hostname, can also be the local socket's
  	directory (<code>/run/postgresql</code> in some versions, <code>/tmp</code> in other)
 	if the database is running locally using the default settings</li>
+ <li>the database port: the port number on which the database is running,
+	can also be the local socket's file's extension</li>
  <li>the database name, which would be <code>trinventum</code></li>
 </ol>
 

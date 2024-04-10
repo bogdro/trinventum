@@ -344,9 +344,14 @@
 
 	// ===============================================================
 
-	function trin_db_open ($login, $pass, $dbname, $host, $timeout=60)
+	function trin_db_open ($login, $pass, $dbname, $host, $port='', $timeout=60)
 	{
-		$conn = pg_connect ("host=$host dbname=$dbname user=$login password=$pass connect_timeout=$timeout");
+		$conn_string = "host=$host dbname=$dbname user=$login password=$pass connect_timeout=$timeout";
+		if ($port != '')
+		{
+			$conn_string .= " port=$port";
+		}
+		$conn = pg_connect($conn_string);
 		return $conn;
 	}
 

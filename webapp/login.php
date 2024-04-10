@@ -42,12 +42,14 @@
 	if (isset ($_POST[TRIN_SESS_DB_LOGIN])
 		&& isset ($_POST[TRIN_SESS_DB_PASS])
 		&& isset ($_POST[TRIN_SESS_DB_DBNAME])
-		&& isset ($_POST[TRIN_SESS_DB_HOST]))
+		&& isset ($_POST[TRIN_SESS_DB_HOST])
+		&& isset ($_POST[TRIN_SESS_DB_PORT]))
 	{
 		$db = trin_db_open ($_POST[TRIN_SESS_DB_LOGIN],
 			$_POST[TRIN_SESS_DB_PASS],
 			$_POST[TRIN_SESS_DB_DBNAME],
-			$_POST[TRIN_SESS_DB_HOST]);
+			$_POST[TRIN_SESS_DB_HOST],
+			$_POST[TRIN_SESS_DB_PORT]);
 		if (!$db)
 		{
 			$display_form = TRUE;
@@ -65,6 +67,7 @@
 			$_SESSION[TRIN_SESS_DB_PASS] = $_POST[TRIN_SESS_DB_PASS];
 			$_SESSION[TRIN_SESS_DB_DBNAME] = $_POST[TRIN_SESS_DB_DBNAME];
 			$_SESSION[TRIN_SESS_DB_HOST] = $_POST[TRIN_SESS_DB_HOST];
+			$_SESSION[TRIN_SESS_DB_PORT] = $_POST[TRIN_SESS_DB_PORT];
 			header ('Location: db_check.php');
 		}
 	}
@@ -105,6 +108,7 @@
 		$param_db_pass = '';
 		$param_db_dbname = 'trinventum';
 		$param_db_host = 'localhost';
+		$param_db_port = '';
 
 		if (isset ($_POST[TRIN_SESS_DB_LOGIN]))
 		{
@@ -124,6 +128,11 @@
 		if (isset ($_POST[TRIN_SESS_DB_HOST]))
 		{
 			$param_db_host = $_POST[TRIN_SESS_DB_HOST];
+		}
+
+		if (isset ($_POST[TRIN_SESS_DB_PORT]))
+		{
+			$param_db_port = $_POST[TRIN_SESS_DB_PORT];
 		}
 ?>
 
@@ -171,6 +180,18 @@ Database connection parameters:
 <?php
 	trin_create_text_input('text', '20', TRIN_SESS_DB_HOST,
 		$param_db_host, $validation_failed_fields);
+?>
+</span>
+</p>
+
+<p>
+<span class="par_name">
+<label for="<?php echo TRIN_SESS_DB_PORT ?>">Server port:</label>
+</span>
+<span class="par_value">
+<?php
+	trin_create_text_input('text', '20', TRIN_SESS_DB_PORT,
+		$param_db_port, $validation_failed_fields);
 ?>
 </span>
 </p>
