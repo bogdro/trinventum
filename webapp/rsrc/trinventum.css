@@ -81,6 +81,13 @@ acronym, abbr	{
 			cursor:	help; 		/* CSS 2 */
 		}
 
+input[type="submit"]
+		{
+			font-size: 125%;
+			text-align: center;
+			font-weight: bold;
+		}
+
 .important	{
 			/*text-transform: uppercase;*/
 			text-decoration: underline;

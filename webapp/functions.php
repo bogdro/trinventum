@@ -167,7 +167,7 @@
 
 	function trin_create_reset ($name)
 	{
-		echo "<br><label for=\"reset_$name\">Reset form:</label>\n"
+		echo "<br><br><label for=\"reset_$name\">Reset form:</label>\n"
 			. "<input type=\"reset\" id=\"reset_$name\" value=\"Reset\">\n";
 	}
 
