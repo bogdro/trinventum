@@ -61,6 +61,7 @@
 	define ('TRIN_PROD_DETAIL_PARAM', 'id');
 
 	define ('TRIN_PROD_COUNT_COLUMN_TOTAL', 'Total');
+	define ('TRIN_ALL_PROD_NAMES', 'all_product_names');
 
 	define ('TRIN_PROD_STATUS_READY', 'READY');
 	define ('TRIN_PROD_STATUS_SALE_IN_PROGRESS', 'SELLING');

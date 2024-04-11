@@ -56,6 +56,7 @@
 		{
 			unset($_SESSION[TRIN_PROD_DETAIL_PARAM]);
 			unset($_SESSION[TRIN_DB_PROD_INST_FIELD_ID]);
+			unset($_SESSION[TRIN_ALL_PROD_NAMES]);
 		}
 		$t_id = -1;
 		if (isset ($_GET[TRIN_DB_TRANS_PARAM_ID]))
@@ -346,6 +347,7 @@ Update details (warning - this updates ALL the given details):
 
 						$product_names = array();
 						$product_values = array();
+						$_SESSION[TRIN_ALL_PROD_NAMES] = array();
 						while (TRUE)
 						{
 							$next_prod = trin_db_get_next_product ($db,
@@ -360,6 +362,8 @@ Update details (warning - this updates ALL the given details):
 								. $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME];
 							$product_values[] =
 								$next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
+							$_SESSION[TRIN_ALL_PROD_NAMES][$next_prod[TRIN_DB_PROD_DEF_FIELD_ID]]
+								= $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME];
 						}
 						trin_create_select(TRIN_PROD_DETAIL_PARAM,
 							'',
@@ -380,7 +384,9 @@ Update details (warning - this updates ALL the given details):
 			}
 			else
 			{
-				echo 'Product type: ' . trin_html_escape($_SESSION[TRIN_PROD_DETAIL_PARAM]) . "<br>\n";
+				echo 'Product type: ' . trin_html_escape($_SESSION[TRIN_PROD_DETAIL_PARAM])
+					. ' - ' . $_SESSION[TRIN_ALL_PROD_NAMES][$_SESSION[TRIN_PROD_DETAIL_PARAM]]
+					. "<br>\n";
 				if (! $have_prod_inst_param)
 				{
 					// display a list of instances marked for selling of
