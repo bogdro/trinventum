@@ -176,7 +176,7 @@ Update product piece details (warning - this updates ALL the given details):
 </p>
 
 <div class="login_box c">
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST">
+<form action="<?php echo trin_get_self_action (); ?>" method="POST">
 <?php
 		// if the product piece failed to be updated,
 		// refresh it from the DB and make the user
