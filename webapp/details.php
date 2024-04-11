@@ -563,11 +563,11 @@ Update product details:
 					}
 					$det_link = 'ppdetails.php?' . TRIN_PROD_DETAIL_PARAM
 						. '=' . $_GET[TRIN_PROD_DETAIL_PARAM]
-						. '&amp;' . TRIN_DB_PROD_INST_FIELD_ID
+						. '&' . TRIN_DB_PROD_INST_FIELD_ID
 						. '=' . $next_prod[TRIN_DB_PROD_INST_FIELD_ID];
 					$have_prod = TRUE;
 					echo '<tr class="c">' .
-						'<td><a href=\"' . trin_html_escape($det_link) . '">'
+						'<td><a href="' . trin_html_escape($det_link) . '">'
 							. $next_prod[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_STATUS] . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_COST] . '</td></tr>'
