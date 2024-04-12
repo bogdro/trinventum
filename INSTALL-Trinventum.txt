@@ -138,6 +138,43 @@ To install:
 Each upgrade also requires that a user WITH FULL ACCESS TO THE DATABASE SCHEMA
  logs in to the application before others.
 
+---------------------------------------
+Optional - create roles and other users
+---------------------------------------
+
+Apart from the main database user (the database owner), you can have users
+with various privileges using the application:
+
+- product management,
+- seller management,
+- buyer management,
+- transaction management,
+- any mix of the above.
+
+To create the base roles, run the 'scripts/create_roles.pgsql' file on the
+ database as the database administration user ('postgres'):
+
+	psql -U postgres -d trinventum -f scripts/create_roles.pgsql
+
+Then, you can use the shell command 'createuser' to create new users - login
+to the system as the database user 'postgres' and run:
+
+	createuser -P trin_mgr
+	createuser -P trin_sell
+	createuser -P trin_buy
+	createuser -P trin_tx
+
+and grant the selected role(s), found in the 'scripts/create_roles.pgsql'
+file, to the new user:
+
+	psql -U postgres -d trinventum -c 'grant trinventum_product_manager to trin_mgr'
+	psql -U postgres -d trinventum -c 'grant trinventum_seller_manager to trin_sell'
+	psql -U postgres -d trinventum -c 'grant trinventum_buyer_manager to trin_buy'
+	psql -U postgres -d trinventum -c 'grant trinventum_transaction_manager to trin_tx'
+
+Then, you can log in as the chosen user and have access to just the
+ required functionalities.
+
 -----------------------------------------------------------------
 
 Uninstallation

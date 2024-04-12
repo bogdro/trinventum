@@ -189,6 +189,52 @@ If you're reading this in a browser through a web server, this step most probabl
 
 <hr>
 
+<h2>Optional - create roles and other users</h2>
+
+<p>Apart from the main database user (the database owner), you can have
+users with various privileges using the application:</p>
+<ul>
+<li>product management,</li>
+<li>seller management,</li>
+<li>buyer management,</li>
+<li>transaction management,</li>
+<li>any mix of the above.</li>
+</ul>
+
+<p>
+To create the base roles, run the <code>scripts/create_roles.pgsql</code> file on the
+database as the database administration user (<code>postgres</code>):
+</p>
+	<pre>
+	psql -U postgres -d trinventum -f scripts/create_roles.pgsql</pre>
+
+<p>
+Then, you can use the shell command <code>createuser</code> to create new users
+- login to the system as the database user <code>postgres</code> and run:
+</p>
+	<pre>
+	createuser -P trin_mgr
+	createuser -P trin_sell
+	createuser -P trin_buy
+	createuser -P trin_tx</pre>
+
+<p>
+and grant the selected role(s), found in the <code>scripts/create_roles.pgsql</code>
+file, to the new user:
+</p>
+	<pre>
+	psql -U postgres -d trinventum -c 'grant trinventum_product_manager to trin_mgr'
+	psql -U postgres -d trinventum -c 'grant trinventum_seller_manager to trin_sell'
+	psql -U postgres -d trinventum -c 'grant trinventum_buyer_manager to trin_buy'
+	psql -U postgres -d trinventum -c 'grant trinventum_transaction_manager to trin_tx'</pre>
+
+<p>
+Then, you can log in as the chosen user and have access to just the required functionalities.
+</p>
+
+
+<hr>
+
 <h2>Usage</h2>
 
 <?php
@@ -386,7 +432,8 @@ and provide the DATABASE user password.
 <p>
 To delete and re-create the database schema, run (for PostgreSQL):
 </p>
-	<pre>psql -U trinventum -d trinventum -c 'drop schema trinventum cascade'</pre>
+	<pre>
+	psql -U trinventum -d trinventum -c 'drop schema trinventum cascade'</pre>
 <p>
 After this, you need to re-login to Trinventum as a user
 <em class="important">with full access to the database schema</em>
