@@ -415,7 +415,9 @@
 					' <li><p>Width: ' . trin_html_escape ($param_pd_width) . "</p></li>\n" .
 					' <li><p>Gender: ' . trin_html_escape (trin_get_gender_name($param_pd_gender)) . "</p></li>\n" .
 					' <li><p>Colour: ' . trin_html_escape ($param_pd_colour) . "</p></li>\n" .
-					' <li><p>Count:</p><p>' . trin_html_escape($param_pd_count) . "</p></li>\n" .
+					' <li><p>Count:</p><p>'
+						. nl2br(trin_html_escape(str_ireplace('<br>', "\n", $param_pd_count)))
+						. "</p></li>\n" .
 					' <li><p>Comment: ' . trin_html_escape ($param_pd_comment) . "</p></li>\n" .
 					"</ul>\n";
 			}
