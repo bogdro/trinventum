@@ -1,0 +1,35 @@
+# https://docs.docker.com/compose/compose-file/
+
+######################################################################
+# NOTE: For professional use:
+# - you MUST add a permanent storage
+# - yum MUST change the passwords
+######################################################################
+
+services:
+        #networks:
+                #- trin_net
+        trinventum_app:
+                image: trinventum-app:latest
+                hostname: trinventum-www
+                container_name: trin-app
+                depends_on:
+                        - trinventum_db
+                networks:
+                        - trin_net
+                ports:
+                        - 80:80
+                        - 443:443
+        trinventum_db:
+                image: trinventum-db:latest
+                hostname: trinventum-db
+                container_name: trin-db
+                environment:
+                        - POSTGRES_PASSWORD=postgres1234
+                        - POSTGRES_DB=trinventum
+                        - PGPWD=trinventum01
+                networks:
+                        - trin_net
+
+networks:
+        trin_net: {}
