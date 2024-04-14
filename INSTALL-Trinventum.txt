@@ -9,9 +9,9 @@ Project home page
 
 https://trinventum.sourceforge.io/
 
----------------------------------
-Initial steps - most are one-time
----------------------------------
+---------------------------------------------------------
+Initial steps for manual installation - most are one-time
+---------------------------------------------------------
 
 - A PostgreSQL database server must be running.
   On a Linux system, you would do one of:
@@ -104,9 +104,9 @@ Initial steps - most are one-time
 
 	service postgresql restart
 
-------------------------
-Application installation
-------------------------
+----------------------------------------------
+Application installation - manual installation
+----------------------------------------------
 
 To install:
 
@@ -137,6 +137,26 @@ To install:
 
 Each upgrade also requires that a user WITH FULL ACCESS TO THE DATABASE SCHEMA
  logs in to the application before others.
+
+---------------------------------
+Application installation - Docker
+---------------------------------
+
+To install Trinventum as a Docker container for testing, execute one of
+(as 'root'):
+
+	docker/docker.sh
+	docker-compose -p trinventum -f docker/docker-compose.yaml up -d
+
+in the Trinventum source code top directory (not the 'docker' subdirectory).
+
+The default configuration has no permanent storage for the database. In order
+ to have a persistent, working setup, you must add permanent storage to the
+ configuration files.
+
+The default docker-compose.yaml file has hardcoded simple passwords. If you
+ wish to use this file and have a secure setup, you must change those
+ passwords in the file.
 
 ---------------------------------------
 Optional - create roles and other users

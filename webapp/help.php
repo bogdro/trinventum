@@ -63,7 +63,7 @@
 
 <h1 class="header">Installation and usage instructions</h1>
 
-<h2>Installation - initial steps</h2>
+<h2>Installation - initial steps for manual installation</h2>
 
 To use Trinventum, the following steps must be performed:
 <ol>
@@ -152,7 +152,7 @@ To use Trinventum, the following steps must be performed:
 
 <hr>
 
-<h2>Installation - web application</h2>
+<h2>Installation - web application (for manual installation)</h2>
 
 To install the web application part:
 
@@ -186,6 +186,31 @@ To install the web application part:
 </ol>
 
 If you're reading this in a browser through a web server, this step most probably succeeded.
+
+<hr>
+
+<h2>Installation - web application (for Docker installation)</h2>
+
+<p>
+To install Trinventum as a Docker container for testing, execute one of (as <code>root</code>):
+</p>
+	<pre>
+	docker/docker.sh
+	docker-compose -p trinventum -f docker/docker-compose.yaml up -d</pre>
+<p>
+in the Trinventum source code top directory (not the <code>docker</code> subdirectory).
+</p>
+<p>
+The default configuration has no permanent storage for the database. In order
+to have a persistent, working setup, you <em class="important">must add
+permanent storage</em> to the configuration files.
+</p>
+<p>
+The default <code>docker-compose.yaml</code> file has hardcoded simple passwords. If you
+wish to use this file and have a secure setup, you <em class="important">must
+change those passwords</em> in the file.
+</p>
+
 
 <hr>
 
