@@ -1,0 +1,23 @@
+#!/usr/bin/docker build --pull -t trinventum-app -f Dockerfile-trinventum-app .
+# https://docs.docker.com/engine/reference/builder/
+
+# https://hub.docker.com/_/php/ ("-apache")
+FROM php:apache
+
+# webapp (NOTE: do NOT use "../webapp/*" - the subdirs don't get copied):
+COPY webapp /var/www/html/
+RUN chmod -R o+rX /var/www/html/* /var/www/html/.[a-z]*
+
+# Apache configuration:
+#RUN sed -i 's/#LoadModule mod_headers/LoadModule mod_headers/g' /etc/apache2/apache2.conf
+RUN cd /etc/apache2/mods-enabled/ && ln -sf ../mods-available/headers.load .
+
+# PHP configuration:
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# PHP extensions:
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions pgsql
+
+EXPOSE 80

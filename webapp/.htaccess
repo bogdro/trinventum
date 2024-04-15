@@ -35,10 +35,10 @@ SetEnv		CSP_SET_STYLE	"frame-src 'none'; child-src 'none'; connect-src 'none'; d
 
 SetEnvIf	Request_URI "\.svg$"		CSP_USE_STYLE=1
 
-Header		set Content-Security-Policy:	"%{CSP_SET_STYLE}e; report-uri %{CSP_SCHEME}e://%{CSP_URL}e" env=CSP_USE_STYLE
-Header		set X-Content-Security-Policy:	"%{CSP_SET_STYLE}e; report-uri %{CSP_SCHEME}e://%{CSP_URL}e" env=CSP_USE_STYLE
-Header		set Content-Security-Policy:	"%{CSP_SET_DEF}e; report-uri %{CSP_SCHEME}e://%{CSP_URL}e" env=!CSP_USE_STYLE
-Header		set X-Content-Security-Policy:	"%{CSP_SET_DEF}e; report-uri %{CSP_SCHEME}e://%{CSP_URL}e" env=!CSP_USE_STYLE
+Header		set Content-Security-Policy:	"%{CSP_SET_STYLE}e" env=CSP_USE_STYLE
+Header		set X-Content-Security-Policy:	"%{CSP_SET_STYLE}e" env=CSP_USE_STYLE
+Header		set Content-Security-Policy:	"%{CSP_SET_DEF}e" env=!CSP_USE_STYLE
+Header		set X-Content-Security-Policy:	"%{CSP_SET_DEF}e" env=!CSP_USE_STYLE
 
 <Files constants.php>
 	Order deny,allow

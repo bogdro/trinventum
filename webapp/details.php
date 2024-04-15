@@ -415,7 +415,9 @@
 					' <li><p>Width: ' . trin_html_escape ($param_pd_width) . "</p></li>\n" .
 					' <li><p>Gender: ' . trin_html_escape (trin_get_gender_name($param_pd_gender)) . "</p></li>\n" .
 					' <li><p>Colour: ' . trin_html_escape ($param_pd_colour) . "</p></li>\n" .
-					' <li><p>Count:</p><p>' . trin_html_escape($param_pd_count) . "</p></li>\n" .
+					' <li><p>Count:</p><p>'
+						. nl2br(trin_html_escape(str_ireplace('<br>', "\n", $param_pd_count)))
+						. "</p></li>\n" .
 					' <li><p>Comment: ' . trin_html_escape ($param_pd_comment) . "</p></li>\n" .
 					"</ul>\n";
 			}
@@ -563,11 +565,11 @@ Update product details:
 					}
 					$det_link = 'ppdetails.php?' . TRIN_PROD_DETAIL_PARAM
 						. '=' . $_GET[TRIN_PROD_DETAIL_PARAM]
-						. '&amp;' . TRIN_DB_PROD_INST_FIELD_ID
+						. '&' . TRIN_DB_PROD_INST_FIELD_ID
 						. '=' . $next_prod[TRIN_DB_PROD_INST_FIELD_ID];
 					$have_prod = TRUE;
 					echo '<tr class="c">' .
-						'<td><a href=\"' . trin_html_escape($det_link) . '">'
+						'<td><a href="' . trin_html_escape($det_link) . '">'
 							. $next_prod[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_STATUS] . '</td>' .
 						'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_COST] . '</td></tr>'

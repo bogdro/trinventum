@@ -63,7 +63,7 @@
 
 <h1 class="header">Installation and usage instructions</h1>
 
-<h2>Installation - initial steps</h2>
+<h2>Installation - initial steps for manual installation</h2>
 
 To use Trinventum, the following steps must be performed:
 <ol>
@@ -71,7 +71,7 @@ To use Trinventum, the following steps must be performed:
 	On a Linux system, you would do one of:
 	<ul>
 	 <li>login to the system as the database user <code>postgres</code> (you can
-		do <code>su - postgres</code> as <code>root</code> to login to that account on Linux) and run:
+		do <code>su - postgres</code> as <code>root</code> to log in to that account on Linux) and run:
 	  <pre>	pg_ctl start</pre>
 	  </li>
 	 <li>login as <code>root</code> and run:
@@ -92,7 +92,7 @@ To use Trinventum, the following steps must be performed:
 	</li>
 
  <li>A database user must be created within the database server.<br>
-	On PostgreSQL, you would login to the system as the database user <code>postgres</code> and run:
+	On PostgreSQL, login to the system as the database user <code>postgres</code> and run:
 	<pre>
 	createuser -P trinventum</pre>
 	It's advised for the user to be the owner of the database that will be created.<br>
@@ -104,14 +104,14 @@ To use Trinventum, the following steps must be performed:
 	<br><br></li>
 
  <li>A logical database must be created within the database server.<br>
-	On PostgreSQL, you would login to the system as the database user <code>postgres</code> and run:
+	On PostgreSQL, login to the system as the database user <code>postgres</code> and run:
 	<pre>
 	createdb -O trinventum trinventum</pre>
 	(for the specified user to be the database owner)
 	<br><br></li>
 
  <li>A procedural language suitable for the database must be installed in the logical database.<br>
-	On PostgreSQL versions earlier than 9.0, you would login to the system as the database user <code>postgres</code> and run:
+	On PostgreSQL versions earlier than 9.0, login to the system as the database user <code>postgres</code> and run:
 	<pre>
 	createlang plpgsql trinventum</pre>
 	(don't worry if it says that the language already exists).<br>
@@ -152,7 +152,7 @@ To use Trinventum, the following steps must be performed:
 
 <hr>
 
-<h2>Installation - web application</h2>
+<h2>Installation - web application (for manual installation)</h2>
 
 To install the web application part:
 
@@ -168,7 +168,6 @@ To install the web application part:
 	make install PREFIX=/srv/www/html
 	make install PREFIX=/var/www/html
 	make install PREFIX=$HOME/public_html</pre>
-	</li>
 
   <p>To install the documentation, you can add a chosen directory as the <code>DOCDIR</code>
   parameter to <code>make install</code>. Documentation will be installed in
@@ -189,6 +188,77 @@ If you're reading this in a browser through a web server, this step most probabl
 
 <hr>
 
+<h2>Installation - web application (for Docker installation)</h2>
+
+<p>
+To install Trinventum as a Docker container for testing, execute one of (as <code>root</code>):
+</p>
+	<pre>
+	docker/docker.sh
+	docker-compose -p trinventum -f docker/docker-compose.yaml up -d</pre>
+<p>
+in the Trinventum source code top directory (not the <code>docker</code> subdirectory).
+</p>
+<p>
+The default configuration has no permanent storage for the database. In order
+to have a persistent, working setup, you <em class="important">must add
+permanent storage</em> to the configuration files.
+</p>
+<p>
+The default <code>docker-compose.yaml</code> file has hardcoded simple passwords. If you
+wish to use this file and have a secure setup, you <em class="important">must
+change those passwords</em> in the file.
+</p>
+
+
+<hr>
+
+<h2>Optional - create roles and other users</h2>
+
+<p>Apart from the main database user (the database owner), you can have
+users with various privileges using the application:</p>
+<ul>
+<li>product management,</li>
+<li>seller management,</li>
+<li>buyer management,</li>
+<li>transaction management,</li>
+<li>any mix of the above.</li>
+</ul>
+
+<p>
+To create the base roles, run the <code>scripts/create_roles.pgsql</code> file on the
+database as the database administration user (<code>postgres</code>):
+</p>
+	<pre>
+	psql -U postgres -d trinventum -f scripts/create_roles.pgsql</pre>
+
+<p>
+Then, you can use the shell command <code>createuser</code> to create new users
+- login to the system as the database user <code>postgres</code> and run:
+</p>
+	<pre>
+	createuser -P trin_mgr
+	createuser -P trin_sell
+	createuser -P trin_buy
+	createuser -P trin_tx</pre>
+
+<p>
+and grant the selected role(s), found in the <code>scripts/create_roles.pgsql</code>
+file, to the new user:
+</p>
+	<pre>
+	psql -U postgres -d trinventum -c 'grant trinventum_product_manager to trin_mgr'
+	psql -U postgres -d trinventum -c 'grant trinventum_seller_manager to trin_sell'
+	psql -U postgres -d trinventum -c 'grant trinventum_buyer_manager to trin_buy'
+	psql -U postgres -d trinventum -c 'grant trinventum_transaction_manager to trin_tx'</pre>
+
+<p>
+Then, you can log in as the chosen user and have access to just the required functionalities.
+</p>
+
+
+<hr>
+
 <h2>Usage</h2>
 
 <?php
@@ -206,11 +276,13 @@ You enter 4 parameters there:
  <li>the database address: IP address or hostname, can also be the local socket's
  	directory (<code>/run/postgresql</code> in some versions, <code>/tmp</code> in other)
 	if the database is running locally using the default settings</li>
+ <li>the database port: the port number on which the database is running,
+	can also be the local socket's file's extension</li>
  <li>the database name, which would be <code>trinventum</code></li>
 </ol>
 
 <p>
-After the first successful login as a user
+After the first successful logon as a user
 <em class="important">with full access to the database schema</em>
 (like the schema owner <code>trinventum</code> created earlier),
 the database structures are created. If the current database
@@ -349,7 +421,7 @@ double-check the values, re-enter your changes and retry the operation.
 </p>
 
 <p>
-After finishing work, click the "Logout" link to cleanup the session on the server.
+After finishing work, click the "Logout" link to clean up the session on the server.
 Depending on the server settings, you may get logged-out automatically after some period
 of inactivity. See the <code>session.cookie_lifetime</code> entry in your php.ini
 file (<code>/etc/php.ini</code> on Linux) to see how long does the session cookie live for (in seconds).
@@ -385,8 +457,7 @@ and provide the DATABASE user password.
 To delete and re-create the database schema, run (for PostgreSQL):
 </p>
 	<pre>
-	bash$ psql trinventum
-	trinventum=&gt; drop schema trinventum cascade; quit;</pre>
+	psql -U trinventum -d trinventum -c 'drop schema trinventum cascade'</pre>
 <p>
 After this, you need to re-login to Trinventum as a user
 <em class="important">with full access to the database schema</em>
@@ -395,7 +466,7 @@ to re-create the structures.
 </p>
 
 <p>
-To delete and re-crete the whole database, run (for PostgreSQL,
+To delete and recreate the whole database, run (for PostgreSQL,
 login to the system as the database user <code>postgres</code> and run):
 </p>
 	<pre>

@@ -29,7 +29,7 @@
 <a href="https://trinventum.sourceforge.io" hreflang="en">Trinventum</a>
 e-commerce management software version <?php echo TRIN_VERSION; ?>.
 <br>
-Trinventum is licensed under the <a href="rsrc/GNU-agpl-3.0-standalone.html" hreflang="en">GNU AGPL v3+</a>.
+<a href="legal.php" hreflang="en">Legal information</a>
 </p>
 <p class="r">
 <img src="rsrc/valid-html401.png" alt="[Valid HTML 4.01]">

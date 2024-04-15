@@ -344,9 +344,14 @@
 
 	// ===============================================================
 
-	function trin_db_open ($login, $pass, $dbname, $host, $timeout=60)
+	function trin_db_open ($login, $pass, $dbname, $host, $port='', $timeout=60)
 	{
-		$conn = pg_connect ("host=$host dbname=$dbname user=$login password=$pass connect_timeout=$timeout");
+		$conn_string = "host=$host dbname=$dbname user=$login password=$pass connect_timeout=$timeout";
+		if ($port != '')
+		{
+			$conn_string .= " port=$port";
+		}
+		$conn = pg_connect($conn_string);
 		return $conn;
 	}
 
@@ -393,7 +398,7 @@
 		trin_db_clear_last_error();
 		$result = pg_query ($conn, TRIN_QUERY_DB_CHECK);
 		trin_db_set_last_error($conn);
-		return ($result !== FALSE);
+		return $result !== FALSE;
 	}
 
 	function trin_db_get_version ($conn)

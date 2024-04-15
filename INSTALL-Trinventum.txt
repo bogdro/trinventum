@@ -9,15 +9,15 @@ Project home page
 
 https://trinventum.sourceforge.io/
 
----------------------------------
-Initial steps - most are one-time
----------------------------------
+---------------------------------------------------------
+Initial steps for manual installation - most are one-time
+---------------------------------------------------------
 
 - A PostgreSQL database server must be running.
   On a Linux system, you would do one of:
 
   * login to the system as the database user 'postgres' (you usually do
-    'su - postgres' as 'root' to login to that account) and run:
+    'su - postgres' as 'root' to log in to that account) and run:
 
 	pg_ctl start
 
@@ -31,7 +31,7 @@ Initial steps - most are one-time
 
 - A web (HTTP) server with PHP support (like the Apache HTTP Server with
   mod_php installed) must be running.
-  On a Linux system, you would do one of (as 'root'): 
+  On a Linux system, you would do one of (as 'root'):
 
   * login as 'root' and run:
 
@@ -41,8 +41,8 @@ Initial steps - most are one-time
 
 	service httpd start
 
-- Create the database user to host the application's database,
-  e.g. run as 'postgres':
+- Create the database user to host the application's database.
+  On PostgreSQL, login to the system as the database user 'postgres' and run:
 
 	createuser -P trinventum
 
@@ -54,14 +54,15 @@ Initial steps - most are one-time
    privileges so that those users can execute all the activities or just
    the ones they have access to.
 
-- Create the application's database, e.g. run as 'postgres':
+- Create the application's database.
+  On PostgreSQL, login to the system as the database user 'postgres' and run:
 
 	createdb -O trinventum trinventum
 
 - A procedural language suitable for the database must be installed in the
   logical database.
-  On PostgreSQL versions earlier than 9.0, you would login to the system as
-  the database user 'postgres' and run:
+  On PostgreSQL versions earlier than 9.0, login to the system as the
+  database user 'postgres' and run:
 
 	createlang plpgsql trinventum
 
@@ -79,7 +80,7 @@ Initial steps - most are one-time
   (Note the double ">>" - it's CRUCIAL to use double ">>", a single ">" would
   OVERWRITE the target file).
 
-	On older PostgreSQL versions replace 'scram-sha-256' with 'md5'.
+  On older PostgreSQL versions replace 'scram-sha-256' with 'md5'.
 
   If you'll need to access the database from another computer:
 
@@ -103,9 +104,9 @@ Initial steps - most are one-time
 
 	service postgresql restart
 
-------------------------
-Application installation
-------------------------
+----------------------------------------------
+Application installation - manual installation
+----------------------------------------------
 
 To install:
 
@@ -113,7 +114,7 @@ To install:
   chosen location reachable by the web server and adjust the access modes
   accordingly so that the web server can actually run the files.
 
-  Alternatively, if you have the 'make' program and some common Unix/Linux
+  Alternatively, if you have the 'make' program and some common Linux
   utilities, you can run 'make install', passing the prefix of the target
   directory. Trinventum will be installed in "$(PREFIX)/trinventum". Examples:
 
@@ -136,6 +137,63 @@ To install:
 
 Each upgrade also requires that a user WITH FULL ACCESS TO THE DATABASE SCHEMA
  logs in to the application before others.
+
+---------------------------------
+Application installation - Docker
+---------------------------------
+
+To install Trinventum as a Docker container for testing, execute one of
+(as 'root'):
+
+	docker/docker.sh
+	docker-compose -p trinventum -f docker/docker-compose.yaml up -d
+
+in the Trinventum source code top directory (not the 'docker' subdirectory).
+
+The default configuration has no permanent storage for the database. In order
+ to have a persistent, working setup, you must add permanent storage to the
+ configuration files.
+
+The default docker-compose.yaml file has hardcoded simple passwords. If you
+ wish to use this file and have a secure setup, you must change those
+ passwords in the file.
+
+---------------------------------------
+Optional - create roles and other users
+---------------------------------------
+
+Apart from the main database user (the database owner), you can have users
+with various privileges using the application:
+
+- product management,
+- seller management,
+- buyer management,
+- transaction management,
+- any mix of the above.
+
+To create the base roles, run the 'scripts/create_roles.pgsql' file on the
+ database as the database administration user ('postgres'):
+
+	psql -U postgres -d trinventum -f scripts/create_roles.pgsql
+
+Then, you can use the shell command 'createuser' to create new users - login
+to the system as the database user 'postgres' and run:
+
+	createuser -P trin_mgr
+	createuser -P trin_sell
+	createuser -P trin_buy
+	createuser -P trin_tx
+
+and grant the selected role(s), found in the 'scripts/create_roles.pgsql'
+file, to the new user:
+
+	psql -U postgres -d trinventum -c 'grant trinventum_product_manager to trin_mgr'
+	psql -U postgres -d trinventum -c 'grant trinventum_seller_manager to trin_sell'
+	psql -U postgres -d trinventum -c 'grant trinventum_buyer_manager to trin_buy'
+	psql -U postgres -d trinventum -c 'grant trinventum_transaction_manager to trin_tx'
+
+Then, you can log in as the chosen user and have access to just the
+ required functionalities.
 
 -----------------------------------------------------------------
 

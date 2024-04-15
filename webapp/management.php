@@ -44,7 +44,15 @@
 	}
 	else
 	{
-		if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY])
+		if (strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')
+		{
+			unset($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY]);
+		}
+		if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY]))
+		{
+			$_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY] = $_POST[TRIN_FORM_SUBMIT_DB_DESTROY];
+		}
+		if (isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY])
 			&& isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY2]))
 		{
 			// destroy and logout if successful
@@ -357,7 +365,7 @@ Sample queries:
 
 
 		} // count ($_POST) == 0 || isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]
-		if (! isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY]))
+		if (! isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY]))
 		{
 ?>
 
@@ -375,8 +383,8 @@ This operation deletes all structures and data in the database and cannot be rev
 
 <?php
 
-		} // ! isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY])
-		if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY])
+		} // ! isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY])
+		if (isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY])
 			&& ! isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY2]))
 		{
 			// double-check
@@ -396,7 +404,6 @@ After logging-in again, the database structures will be re-created, but with no 
 </p>
 
 <form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
-<input type="hidden" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY; ?>" value="1">
 <input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY2; ?>" value="Proceed">
 </form>
 

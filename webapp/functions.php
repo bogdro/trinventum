@@ -143,11 +143,12 @@
 		echo "</select>\n";
 	}
 
-	function trin_create_file_input ($name, $accept_type,
+	function trin_create_file_input ($name, $accept_type, $value,
 		$validation_failed_fields, $title = '')
 	{
 		echo "<input type=\"file\"\n
-			name=\"$name\"\n"
+			name=\"$name\"\n
+			value=\"" . trin_html_escape ($value) . "\"\n"
 			//. "id=\"$name\"\n"
 			;
 		if ($title != '')
@@ -167,7 +168,7 @@
 
 	function trin_create_reset ($name)
 	{
-		echo "<br><label for=\"reset_$name\">Reset form:</label>\n"
+		echo "<br><br><label for=\"reset_$name\">Reset form:</label>\n"
 			. "<input type=\"reset\" id=\"reset_$name\" value=\"Reset\">\n";
 	}
 
@@ -267,7 +268,7 @@
 </p>
 <?php
 		trin_create_file_input($param_photo_name, 'image/*',
-			$validation_failed_fields);
+			$param_photo_value, $validation_failed_fields);
 
 		if ($separate_forms === TRUE)
 		{

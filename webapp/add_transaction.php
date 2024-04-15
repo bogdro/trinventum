@@ -45,17 +45,33 @@
 	}
 	else
 	{
+		if (strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')
+		{
+			unset($_SESSION[TRIN_PROD_DETAIL_PARAM]);
+			unset($_SESSION[TRIN_DB_PROD_INST_FIELD_ID]);
+			unset($_SESSION[TRIN_ALL_PROD_NAMES]);
+		}
 		$button_title = 'Next step';
 		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
 			$_SESSION[TRIN_SESS_DB_PASS],
 			$_SESSION[TRIN_SESS_DB_DBNAME],
 			$_SESSION[TRIN_SESS_DB_HOST]);
+		if (isset ($_POST[TRIN_PROD_DETAIL_PARAM])
+			&& $_POST[TRIN_PROD_DETAIL_PARAM] != '-')
+		{
+			$_SESSION[TRIN_PROD_DETAIL_PARAM] = $_POST[TRIN_PROD_DETAIL_PARAM];
+		}
+		if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_ID])
+			&& $_POST[TRIN_DB_PROD_INST_FIELD_ID] != '-')
+		{
+			$_SESSION[TRIN_DB_PROD_INST_FIELD_ID] = $_POST[TRIN_DB_PROD_INST_FIELD_ID];
+		}
 		$have_prod_detail_param =
-			isset ($_POST[TRIN_PROD_DETAIL_PARAM])
-			&& $_POST[TRIN_PROD_DETAIL_PARAM] != '-';
+			isset ($_SESSION[TRIN_PROD_DETAIL_PARAM])
+			&& $_SESSION[TRIN_PROD_DETAIL_PARAM] != '-';
 		$have_prod_inst_param =
-			isset ($_POST[TRIN_DB_PROD_INST_FIELD_ID])
-			&& $_POST[TRIN_DB_PROD_INST_FIELD_ID] != '-';
+			isset ($_SESSION[TRIN_DB_PROD_INST_FIELD_ID])
+			&& $_SESSION[TRIN_DB_PROD_INST_FIELD_ID] != '-';
 		if ($have_prod_detail_param)
 		{
 			if ($have_prod_inst_param)
@@ -90,8 +106,8 @@
 							$display_form = TRUE;
 							$error = 'Cannot connect to database';
 						}
-						if (! trin_db_add_transaction ($db,
-							$_POST[TRIN_DB_PROD_INST_FIELD_ID],
+						if (trin_db_add_transaction ($db,
+							$_SESSION[TRIN_DB_PROD_INST_FIELD_ID],
 							$_POST[TRIN_DB_SELLER_PARAM_ID],
 							$_POST[TRIN_DB_BUYER_PARAM_ID],
 							$_POST[TRIN_DB_TRANS_PARAM_PRICE],
@@ -100,6 +116,11 @@
 							$_POST[TRIN_DB_TRANS_PARAM_SELLDATE],
 							$_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE],
 							$_POST[TRIN_DB_TRANS_PARAM_SEND_COST]))
+						{
+							unset($_SESSION[TRIN_PROD_DETAIL_PARAM]);
+							unset($_SESSION[TRIN_DB_PROD_INST_FIELD_ID]);
+						}
+						else
 						{
 							$display_form = TRUE;
 							$error = 'Cannot add transaction to the database: '
@@ -182,6 +203,7 @@
 
 						$product_names = array();
 						$product_values = array();
+						$_SESSION[TRIN_ALL_PROD_NAMES] = array();
 						while (TRUE)
 						{
 							$next_prod = trin_db_get_next_product ($db,
@@ -196,6 +218,8 @@
 								. $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME];
 							$product_values[] =
 								$next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
+							$_SESSION[TRIN_ALL_PROD_NAMES][$next_prod[TRIN_DB_PROD_DEF_FIELD_ID]]
+								= $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME];
 						}
 						trin_create_select(TRIN_PROD_DETAIL_PARAM,
 							'',
@@ -216,21 +240,18 @@
 			}
 			else
 			{
-				echo 'Product type: ' . trin_html_escape ($_POST[TRIN_PROD_DETAIL_PARAM]) . "<br>\n";
-				trin_create_text_input('hidden',
-					'',
-					TRIN_PROD_DETAIL_PARAM,
-					$_POST[TRIN_PROD_DETAIL_PARAM],
-					$validation_failed_fields);
+				echo 'Product type: ' . trin_html_escape ($_SESSION[TRIN_PROD_DETAIL_PARAM])
+					. ' - ' . $_SESSION[TRIN_ALL_PROD_NAMES][$_SESSION[TRIN_PROD_DETAIL_PARAM]]
+					. "<br>\n";
 				if (! $have_prod_inst_param)
 				{
 					// display a list of instances marked for selling of
 					// the given product category
-					if ($db && isset ($_POST[TRIN_PROD_DETAIL_PARAM]))
+					if ($db && isset ($_SESSION[TRIN_PROD_DETAIL_PARAM]))
 					{
 						// get only products marked for selling
 						$products = trin_db_get_product_instances_with_status ($db,
-							$_POST[TRIN_PROD_DETAIL_PARAM],
+							$_SESSION[TRIN_PROD_DETAIL_PARAM],
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
 						if ($products !== FALSE)
 						{
@@ -267,18 +288,13 @@
 				}
 				else
 				{
-					trin_create_text_input('hidden',
-						'',
-						TRIN_DB_PROD_INST_FIELD_ID,
-						$_POST[TRIN_DB_PROD_INST_FIELD_ID],
-						$validation_failed_fields);
 					$display_trans_params = TRUE;
 				}
 			}
 
 			if ($display_trans_params)
 			{
-				echo 'Product piece: ' . trin_html_escape($_POST[TRIN_DB_PROD_INST_FIELD_ID]) . "<br>\n";
+				echo 'Product piece: ' . trin_html_escape($_SESSION[TRIN_DB_PROD_INST_FIELD_ID]) . "<br>\n";
 				// display a list of sellers & buyers
 				// and the remaining fields for a transaction
 				if ($db)

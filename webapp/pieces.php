@@ -260,7 +260,7 @@ OR
 ?>
 </caption>
 <thead><tr>
- <th>Status changed to</th>
+ <th>Status changed from</th>
  <th>By this many pieces</th>
 </tr></thead>
 <tbody>
