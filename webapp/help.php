@@ -168,7 +168,6 @@ To install the web application part:
 	make install PREFIX=/srv/www/html
 	make install PREFIX=/var/www/html
 	make install PREFIX=$HOME/public_html</pre>
-	</li>
 
   <p>To install the documentation, you can add a chosen directory as the <code>DOCDIR</code>
   parameter to <code>make install</code>. Documentation will be installed in
