@@ -22,7 +22,7 @@
  */
 
 body		{
-			/*font-family: sans-serif, serif, arial;*/
+			/* font-family: sans-serif, serif, arial; */
 			background-color: #B7EBB7;
 			color: black;
 			text-align: justify;
@@ -44,7 +44,7 @@ a:visited	{
 			font-weight: bold;
 		}
 
-A:active	{
+a:active	{
 			background-color: inherit;
 			color: brown;
 		}
@@ -89,7 +89,7 @@ input[type="submit"]
 		}
 
 .important	{
-			/*text-transform: uppercase;*/
+			/* text-transform: uppercase; */
 			text-decoration: underline;
 			font-weight: bold;
 			font-style: normal;
@@ -251,9 +251,9 @@ th hr		{	display: none;			}
 		}
 
 /* =============================================================== */
+
 /* CSS 2 */
 @media print {
-
   body		{
 			text-align: justify;
 			background-color: white;
@@ -294,10 +294,11 @@ th hr		{	display: none;			}
   hr		{	display: none;			}
   img		{	display: none;			}
 
-  img.prod_image	{
+  img.prod_image
+		{
+			/* height: 100px; */
 			display: inline;
 			width: 75px;
-			/*height: 100px;*/
 			height: auto;
 			vertical-align: middle;
 		}
@@ -356,7 +357,6 @@ th hr		{	display: none;			}
 }
 
 @media aural {
-
   body		{
   			pitch-range: 50;
   			volume: soft;
