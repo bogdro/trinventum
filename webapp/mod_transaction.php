@@ -385,8 +385,16 @@ Update details (warning - this updates ALL the given details):
 			else
 			{
 				echo 'Product type: ' . trin_html_escape($_SESSION[TRIN_PROD_DETAIL_PARAM])
-					. ' - ' . $_SESSION[TRIN_ALL_PROD_NAMES][$_SESSION[TRIN_PROD_DETAIL_PARAM]]
-					. "<br>\n";
+					. ' - ';
+				if (isset ($_SESSION[TRIN_ALL_PROD_NAMES]))
+				{
+					echo $_SESSION[TRIN_ALL_PROD_NAMES][$_SESSION[TRIN_PROD_DETAIL_PARAM]];
+				}
+				else
+				{
+					echo trin_html_escape ($trans[TRIN_DB_PROD_DEF_FIELD_NAME]);
+				}
+				echo "<br>\n";
 				if (! $have_prod_inst_param)
 				{
 					// display a list of instances marked for selling of
