@@ -215,27 +215,39 @@ OR
 						{
 							echo '<td>' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</td>';
 							echo "<td>\n" .
-							"<form action=\"$tran_link\" method=\"POST\">\n" .
-							' <input type="hidden" name="' . TRIN_DB_TRANS_PARAM_ID . '" value="' .
-							$next_tran[TRIN_DB_TRANS_PARAM_ID] . "\">\n" .
-							' <input type="hidden" name="' . TRIN_PROD_DETAIL_PARAM . '" value="' .
-							$next_tran[TRIN_DB_PROD_DEF_FIELD_ID] . "\">\n" .
-							' <input type="hidden" name="' . TRIN_DB_PROD_INST_FIELD_ID . '" value="' .
-							$next_tran[TRIN_DB_PROD_INST_FIELD_ID] . "\">\n" .
-							' <input type="submit" value="Modify"></form></td>';
+							"<form action=\"$tran_link\" method=\"POST\">\n"
+							. ' <input type="hidden" name="' . TRIN_DB_TRANS_PARAM_ID
+							. '" value="'
+							. $next_tran[TRIN_DB_TRANS_PARAM_ID] . "\">\n"
+							. ' <input type="hidden" name="' . TRIN_PROD_DETAIL_PARAM
+							. '" value="'
+							. $next_tran[TRIN_DB_PROD_DEF_FIELD_ID] . "\">\n"
+							. ' <input type="hidden" name="' . TRIN_DB_PROD_INST_FIELD_ID
+							. '" value="'
+							. $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . "\">\n"
+							. ' <input type="submit" value="Modify"></form></td>';
 						}
 						else
 						{
-							echo '<td><a href="' . $tran_link . '">' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</a></td>';
+							echo '<td><a href="' . $tran_link . '">'
+								. $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</a></td>';
 						}
-						echo '<td><a href="' . $product_def_link . '">' . trin_html_escape ($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
-							'<td><a href="' . $product_link . '">' . $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
+						echo '<td><a href="' . $product_def_link . '">'
+							. trin_html_escape ($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
+							. '</a></td>' .
+							'<td><a href="' . $product_link . '">'
+								. $next_tran[TRIN_DB_PROD_INST_FIELD_ID]
+								. '</a></td>' .
 							'<td><a href="mod_seller.php?' . TRIN_DB_SELLER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_SELLER_PARAM_ID] . '">'
-								. trin_html_escape ($next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
+								. trin_html_escape
+									($next_tran[TRIN_DB_SELLER_PARAM_NAME])
+								. '</a></td>' .
 							'<td><a href="mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_BUYER_PARAM_ID] . '">'
-								. trin_html_escape ($next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
+								. trin_html_escape
+									($next_tran[TRIN_DB_BUYER_PARAM_NAME])
+								. '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .
 							'<td>' . $sent . '</td>' .
@@ -244,7 +256,8 @@ OR
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_SEND_COST] . '</td>' .
 							"<td>\n" .
 							"<form action=\"del_transaction.php\" method=\"POST\">\n" .
-							' <input type="hidden" name="' . TRIN_DB_TRANS_PARAM_ID . '" value="' .
+							' <input type="hidden" name="' . TRIN_DB_TRANS_PARAM_ID
+							. '" value="' .
 							$next_tran[TRIN_DB_TRANS_PARAM_ID] . "\">\n" .
 							' <input type="submit" value="Delete"></form><hr></td></tr>'
 							. "\n";
@@ -336,14 +349,22 @@ OR
 							$next_tran[TRIN_DB_PROD_INST_FIELD_ID];
 						echo '<tr class="c">';
 						echo '<td>' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</td>';
-						echo '<td><a href="' . $product_def_link . '">' . trin_html_escape ($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
-							'<td><a href="' . $product_link . '">' . $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
+						echo '<td><a href="' . $product_def_link . '">'
+								. trin_html_escape
+									($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
+								. '</a></td>' .
+							'<td><a href="' . $product_link . '">'
+							. $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
 							'<td><a href="mod_seller.php?' . TRIN_DB_SELLER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_SELLER_PARAM_ID] . '">'
-								. trin_html_escape ($next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
+								. trin_html_escape
+									($next_tran[TRIN_DB_SELLER_PARAM_NAME])
+								. '</a></td>' .
 							'<td><a href="mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_BUYER_PARAM_ID] . '">'
-								. trin_html_escape ($next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
+								. trin_html_escape
+									($next_tran[TRIN_DB_BUYER_PARAM_NAME])
+								. '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .
 							'<td>' . $sent . '</td>' .

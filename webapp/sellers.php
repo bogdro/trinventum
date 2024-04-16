@@ -156,8 +156,11 @@
 					$seller_det_link = 'mod_seller.php?' . TRIN_DB_SELLER_PARAM_ID
 						. '=' . $next_seller[TRIN_DB_SELLER_PARAM_ID];
 					echo '<tr class="c">' .
-						"<td><a href=\"$seller_det_link\">" . $next_seller[TRIN_DB_SELLER_PARAM_ID] . '</a></td>' .
-						"<td><a href=\"$seller_det_link\">" . trin_html_escape ($next_seller[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td></tr>'
+						"<td><a href=\"$seller_det_link\">" .
+							$next_seller[TRIN_DB_SELLER_PARAM_ID] . '</a></td>' .
+						"<td><a href=\"$seller_det_link\">"
+							. trin_html_escape ($next_seller[TRIN_DB_SELLER_PARAM_NAME])
+							. '</a></td></tr>'
 						. "\n";
 				}
 			}

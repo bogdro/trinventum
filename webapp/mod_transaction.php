@@ -723,10 +723,15 @@ Send cost:
 							TRIN_DB_PROD_INST_FIELD_ID . '=' .
 							$next_tran[TRIN_DB_PROD_INST_FIELD_ID];
 						echo '<tr class="c">' .
-							'<td><a href="' . $product_def_link . '">' . trin_html_escape ($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
-							'<td><a href="' . $product_link . '">' . $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
-							'<td><a href="sellers.php">' . trin_html_escape ($next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
-							'<td><a href="buyers.php">' . trin_html_escape ($next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
+							'<td><a href="' . $product_def_link . '">' . trin_html_escape
+								($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
+								. '</a></td>' .
+							'<td><a href="' . $product_link . '">' . 
+							$next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
+							'<td><a href="sellers.php">' . trin_html_escape
+								($next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
+							'<td><a href="buyers.php">' . trin_html_escape
+								($next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .
 							'<td>' . $sent . '</td>' .
