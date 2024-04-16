@@ -158,15 +158,23 @@
 						$category_det_link = 'mod_category.php?' . TRIN_CAT_DETAIL_PARAM
 							. '=' . $next_category[TRIN_DB_PROD_CAT_FIELD_ID];
 						echo '<tr class="c">' .
-							"<td><a href=\"$category_det_link\">" . $next_category[TRIN_DB_PROD_CAT_FIELD_ID] . '</a></td>' .
-							"<td><a href=\"$category_det_link\">" . trin_html_escape ($next_category[TRIN_DB_PROD_CAT_FIELD_NAME]) . '</a></td></tr>'
+							"<td><a href=\"$category_det_link\">"
+								. $next_category[TRIN_DB_PROD_CAT_FIELD_ID]
+								. '</a></td>' .
+							"<td><a href=\"$category_det_link\">"
+								. trin_html_escape (
+									$next_category[TRIN_DB_PROD_CAT_FIELD_NAME]
+								)
+								. '</a></td></tr>'
 							. "\n";
 					}
 					else
 					{
 						echo '<tr class="c">' .
 							'<td>' . $next_category[TRIN_DB_PROD_CAT_FIELD_ID] . '</td>' .
-							'<td>' . trin_html_escape ($next_category[TRIN_DB_PROD_CAT_FIELD_NAME]) . '</td></tr>'
+							'<td>' .
+							trin_html_escape ($next_category[TRIN_DB_PROD_CAT_FIELD_NAME])
+							. '</td></tr>'
 							. "\n";
 					}
 				}

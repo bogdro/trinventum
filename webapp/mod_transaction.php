@@ -385,8 +385,16 @@ Update details (warning - this updates ALL the given details):
 			else
 			{
 				echo 'Product type: ' . trin_html_escape($_SESSION[TRIN_PROD_DETAIL_PARAM])
-					. ' - ' . $_SESSION[TRIN_ALL_PROD_NAMES][$_SESSION[TRIN_PROD_DETAIL_PARAM]]
-					. "<br>\n";
+					. ' - ';
+				if (isset ($_SESSION[TRIN_ALL_PROD_NAMES]))
+				{
+					echo $_SESSION[TRIN_ALL_PROD_NAMES][$_SESSION[TRIN_PROD_DETAIL_PARAM]];
+				}
+				else
+				{
+					echo trin_html_escape ($trans[TRIN_DB_PROD_DEF_FIELD_NAME]);
+				}
+				echo "<br>\n";
 				if (! $have_prod_inst_param)
 				{
 					// display a list of instances marked for selling of
@@ -723,10 +731,15 @@ Send cost:
 							TRIN_DB_PROD_INST_FIELD_ID . '=' .
 							$next_tran[TRIN_DB_PROD_INST_FIELD_ID];
 						echo '<tr class="c">' .
-							'<td><a href="' . $product_def_link . '">' . trin_html_escape ($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
-							'<td><a href="' . $product_link . '">' . $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
-							'<td><a href="sellers.php">' . trin_html_escape ($next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
-							'<td><a href="buyers.php">' . trin_html_escape ($next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
+							'<td><a href="' . $product_def_link . '">' . trin_html_escape
+								($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
+								. '</a></td>' .
+							'<td><a href="' . $product_link . '">' . 
+							$next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
+							'<td><a href="sellers.php">' . trin_html_escape
+								($next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
+							'<td><a href="buyers.php">' . trin_html_escape
+								($next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .
 							'<td>' . $sent . '</td>' .

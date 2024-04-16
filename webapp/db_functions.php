@@ -1208,29 +1208,41 @@
 		*/
 		$result = TRUE;
 		$result = $result && trin_db_update_product_name ($db, $pd_id,
-			$param_pd_name, $param_pd_version++);
+			$param_pd_name, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_photo ($db, $pd_id,
-			$param_pd_photo, $param_pd_version++);
+			$param_pd_photo, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_size ($db, $pd_id,
-			$param_pd_size, $param_pd_version++);
+			$param_pd_size, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_length ($db, $pd_id,
-			$param_pd_length, $param_pd_version++);
+			$param_pd_length, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_width ($db, $pd_id,
-			$param_pd_width, $param_pd_version++);
+			$param_pd_width, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_colour ($db, $pd_id,
-			$param_pd_colour, $param_pd_version++);
+			$param_pd_colour, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_count ($db, $pd_id,
-			$param_pd_count, $param_pd_version++, $param_pd_cost);
+			$param_pd_count, $param_pd_version, $param_pd_cost);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_brand ($db, $pd_id,
-			$param_pd_brand, $param_pd_version++);
+			$param_pd_brand, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_gender ($db, $pd_id,
-			$param_pd_gender, $param_pd_version++);
+			$param_pd_gender, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_comment ($db, $pd_id,
-			$param_pd_comment, $param_pd_version++);
+			$param_pd_comment, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_cost ($db, $pd_id,
-			$param_pd_cost, $param_pd_version++);
+			$param_pd_cost, $param_pd_version);
+		$param_pd_version++;
 		$result = $result && trin_db_update_product_category ($db, $pd_id,
-			$param_pd_category, $param_pd_version++);
+			$param_pd_category, $param_pd_version);
+		$param_pd_version++;
 
 		if ($result !== FALSE)
 		{

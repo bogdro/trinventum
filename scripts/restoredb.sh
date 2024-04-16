@@ -22,5 +22,4 @@
 
 [[ -z "$1" ]] && echo "Usage: $0 <dump file>" && exit 1
 
-pg_restore -U trinventum -d trinventum $1
-
+pg_restore -U trinventum -d trinventum "$1"

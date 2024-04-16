@@ -67,7 +67,8 @@
 
 To use Trinventum, the following steps must be performed:
 <ol>
- <li>A supported database (currently: <a href="https://www.postgresql.org/" hreflang="en">PostgreSQL</a>) must be running.<br>
+ <li>A supported database (currently: <a href="https://www.postgresql.org/"
+	hreflang="en">PostgreSQL</a>) must be running.<br>
 	On a Linux system, you would do one of:
 	<ul>
 	 <li>login to the system as the database user <code>postgres</code> (you can
@@ -83,7 +84,8 @@ To use Trinventum, the following steps must be performed:
 	</li>
 
  <li>A web (HTTP) server with <a href="https://www.php.net" hreflang="en">PHP</a> support
- 	(like the <a href="https://httpd.apache.org" hreflang="en">Apache HTTP Server</a> with mod_php installed) must be running.<br>
+ 	(like the <a href="https://httpd.apache.org" hreflang="en">Apache HTTP Server</a>
+ 	with mod_php installed) must be running.<br>
 	On a Linux system, you would do one of (as <code>root</code>):
 	<pre>
 	systemctl start httpd-prefork</pre>
@@ -111,7 +113,8 @@ To use Trinventum, the following steps must be performed:
 	<br><br></li>
 
  <li>A procedural language suitable for the database must be installed in the logical database.<br>
-	On PostgreSQL versions earlier than 9.0, login to the system as the database user <code>postgres</code> and run:
+	On PostgreSQL versions earlier than 9.0, login to the system as the
+	database user <code>postgres</code> and run:
 	<pre>
 	createlang plpgsql trinventum</pre>
 	(don't worry if it says that the language already exists).<br>
@@ -124,7 +127,8 @@ To use Trinventum, the following steps must be performed:
 	cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf-backup
 	echo local trinventum trinventum scram-sha-256 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
 	echo host all all 127.0.0.1/32 scram-sha-256 &gt;&gt; /var/lib/pgsql/data/pg_hba.conf</pre>
-	(Note the double "<code>&gt;&gt;</code>" - it's <em class="important">CRUCIAL</em> to use double "<code>&gt;&gt;</code>",
+	(Note the double "<code>&gt;&gt;</code>" - it's <em class="important">CRUCIAL</em>
+	to use double "<code>&gt;&gt;</code>",
 	a single "<code>&gt;</code>" would <em class="important">OVERWRITE</em> the target file).<br>
 	On older PostgreSQL versions replace <code>scram-sha-256</code> with <code>md5</code>.<br>
 	If you'll need to access the database from another computer:
