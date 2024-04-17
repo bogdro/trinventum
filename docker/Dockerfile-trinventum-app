@@ -10,7 +10,7 @@ RUN chmod -R o+rX /var/www/html/* /var/www/html/.[a-z]*
 
 # Apache configuration:
 #RUN sed -i 's/#LoadModule mod_headers/LoadModule mod_headers/g' /etc/apache2/apache2.conf
-RUN cd /etc/apache2/mods-enabled/ && ln -sf ../mods-available/headers.load .
+RUN ln -sf /etc/apache2/mods-available/headers.load /etc/apache2/mods-enabled/headers.load
 
 # PHP configuration:
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
@@ -20,4 +20,5 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions pgsql
 
+USER nobody
 EXPOSE 80
