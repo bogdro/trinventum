@@ -41,12 +41,6 @@ jobs:
           output-file: hadolint-results-app.sarif
           no-fail: true
 
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: hadolint-results-app.sarif
-          wait-for-processing: true
-
       - name: Run hadolint on DB
         uses: hadolint/hadolint-action@f988afea3da57ee48710a9795b6bb677cc901183
         with:
@@ -58,5 +52,5 @@ jobs:
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: hadolint-results-db.sarif
+          sarif_file: hadolint-results-app.sarif hadolint-results-db.sarif
           wait-for-processing: true
