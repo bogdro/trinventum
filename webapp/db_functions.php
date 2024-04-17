@@ -351,8 +351,7 @@
 		{
 			$conn_string .= " port=$port";
 		}
-		$conn = pg_connect($conn_string);
-		return $conn;
+		return pg_connect($conn_string);
 	}
 
 	function trin_db_close ($conn)
