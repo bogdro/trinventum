@@ -109,12 +109,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_NAME])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_NAME . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_name ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_NAME],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_NAME . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -126,12 +126,12 @@
 		}
 		else if (isset ($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_PHOTO])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_PHOTO . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_photo ($db,
 				$product_id,
 				TRIN_DB_PROD_PARAM_PHOTO,
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_PHOTO . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -143,12 +143,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_SIZE])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_SIZE])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_SIZE . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_size ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_SIZE],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_SIZE . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -160,12 +160,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_LENGTH])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_length ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_LENGTH],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_LENGTH . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -177,12 +177,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_WIDTH])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_width ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_WIDTH],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_WIDTH . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -194,12 +194,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COLOUR])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_colour ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_COLOUR],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_COLOUR . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -211,12 +211,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COUNT])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COUNT])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_COUNT . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_count ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_COUNT],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_COUNT . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -228,12 +228,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_BRAND])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_BRAND])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_BRAND . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_brand ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_BRAND],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_BRAND . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -245,12 +245,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_GENDER])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_GENDER])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_GENDER . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_gender ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_GENDER],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_GENDER . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -262,12 +262,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COMMENT])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_comment ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_COMMENT],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_COMMENT . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -279,12 +279,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_COST])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COST])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_cost ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_COST],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_COST . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);
@@ -296,12 +296,12 @@
 		}
 		else if (isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY])
 			&& isset ($_POST[TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_CATEGORY])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			&& isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 		{
 			if (! trin_db_update_product_category ($db,
 				$product_id,
 				$_POST[TRIN_DB_PROD_PARAM_CATEGORY],
-				$_POST[TRIN_DB_PROD_PARAM_VERSION]))
+				$_POST[TRIN_DB_PROD_PARAM_CATEGORY . '_' . TRIN_DB_PROD_PARAM_VERSION]))
 			{
 				$error = 'Cannot update product in the database: '
 					. trin_db_get_last_error ($db);

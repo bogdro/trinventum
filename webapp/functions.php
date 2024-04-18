@@ -70,8 +70,8 @@
 	{
 		echo "<input type=\"$type\"\n
 			value=\"" . trin_html_escape ($value) . "\"\n
-			name=\"$name\"\n"
-			//. "id=\"$name\"\n"
+			name=\"$name\"\n
+			id=\"$name\"\n"
 			;
 		if ($size != '')
 		{
@@ -93,7 +93,7 @@
 	{
 		echo "<textarea cols=\"$cols\"\n
 			rows=\"$rows\"\n
-			name=\"$name\"
+			name=\"$name\"\n
 			id=\"$name\"\n\n";
 		if ($title != '')
 		{
@@ -148,8 +148,8 @@
 	{
 		echo "<input type=\"file\"\n
 			name=\"$name\"\n
-			value=\"" . trin_html_escape ($value) . "\"\n"
-			//. "id=\"$name\"\n"
+			value=\"" . trin_html_escape ($value) . "\"\n
+			id=\"$name\"\n"
 			;
 		if ($title != '')
 		{
@@ -224,7 +224,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_name_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_name_name,
 				'Update', TRUE);
@@ -252,7 +252,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_category_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_category_name,
 				'Update', TRUE);
@@ -272,7 +272,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_photo_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_photo_name,
 				'Update', TRUE);
@@ -292,7 +292,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_size_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_size_name,
 				'Update', TRUE);
@@ -313,7 +313,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_length_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_length_name,
 				'Update', TRUE);
@@ -334,7 +334,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_width_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_width_name,
 				'Update', TRUE);
@@ -354,7 +354,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_colour_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_colour_name,
 				'Update', TRUE);
@@ -374,7 +374,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_count_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_count_name,
 				'Update', TRUE);
@@ -394,7 +394,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_brand_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_brand_name,
 				'Update', TRUE);
@@ -416,7 +416,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_gender_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_gender_name,
 				'Update', TRUE);
@@ -436,7 +436,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_comment_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_comment_name,
 				'Update', TRUE);
@@ -457,7 +457,7 @@
 
 		if ($separate_forms === TRUE)
 		{
-			trin_create_text_input('hidden', '', $param_version_name,
+			trin_create_text_input('hidden', '', $param_cost_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_cost_name,
 				'Update', TRUE);
