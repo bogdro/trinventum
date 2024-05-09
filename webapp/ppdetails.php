@@ -40,26 +40,26 @@
 	{
 		header ('Location: login.php');
 	}
-	else if (! isset ($_GET[TRIN_DB_PROD_INST_FIELD_ID]))
+	else if (! trin_isset_get(TRIN_DB_PROD_INST_FIELD_ID))
 	{
 		header ('Location: main.php');
 	}
 	else
 	{
-		$product_inst_id = $_GET[TRIN_DB_PROD_INST_FIELD_ID];
+		$product_inst_id = trin_get_param(TRIN_DB_PROD_INST_FIELD_ID);
 		$return_link = 'main.php';
-		if (isset ($_GET[TRIN_PROD_DETAIL_PARAM]))
+		if (trin_isset_get(TRIN_PROD_DETAIL_PARAM))
 		{
 			$return_link = 'details.php?'
-				. TRIN_PROD_DETAIL_PARAM . '=' . $_GET[TRIN_PROD_DETAIL_PARAM];
+				. TRIN_PROD_DETAIL_PARAM . '=' . trin_get_param(TRIN_PROD_DETAIL_PARAM);
 		}
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_STATUS])
-			&& isset ($_POST[TRIN_DB_PROD_INST_FIELD_COST])
-			&& isset ($_POST[TRIN_DB_PROD_INST_FIELD_VERSION]))
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
+		if (trin_isset_post(TRIN_DB_PROD_INST_FIELD_STATUS)
+			&& trin_isset_post(TRIN_DB_PROD_INST_FIELD_COST)
+			&& trin_isset_post(TRIN_DB_PROD_INST_FIELD_VERSION))
 		{
 			$form_validators = array(
 				TRIN_DB_PROD_INST_FIELD_COST => TRIN_VALIDATION_FIELD_TYPE_NUMBER
@@ -78,9 +78,9 @@
 				}
 				if (! trin_db_update_product_instance ($db,
 					$product_inst_id,
-					$_POST[TRIN_DB_PROD_INST_FIELD_STATUS],
-					$_POST[TRIN_DB_PROD_INST_FIELD_COST],
-					$_POST[TRIN_DB_PROD_INST_FIELD_VERSION]))
+					trin_get_post(TRIN_DB_PROD_INST_FIELD_STATUS),
+					trin_get_post(TRIN_DB_PROD_INST_FIELD_COST),
+					trin_get_post(TRIN_DB_PROD_INST_FIELD_VERSION)))
 				{
 					$error = 'Cannot update product piece in the database: '
 						. trin_db_get_last_error ($db);
@@ -183,19 +183,19 @@ Update product piece details (warning - this updates ALL the given details):
 		// re-enter the data, else display what the use entered
 		if (! $update_error)
 		{
-			if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_STATUS]))
+			if (trin_isset_post(TRIN_DB_PROD_INST_FIELD_STATUS))
 			{
-				$param_pp_status = $_POST[TRIN_DB_PROD_INST_FIELD_STATUS];
+				$param_pp_status = trin_get_post(TRIN_DB_PROD_INST_FIELD_STATUS);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_COST]))
+			if (trin_isset_post(TRIN_DB_PROD_INST_FIELD_COST))
 			{
-				$param_pp_cost = $_POST[TRIN_DB_PROD_INST_FIELD_COST];
+				$param_pp_cost = trin_get_post(TRIN_DB_PROD_INST_FIELD_COST);
 			}
 			/*
 			always take the current version value
-			if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_VERSION]))
+			if (trin_isset_post(TRIN_DB_PROD_INST_FIELD_VERSION))
 			{
-				$param_pp_version = $_POST[TRIN_DB_PROD_INST_FIELD_VERSION];
+				$param_pp_version = trin_get_post(TRIN_DB_PROD_INST_FIELD_VERSION);
 			}
 			*/
 		}

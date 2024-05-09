@@ -43,21 +43,21 @@
 	{
 		header ('Location: login.php');
 	}
-	else if (! isset ($_GET[TRIN_CAT_DETAIL_PARAM]))
+	else if (! trin_isset_get(TRIN_CAT_DETAIL_PARAM))
 	{
 		header ('Location: categories.php');
 	}
-	else if ($_GET[TRIN_CAT_DETAIL_PARAM] == '0')
+	else if (trin_get_param(TRIN_CAT_DETAIL_PARAM) == '0')
 	{
 		header ('Location: categories.php');
 	}
 	else
 	{
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_DB_PROD_CAT_FIELD_NAME]))
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
+		if (trin_isset_post(TRIN_DB_PROD_CAT_FIELD_NAME))
 		{
 			$form_validators = array(
 				TRIN_DB_PROD_CAT_FIELD_NAME => TRIN_VALIDATION_FIELD_TYPE_REQUIRED
@@ -77,9 +77,9 @@
 					$error = 'Cannot connect to database';
 				}
 				if (! trin_db_update_category ($db,
-					$_GET[TRIN_CAT_DETAIL_PARAM],
-					$_POST[TRIN_DB_PROD_CAT_FIELD_NAME],
-					$_POST[TRIN_DB_PROD_CAT_FIELD_VERSION]))
+					trin_get_param(TRIN_CAT_DETAIL_PARAM),
+					trin_get_post(TRIN_DB_PROD_CAT_FIELD_NAME),
+					trin_get_post(TRIN_DB_PROD_CAT_FIELD_VERSION)))
 				{
 					$display_form = TRUE;
 					$error = 'Cannot update category in the database: '
@@ -138,7 +138,7 @@
 			$param_category_name = '';
 			$param_category_version = 0;
 
-			$category = trin_db_get_product_category_details ($db, $_GET[TRIN_CAT_DETAIL_PARAM]);
+			$category = trin_db_get_product_category_details ($db, trin_get_param(TRIN_CAT_DETAIL_PARAM));
 			if ($category !== FALSE)
 			{
 				$param_category_name = $category[TRIN_DB_PROD_CAT_FIELD_NAME];
@@ -154,15 +154,15 @@
 			// re-enter the data, else display what the use entered
 			if (! $update_error)
 			{
-				if (isset ($_POST[TRIN_DB_PROD_CAT_FIELD_NAME]))
+				if (trin_isset_post(TRIN_DB_PROD_CAT_FIELD_NAME))
 				{
-					$param_category_name = $_POST[TRIN_DB_PROD_CAT_FIELD_NAME];
+					$param_category_name = trin_get_post(TRIN_DB_PROD_CAT_FIELD_NAME);
 				}
 				/*
 				always take the current version value
-				if (isset ($_POST[TRIN_DB_SELLER_PARAM_VERSION]))
+				if (trin_isset_post(TRIN_DB_SELLER_PARAM_VERSION))
 				{
-					$param_pp_version = $_POST[TRIN_DB_SELLER_PARAM_VERSION];
+					$param_pp_version = trin_get_post(TRIN_DB_SELLER_PARAM_VERSION);
 				}
 				*/
 			}
@@ -190,7 +190,7 @@
 		if ($db)
 		{
 			$cat_his = trin_db_get_product_category_history ($db,
-				$_GET[TRIN_CAT_DETAIL_PARAM]);
+				trin_get_param(TRIN_CAT_DETAIL_PARAM));
 			if ($cat_his !== FALSE)
 			{
 				while (TRUE)

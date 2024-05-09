@@ -85,10 +85,10 @@
 <?php
 		$error = '';
 		$have_prod = FALSE;
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
 		if ($db)
 		{
 			$products = trin_db_get_product_defs ($db);

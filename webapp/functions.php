@@ -30,6 +30,56 @@
 		error_reporting (0);
 	}
 
+	function trin_isset_sess($name)
+	{
+		return isset($_SESSION[$name]);
+	}
+
+	function trin_get_sess($name)
+	{
+		return $_SESSION[$name];
+	}
+
+	function trin_set_sess($name, $value)
+	{
+		$_SESSION[$name] = $value;
+	}
+
+	function trin_unset_sess($name)
+	{
+		unset($_SESSION[$name]);
+	}
+
+	function trin_isset_post($name)
+	{
+		return isset($_POST[$name]);
+	}
+
+	function trin_get_post($name)
+	{
+		return $_POST[$name];
+	}
+
+	function trin_isset_get($name)
+	{
+		return isset($_GET[$name]);
+	}
+
+	function trin_get_param($name)
+	{
+		return $_GET[$name];
+	}
+
+	function trin_isset_server($name)
+	{
+		return isset($_SERVER[$name]);
+	}
+
+	function trin_get_server($name)
+	{
+		return $_SERVER[$name];
+	}
+
 	function trin_header_lastmod ($last_mod)
 	{
 		// must be gmdate(), and not date(), because the HTTP specification says this
@@ -55,10 +105,10 @@
 
 	function trin_validate_session ()
 	{
-		if (isset ($_SESSION[TRIN_SESS_DB_LOGIN])
-			&& isset ($_SESSION[TRIN_SESS_DB_PASS])
-			&& isset ($_SESSION[TRIN_SESS_DB_DBNAME])
-			&& isset ($_SESSION[TRIN_SESS_DB_HOST]))
+		if (trin_isset_sess (TRIN_SESS_DB_LOGIN)
+			&& trin_isset_sess (TRIN_SESS_DB_PASS)
+			&& trin_isset_sess (TRIN_SESS_DB_DBNAME)
+			&& trin_isset_sess (TRIN_SESS_DB_HOST))
 		{
 			return TRUE;
 		}
@@ -662,20 +712,20 @@
 
 	function trin_get_self_action ()
 	{
-		$action = trin_html_escape($_SERVER['PHP_SELF']);
-		if (isset ($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
+		$action = trin_html_escape(trin_get_server('PHP_SELF'));
+		if (trin_isset_server('QUERY_STRING') && trin_get_server('QUERY_STRING') != '')
 		{
-			$action .= '?' . trin_html_escape($_SERVER['QUERY_STRING']);
+			$action .= '?' . trin_html_escape(trin_get_server('QUERY_STRING'));
 		}
 		return $action;
 	}
 
 	function trin_get_self_location ()
 	{
-		$action = trin_html_escape($_SERVER['PHP_SELF']);
-		if (isset ($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
+		$action = trin_html_escape(trin_get_server('PHP_SELF'));
+		if (trin_isset_server('QUERY_STRING') && trin_get_server('QUERY_STRING') != '')
 		{
-			$action .= '?' . trin_html_escape($_SERVER['QUERY_STRING']);
+			$action .= '?' . trin_html_escape(trin_get_server('QUERY_STRING'));
 		}
 		return $action;
 	}
@@ -746,7 +796,7 @@ Error: <?php echo $message; ?>
 
 	function trin_set_success_msg ($message)
 	{
-		$_SESSION[TRIN_SESS_LAST_SUCCESS] = $message;
+		trin_set_sess(TRIN_SESS_LAST_SUCCESS, $message);
 	}
 
 	function trin_display_success ($message = '')
@@ -756,10 +806,10 @@ Error: <?php echo $message; ?>
 		{
 			$msg = $message;
 		}
-		if (isset ($_SESSION[TRIN_SESS_LAST_SUCCESS])
-			&& $_SESSION[TRIN_SESS_LAST_SUCCESS] != '')
+		if (trin_isset_sess(TRIN_SESS_LAST_SUCCESS)
+			&& trin_get_sess(TRIN_SESS_LAST_SUCCESS) != '')
 		{
-			$msg = $_SESSION[TRIN_SESS_LAST_SUCCESS];
+			$msg = trin_get_sess(TRIN_SESS_LAST_SUCCESS);
 		}
 		if ($msg != '')
 		{
@@ -769,7 +819,7 @@ Error: <?php echo $message; ?>
 </div>
 <?php
 		}
-		unset ($_SESSION[TRIN_SESS_LAST_SUCCESS]);
+		trin_unset_sess(TRIN_SESS_LAST_SUCCESS);
 	}
 
 	function trin_html_escape ($string)

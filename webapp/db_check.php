@@ -37,10 +37,10 @@
 	// disable errors if the version-check table doesn't exist (fresh install):
 	error_reporting (0);
 
-	$conn = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
+	$conn = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
 	if ($conn)
 	{
 		$trin_db_ver = trin_db_get_version ($conn);

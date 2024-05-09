@@ -44,11 +44,11 @@
 	}
 	else
 	{
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_DB_SELLER_PARAM_NAME]))
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
+		if (trin_isset_post(TRIN_DB_SELLER_PARAM_NAME))
 		{
 			$form_validators = array(
 				TRIN_DB_SELLER_PARAM_NAME => TRIN_VALIDATION_FIELD_TYPE_REQUIRED
@@ -66,7 +66,7 @@
 					$error = 'Cannot connect to database';
 				}
 				if (! trin_db_add_seller ($db,
-					$_POST[TRIN_DB_SELLER_PARAM_NAME]))
+					trin_get_post(TRIN_DB_SELLER_PARAM_NAME)))
 				{
 					$error = 'Cannot add seller to the database: '
 						. trin_db_get_last_error ($db);
@@ -116,9 +116,9 @@
 		$param_seller_version = 0;
 
 		// reset the form on success, leave the values on error
-		if ($error && isset ($_POST[TRIN_DB_SELLER_PARAM_NAME]))
+		if ($error && trin_isset_post(TRIN_DB_SELLER_PARAM_NAME))
 		{
-			$param_seller_name = $_POST[TRIN_DB_SELLER_PARAM_NAME];
+			$param_seller_name = trin_get_post(TRIN_DB_SELLER_PARAM_NAME);
 		}
 
 		trin_create_seller_form (

@@ -88,14 +88,14 @@
 		$offset = 0;
 		$limit = 1000000000;
 
-		if (isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_START]))
+		if (trin_isset_get(TRIN_DB_TRANS_LIST_PARAM_START))
 		{
-			$offset = $_GET[TRIN_DB_TRANS_LIST_PARAM_START];
+			$offset = trin_get_param(TRIN_DB_TRANS_LIST_PARAM_START);
 		}
 
-		if (isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_COUNT]))
+		if (trin_isset_get(TRIN_DB_TRANS_LIST_PARAM_COUNT))
 		{
-			$limit = $_GET[TRIN_DB_TRANS_LIST_PARAM_COUNT];
+			$limit = trin_get_param(TRIN_DB_TRANS_LIST_PARAM_COUNT);
 		}
 
 		if ($use_mod_button)
@@ -130,14 +130,14 @@ List
 first ones - <input type="submit" value="Go!">
 </form>
 OR
-<a href="<?php echo trin_html_escape($_SERVER['PHP_SELF']) . '?' . TRIN_DB_TRANS_PARAM_LIST . '=1'; ?>"
+<a href="<?php echo trin_html_escape(trin_get_server('PHP_SELF')) . '?' . TRIN_DB_TRANS_PARAM_LIST . '=1'; ?>"
 >List all transactions</a>
 </div>
 
 <?php
-		if (isset ($_GET[TRIN_DB_TRANS_PARAM_LIST])
-			|| (isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_START])
-				&& isset ($_GET[TRIN_DB_TRANS_LIST_PARAM_COUNT])))
+		if (trin_isset_get(TRIN_DB_TRANS_PARAM_LIST)
+			|| (trin_isset_get(TRIN_DB_TRANS_LIST_PARAM_START)
+				&& trin_isset_get(TRIN_DB_TRANS_LIST_PARAM_COUNT)))
 		{
 ?>
 
@@ -169,10 +169,10 @@ OR
 <?php
 			$error = '';
 			$have_trans = FALSE;
-			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-				$_SESSION[TRIN_SESS_DB_PASS],
-				$_SESSION[TRIN_SESS_DB_DBNAME],
-				$_SESSION[TRIN_SESS_DB_HOST]);
+			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+				trin_get_sess(TRIN_SESS_DB_PASS),
+				trin_get_sess(TRIN_SESS_DB_DBNAME),
+				trin_get_sess(TRIN_SESS_DB_HOST));
 			if ($db)
 			{
 				$trans = trin_db_get_transactions ($db, $offset, $limit);
@@ -309,10 +309,10 @@ OR
 <?php
 			$error = '';
 			$have_trans = FALSE;
-			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-				$_SESSION[TRIN_SESS_DB_PASS],
-				$_SESSION[TRIN_SESS_DB_DBNAME],
-				$_SESSION[TRIN_SESS_DB_HOST]);
+			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+				trin_get_sess(TRIN_SESS_DB_PASS),
+				trin_get_sess(TRIN_SESS_DB_DBNAME),
+				trin_get_sess(TRIN_SESS_DB_HOST));
 			if ($db)
 			{
 				$trans = trin_db_get_deleted_transactions ($db, $offset, $limit);

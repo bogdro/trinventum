@@ -45,61 +45,61 @@
 		header ('Location: login.php');
 	}
 	// GET = modify link, POST = modify button
-	else if ((! isset ($_GET[TRIN_DB_TRANS_PARAM_ID]))
-		&& (! isset ($_POST[TRIN_DB_TRANS_PARAM_ID])))
+	else if ((! trin_isset_get(TRIN_DB_TRANS_PARAM_ID))
+		&& (! trin_isset_post(TRIN_DB_TRANS_PARAM_ID)))
 	{
 		header ("Location: $return_link");
 	}
 	else
 	{
-		if (strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')
+		if (strtoupper(trin_get_server('REQUEST_METHOD')) != 'POST')
 		{
-			unset($_SESSION[TRIN_PROD_DETAIL_PARAM]);
-			unset($_SESSION[TRIN_DB_PROD_INST_FIELD_ID]);
-			unset($_SESSION[TRIN_ALL_PROD_NAMES]);
+			trin_unset_sess(TRIN_PROD_DETAIL_PARAM);
+			trin_unset_sess(TRIN_DB_PROD_INST_FIELD_ID);
+			trin_unset_sess(TRIN_ALL_PROD_NAMES);
 		}
 		$t_id = -1;
-		if (isset ($_GET[TRIN_DB_TRANS_PARAM_ID]))
+		if (trin_isset_get(TRIN_DB_TRANS_PARAM_ID))
 		{
-			$t_id = $_GET[TRIN_DB_TRANS_PARAM_ID];
+			$t_id = trin_get_param(TRIN_DB_TRANS_PARAM_ID);
 		}
-		else if (isset ($_POST[TRIN_DB_TRANS_PARAM_ID]))
+		else if (trin_isset_post(TRIN_DB_TRANS_PARAM_ID))
 		{
-			$t_id = $_POST[TRIN_DB_TRANS_PARAM_ID];
+			$t_id = trin_get_post(TRIN_DB_TRANS_PARAM_ID);
 		}
 		$button_title = 'Next step';
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_PROD_DETAIL_PARAM])
-			&& $_POST[TRIN_PROD_DETAIL_PARAM] != '-')
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
+		if (trin_isset_post(TRIN_PROD_DETAIL_PARAM)
+			&& trin_get_post(TRIN_PROD_DETAIL_PARAM) != '-')
 		{
-			$_SESSION[TRIN_PROD_DETAIL_PARAM] = $_POST[TRIN_PROD_DETAIL_PARAM];
+			trin_set_sess(TRIN_PROD_DETAIL_PARAM, trin_get_post(TRIN_PROD_DETAIL_PARAM));
 		}
-		if (isset ($_POST[TRIN_DB_PROD_INST_FIELD_ID])
-			&& $_POST[TRIN_DB_PROD_INST_FIELD_ID] != '-')
+		if (trin_isset_post(TRIN_DB_PROD_INST_FIELD_ID)
+			&& trin_get_post(TRIN_DB_PROD_INST_FIELD_ID) != '-')
 		{
-			$_SESSION[TRIN_DB_PROD_INST_FIELD_ID] = $_POST[TRIN_DB_PROD_INST_FIELD_ID];
+			trin_set_sess(TRIN_DB_PROD_INST_FIELD_ID, trin_get_post(TRIN_DB_PROD_INST_FIELD_ID));
 		}
 		$have_prod_detail_param =
-			isset ($_SESSION[TRIN_PROD_DETAIL_PARAM])
-			&& $_SESSION[TRIN_PROD_DETAIL_PARAM] != '-';
+			trin_isset_sess(TRIN_PROD_DETAIL_PARAM)
+			&& trin_get_sess(TRIN_PROD_DETAIL_PARAM) != '-';
 		$have_prod_inst_param =
-			isset ($_SESSION[TRIN_DB_PROD_INST_FIELD_ID])
-			&& $_SESSION[TRIN_DB_PROD_INST_FIELD_ID] != '-';
+			trin_isset_sess(TRIN_DB_PROD_INST_FIELD_ID)
+			&& trin_get_sess(TRIN_DB_PROD_INST_FIELD_ID) != '-';
 		$have_trans_param =
-			isset ($_POST[TRIN_DB_SELLER_PARAM_ID])
-			&& $_POST[TRIN_DB_SELLER_PARAM_ID] != '-'
-			&& isset ($_POST[TRIN_DB_BUYER_PARAM_ID])
-			&& $_POST[TRIN_DB_BUYER_PARAM_ID] != '-'
-			&& isset ($_POST[TRIN_DB_TRANS_PARAM_PRICE])
-			&& isset ($_POST[TRIN_DB_TRANS_PARAM_PAID])
-			&& isset ($_POST[TRIN_DB_TRANS_PARAM_SENT])
-			&& isset ($_POST[TRIN_DB_TRANS_PARAM_SELLDATE])
-			&& isset ($_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE])
-			&& isset ($_POST[TRIN_DB_TRANS_PARAM_SEND_COST])
-			&& isset ($_POST[TRIN_DB_TRANS_PARAM_VERSION]);
+			trin_isset_post(TRIN_DB_SELLER_PARAM_ID)
+			&& trin_get_post(TRIN_DB_SELLER_PARAM_ID) != '-'
+			&& trin_isset_post(TRIN_DB_BUYER_PARAM_ID)
+			&& trin_get_post(TRIN_DB_BUYER_PARAM_ID) != '-'
+			&& trin_isset_post(TRIN_DB_TRANS_PARAM_PRICE)
+			&& trin_isset_post(TRIN_DB_TRANS_PARAM_PAID)
+			&& trin_isset_post(TRIN_DB_TRANS_PARAM_SENT)
+			&& trin_isset_post(TRIN_DB_TRANS_PARAM_SELLDATE)
+			&& trin_isset_post(TRIN_DB_TRANS_PARAM_SEND_PRICE)
+			&& trin_isset_post(TRIN_DB_TRANS_PARAM_SEND_COST)
+			&& trin_isset_post(TRIN_DB_TRANS_PARAM_VERSION);
 
 		if ($have_prod_detail_param)
 		{
@@ -129,19 +129,19 @@
 						}
 						if (trin_db_update_transaction ($db,
 							$t_id,
-							$_SESSION[TRIN_DB_PROD_INST_FIELD_ID],
-							$_POST[TRIN_DB_SELLER_PARAM_ID],
-							$_POST[TRIN_DB_BUYER_PARAM_ID],
-							$_POST[TRIN_DB_TRANS_PARAM_PRICE],
-							$_POST[TRIN_DB_TRANS_PARAM_PAID],
-							$_POST[TRIN_DB_TRANS_PARAM_SENT],
-							$_POST[TRIN_DB_TRANS_PARAM_SELLDATE],
-							$_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE],
-							$_POST[TRIN_DB_TRANS_PARAM_SEND_COST],
-							$_POST[TRIN_DB_TRANS_PARAM_VERSION]))
+							trin_get_sess(TRIN_DB_PROD_INST_FIELD_ID),
+							trin_get_post(TRIN_DB_SELLER_PARAM_ID),
+							trin_get_post(TRIN_DB_BUYER_PARAM_ID),
+							trin_get_post(TRIN_DB_TRANS_PARAM_PRICE),
+							trin_get_post(TRIN_DB_TRANS_PARAM_PAID),
+							trin_get_post(TRIN_DB_TRANS_PARAM_SENT),
+							trin_get_post(TRIN_DB_TRANS_PARAM_SELLDATE),
+							trin_get_post(TRIN_DB_TRANS_PARAM_SEND_PRICE),
+							trin_get_post(TRIN_DB_TRANS_PARAM_SEND_COST),
+							trin_get_post(TRIN_DB_TRANS_PARAM_VERSION)))
 						{
-							unset($_SESSION[TRIN_PROD_DETAIL_PARAM]);
-							unset($_SESSION[TRIN_DB_PROD_INST_FIELD_ID]);
+							trin_unset_sess(TRIN_PROD_DETAIL_PARAM);
+							trin_unset_sess(TRIN_DB_PROD_INST_FIELD_ID);
 						}
 						else
 						{
@@ -347,7 +347,7 @@ Update details (warning - this updates ALL the given details):
 
 						$product_names = array();
 						$product_values = array();
-						$_SESSION[TRIN_ALL_PROD_NAMES] = array();
+						trin_set_sess(TRIN_ALL_PROD_NAMES, array());
 						while (TRUE)
 						{
 							$next_prod = trin_db_get_next_product ($db,
@@ -362,8 +362,11 @@ Update details (warning - this updates ALL the given details):
 								. $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME];
 							$product_values[] =
 								$next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
-							$_SESSION[TRIN_ALL_PROD_NAMES][$next_prod[TRIN_DB_PROD_DEF_FIELD_ID]]
+
+							$sess_prod_names = trin_get_sess(TRIN_ALL_PROD_NAMES);
+							$sess_prod_names[$next_prod[TRIN_DB_PROD_DEF_FIELD_ID]]
 								= $next_prod[TRIN_DB_PROD_DEF_FIELD_NAME];
+							trin_set_sess(TRIN_ALL_PROD_NAMES, $sess_prod_names);
 						}
 						trin_create_select(TRIN_PROD_DETAIL_PARAM,
 							'',
@@ -384,11 +387,11 @@ Update details (warning - this updates ALL the given details):
 			}
 			else
 			{
-				echo 'Product type: ' . trin_html_escape($_SESSION[TRIN_PROD_DETAIL_PARAM])
+				echo 'Product type: ' . trin_html_escape(trin_get_sess(TRIN_PROD_DETAIL_PARAM))
 					. ' - ';
-				if (isset ($_SESSION[TRIN_ALL_PROD_NAMES]))
+				if (trin_isset_sess(TRIN_ALL_PROD_NAMES))
 				{
-					echo $_SESSION[TRIN_ALL_PROD_NAMES][$_SESSION[TRIN_PROD_DETAIL_PARAM]];
+					echo trin_get_sess(TRIN_ALL_PROD_NAMES)[trin_get_sess(TRIN_PROD_DETAIL_PARAM)];
 				}
 				else
 				{
@@ -399,11 +402,11 @@ Update details (warning - this updates ALL the given details):
 				{
 					// display a list of instances marked for selling of
 					// the given product category
-					if ($db && isset ($_SESSION[TRIN_PROD_DETAIL_PARAM]))
+					if ($db && trin_isset_sess(TRIN_PROD_DETAIL_PARAM))
 					{
 						// get only products marked for selling
 						$products = trin_db_get_product_instances_with_status ($db,
-							$_SESSION[TRIN_PROD_DETAIL_PARAM],
+							trin_get_sess(TRIN_PROD_DETAIL_PARAM),
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
 						if ($products !== FALSE)
 						{
@@ -447,7 +450,7 @@ Update details (warning - this updates ALL the given details):
 
 			if ($display_trans_params)
 			{
-				echo 'Product piece: ' . trin_html_escape($_SESSION[TRIN_DB_PROD_INST_FIELD_ID]) . "<br>\n";
+				echo 'Product piece: ' . trin_html_escape(trin_get_sess(TRIN_DB_PROD_INST_FIELD_ID)) . "<br>\n";
 				// display a list of sellers & buyers
 				// and the remaining fields for a transaction
 				if ($db)
@@ -531,44 +534,44 @@ Update details (warning - this updates ALL the given details):
 				// re-enter the data, else display what the use entered
 				if (! $update_error)
 				{
-					if (isset ($_POST[TRIN_DB_TRANS_PARAM_PRICE]))
+					if (trin_isset_post(TRIN_DB_TRANS_PARAM_PRICE))
 					{
-						$param_trans_sell_price = $_POST[TRIN_DB_TRANS_PARAM_PRICE];
+						$param_trans_sell_price = trin_get_post(TRIN_DB_TRANS_PARAM_PRICE);
 					}
 
-					if (isset ($_POST[TRIN_DB_TRANS_PARAM_PAID]))
+					if (trin_isset_post(TRIN_DB_TRANS_PARAM_PAID))
 					{
-						$param_trans_paid = $_POST[TRIN_DB_TRANS_PARAM_PAID];
+						$param_trans_paid = trin_get_post(TRIN_DB_TRANS_PARAM_PAID);
 					}
 
-					if (isset ($_POST[TRIN_DB_TRANS_PARAM_SENT]))
+					if (trin_isset_post(TRIN_DB_TRANS_PARAM_SENT))
 					{
-						$param_trans_sent = $_POST[TRIN_DB_TRANS_PARAM_SENT];
+						$param_trans_sent = trin_get_post(TRIN_DB_TRANS_PARAM_SENT);
 					}
 
-					if (isset ($_POST[TRIN_DB_TRANS_PARAM_SELLDATE]))
+					if (trin_isset_post(TRIN_DB_TRANS_PARAM_SELLDATE))
 					{
-						$param_trans_selldate = $_POST[TRIN_DB_TRANS_PARAM_SELLDATE];
+						$param_trans_selldate = trin_get_post(TRIN_DB_TRANS_PARAM_SELLDATE);
 					}
 					else if ($param_trans_selldate == '')
 					{
 						$param_trans_selldate = trin_get_current_date_string ();
 					}
 
-					if (isset ($_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE]))
+					if (trin_isset_post(TRIN_DB_TRANS_PARAM_SEND_PRICE))
 					{
-						$param_trans_send_price = $_POST[TRIN_DB_TRANS_PARAM_SEND_PRICE];
+						$param_trans_send_price = trin_get_post(TRIN_DB_TRANS_PARAM_SEND_PRICE);
 					}
 
-					if (isset ($_POST[TRIN_DB_TRANS_PARAM_SEND_COST]))
+					if (trin_isset_post(TRIN_DB_TRANS_PARAM_SEND_COST))
 					{
-						$param_trans_send_cost = $_POST[TRIN_DB_TRANS_PARAM_SEND_COST];
+						$param_trans_send_cost = trin_get_post(TRIN_DB_TRANS_PARAM_SEND_COST);
 					}
 					/*
 					always take the current version value
-					if (isset ($_POST[TRIN_DB_TRANS_PARAM_VERSION]))
+					if (trin_isset_post(TRIN_DB_TRANS_PARAM_VERSION))
 					{
-						$param_trans_version = $_POST[TRIN_DB_TRANS_PARAM_VERSION];
+						$param_trans_version = trin_get_post(TRIN_DB_TRANS_PARAM_VERSION);
 					}
 					*/
 				}

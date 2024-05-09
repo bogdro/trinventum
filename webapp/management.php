@@ -44,22 +44,22 @@
 	}
 	else
 	{
-		if (strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')
+		if (strtoupper(trin_get_server('REQUEST_METHOD')) != 'POST')
 		{
-			unset($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY]);
+			trin_unset_sess(TRIN_FORM_SUBMIT_DB_DESTROY);
 		}
-		if (isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY]))
+		if (trin_isset_post(TRIN_FORM_SUBMIT_DB_DESTROY))
 		{
-			$_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY] = $_POST[TRIN_FORM_SUBMIT_DB_DESTROY];
+			trin_set_sess(TRIN_FORM_SUBMIT_DB_DESTROY, trin_get_post(TRIN_FORM_SUBMIT_DB_DESTROY));
 		}
-		if (isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY])
-			&& isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY2]))
+		if (trin_isset_sess(TRIN_FORM_SUBMIT_DB_DESTROY)
+			&& trin_isset_post(TRIN_FORM_SUBMIT_DB_DESTROY2))
 		{
 			// destroy and logout if successful
-			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-				$_SESSION[TRIN_SESS_DB_PASS],
-				$_SESSION[TRIN_SESS_DB_DBNAME],
-				$_SESSION[TRIN_SESS_DB_HOST]);
+			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+				trin_get_sess(TRIN_SESS_DB_PASS),
+				trin_get_sess(TRIN_SESS_DB_DBNAME),
+				trin_get_sess(TRIN_SESS_DB_HOST));
 			if (!$db)
 			{
 				$display_form = TRUE;
@@ -106,7 +106,7 @@
 		trin_display_error($error);
 
 		if (count ($_POST) == 0 ||
-			isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]))
+			trin_isset_post(TRIN_FORM_PARAM_DB_QUERY))
 		{
 ?>
 
@@ -221,10 +221,10 @@ Sample queries:
 <label for="<?php echo TRIN_FORM_PARAM_DB_QUERY ?>">Query:</label>
 <?php
 			$param_db_query_value = '';
-			if (isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]))
+			if (trin_isset_post(TRIN_FORM_PARAM_DB_QUERY))
 			{
 				$param_db_query_value =
-					$_POST[TRIN_FORM_PARAM_DB_QUERY];
+					trin_get_post(TRIN_FORM_PARAM_DB_QUERY);
 			}
 
 			trin_create_textarea ('15', '70', TRIN_FORM_PARAM_DB_QUERY,
@@ -235,18 +235,18 @@ Sample queries:
 </form>
 
 <?php
-			if (isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]))
+			if (trin_isset_post(TRIN_FORM_PARAM_DB_QUERY))
 			{
-				$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-					$_SESSION[TRIN_SESS_DB_PASS],
-					$_SESSION[TRIN_SESS_DB_DBNAME],
-					$_SESSION[TRIN_SESS_DB_HOST]);
+				$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+					trin_get_sess(TRIN_SESS_DB_PASS),
+					trin_get_sess(TRIN_SESS_DB_DBNAME),
+					trin_get_sess(TRIN_SESS_DB_HOST));
 				if (!$db)
 				{
 					$error = 'Cannot connect to database';
 				}
 				$res = trin_db_query ($db,
-					$_POST[TRIN_FORM_PARAM_DB_QUERY]);
+					trin_get_post(TRIN_FORM_PARAM_DB_QUERY));
 				if (! $res)
 				{
 					$error = 'Error querying the database: '
@@ -320,16 +320,16 @@ Sample queries:
 <h2 class="c">Connection parameters</h2>
 
 <?php
-			$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-				$_SESSION[TRIN_SESS_DB_PASS],
-				$_SESSION[TRIN_SESS_DB_DBNAME],
-				$_SESSION[TRIN_SESS_DB_HOST]);
+			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+				trin_get_sess(TRIN_SESS_DB_PASS),
+				trin_get_sess(TRIN_SESS_DB_DBNAME),
+				trin_get_sess(TRIN_SESS_DB_HOST));
 
-			echo '<p>Database login: ' . $_SESSION[TRIN_SESS_DB_LOGIN] . "</p>\n";
+			echo '<p>Database login: ' . trin_get_sess(TRIN_SESS_DB_LOGIN) . "</p>\n";
 
-			echo '<p>Database name: ' . $_SESSION[TRIN_SESS_DB_DBNAME] . "</p>\n";
+			echo '<p>Database name: ' . trin_get_sess(TRIN_SESS_DB_DBNAME) . "</p>\n";
 
-			echo '<p>Database host: ' . $_SESSION[TRIN_SESS_DB_HOST] . "</p>\n";
+			echo '<p>Database host: ' . trin_get_sess(TRIN_SESS_DB_HOST) . "</p>\n";
 
 			echo '<p>Connection options, if any: ' . pg_options ($db) . "</p>\n";
 
@@ -364,8 +364,8 @@ Sample queries:
 // <!-- ========================== Database destroy confirmation =========================== -->
 
 
-		} // count ($_POST) == 0 || isset ($_POST[TRIN_FORM_PARAM_DB_QUERY]
-		if (! isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY]))
+		} // count ($_POST) == 0 || isset (trin_get_post(TRIN_FORM_PARAM_DB_QUERY)
+		if (! trin_isset_sess(TRIN_FORM_SUBMIT_DB_DESTROY))
 		{
 ?>
 
@@ -383,9 +383,9 @@ This operation deletes all structures and data in the database and cannot be rev
 
 <?php
 
-		} // ! isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY])
-		if (isset ($_SESSION[TRIN_FORM_SUBMIT_DB_DESTROY])
-			&& ! isset ($_POST[TRIN_FORM_SUBMIT_DB_DESTROY2]))
+		} // ! trin_isset_sess(TRIN_FORM_SUBMIT_DB_DESTROY)
+		if (trin_isset_sess(TRIN_FORM_SUBMIT_DB_DESTROY)
+			&& ! trin_isset_post(TRIN_FORM_SUBMIT_DB_DESTROY2))
 		{
 			// double-check
 ?>

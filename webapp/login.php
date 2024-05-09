@@ -39,17 +39,17 @@
 	$validation_failed_fields = array();
 	$db = NULL;
 
-	if (isset ($_POST[TRIN_SESS_DB_LOGIN])
-		&& isset ($_POST[TRIN_SESS_DB_PASS])
-		&& isset ($_POST[TRIN_SESS_DB_DBNAME])
-		&& isset ($_POST[TRIN_SESS_DB_HOST])
-		&& isset ($_POST[TRIN_SESS_DB_PORT]))
+	if (trin_isset_post(TRIN_SESS_DB_LOGIN)
+		&& trin_isset_post(TRIN_SESS_DB_PASS)
+		&& trin_isset_post(TRIN_SESS_DB_DBNAME)
+		&& trin_isset_post(TRIN_SESS_DB_HOST)
+		&& trin_isset_post(TRIN_SESS_DB_PORT))
 	{
-		$db = trin_db_open ($_POST[TRIN_SESS_DB_LOGIN],
-			$_POST[TRIN_SESS_DB_PASS],
-			$_POST[TRIN_SESS_DB_DBNAME],
-			$_POST[TRIN_SESS_DB_HOST],
-			$_POST[TRIN_SESS_DB_PORT]);
+		$db = trin_db_open (trin_get_post(TRIN_SESS_DB_LOGIN),
+			trin_get_post(TRIN_SESS_DB_PASS),
+			trin_get_post(TRIN_SESS_DB_DBNAME),
+			trin_get_post(TRIN_SESS_DB_HOST),
+			trin_get_post(TRIN_SESS_DB_PORT));
 		if (!$db)
 		{
 			$display_form = TRUE;
@@ -63,11 +63,11 @@
 		}
 		if (! $display_form)
 		{
-			$_SESSION[TRIN_SESS_DB_LOGIN] = $_POST[TRIN_SESS_DB_LOGIN];
-			$_SESSION[TRIN_SESS_DB_PASS] = $_POST[TRIN_SESS_DB_PASS];
-			$_SESSION[TRIN_SESS_DB_DBNAME] = $_POST[TRIN_SESS_DB_DBNAME];
-			$_SESSION[TRIN_SESS_DB_HOST] = $_POST[TRIN_SESS_DB_HOST];
-			$_SESSION[TRIN_SESS_DB_PORT] = $_POST[TRIN_SESS_DB_PORT];
+			trin_set_sess(TRIN_SESS_DB_LOGIN, trin_get_post(TRIN_SESS_DB_LOGIN));
+			trin_set_sess(TRIN_SESS_DB_PASS, trin_get_post(TRIN_SESS_DB_PASS));
+			trin_set_sess(TRIN_SESS_DB_DBNAME, trin_get_post(TRIN_SESS_DB_DBNAME));
+			trin_set_sess(TRIN_SESS_DB_HOST, trin_get_post(TRIN_SESS_DB_HOST));
+			trin_set_sess(TRIN_SESS_DB_PORT, trin_get_post(TRIN_SESS_DB_PORT));
 			header ('Location: db_check.php');
 		}
 	}
@@ -110,29 +110,29 @@
 		$param_db_host = 'localhost';
 		$param_db_port = '';
 
-		if (isset ($_POST[TRIN_SESS_DB_LOGIN]))
+		if (trin_isset_post(TRIN_SESS_DB_LOGIN))
 		{
-			$param_db_login = $_POST[TRIN_SESS_DB_LOGIN];
+			$param_db_login = trin_get_post(TRIN_SESS_DB_LOGIN);
 		}
 
-		if (isset ($_POST[TRIN_SESS_DB_PASS]))
+		if (trin_isset_post(TRIN_SESS_DB_PASS))
 		{
-			$param_db_pass = $_POST[TRIN_SESS_DB_PASS];
+			$param_db_pass = trin_get_post(TRIN_SESS_DB_PASS);
 		}
 
-		if (isset ($_POST[TRIN_SESS_DB_DBNAME]))
+		if (trin_isset_post(TRIN_SESS_DB_DBNAME))
 		{
-			$param_db_dbname = $_POST[TRIN_SESS_DB_DBNAME];
+			$param_db_dbname = trin_get_post(TRIN_SESS_DB_DBNAME);
 		}
 
-		if (isset ($_POST[TRIN_SESS_DB_HOST]))
+		if (trin_isset_post(TRIN_SESS_DB_HOST))
 		{
-			$param_db_host = $_POST[TRIN_SESS_DB_HOST];
+			$param_db_host = trin_get_post(TRIN_SESS_DB_HOST);
 		}
 
-		if (isset ($_POST[TRIN_SESS_DB_PORT]))
+		if (trin_isset_post(TRIN_SESS_DB_PORT))
 		{
-			$param_db_port = $_POST[TRIN_SESS_DB_PORT];
+			$param_db_port = trin_get_post(TRIN_SESS_DB_PORT);
 		}
 ?>
 

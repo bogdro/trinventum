@@ -266,9 +266,9 @@ Then, you can log in as the chosen user and have access to just the required fun
 <h2>Usage</h2>
 
 <?php
-	$login_link = trin_html_escape($_SERVER['REQUEST_SCHEME'])
-		. '://' . trin_html_escape($_SERVER['HTTP_HOST'])
-		. dirname(trin_html_escape($_SERVER['PHP_SELF']))
+	$login_link = trin_html_escape(trin_get_server('REQUEST_SCHEME'))
+		. '://' . trin_html_escape(trin_get_server('HTTP_HOST'))
+		. dirname(trin_html_escape(trin_get_server('PHP_SELF')))
 		. '/login.php';
 ?>
 After having done the installation, point your browser to the Trinventum login page, like

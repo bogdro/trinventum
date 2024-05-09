@@ -23,6 +23,7 @@
 	 */
 
 	include_once 'constants.php';
+	include_once 'functions.php';
 
 	define ('TRIN_QUERY_DB_CHECK', 'select now()');
 	define ('TRIN_QUERY_DB_VERSION_CHECK',
@@ -2219,13 +2220,13 @@
 
 	function trin_db_clear_last_error()
 	{
-		unset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]);
+		trin_unset_sess(TRIN_SESS_DB_LAST_ERROR);
 	}
 
 	function trin_db_set_last_error($conn, $error = '')
 	{
-		if (isset ($_SESSION[TRIN_SESS_DB_LAST_ERROR])
-			&& $_SESSION[TRIN_SESS_DB_LAST_ERROR] != '')
+		if (trin_isset_sess(TRIN_SESS_DB_LAST_ERROR)
+			&& trin_get_sess(TRIN_SESS_DB_LAST_ERROR) != '')
 		{
 			// error already set, don't overwrite it
 			return;
@@ -2235,17 +2236,17 @@
 		{
 			$last_error = $error;
 		}
-		$_SESSION[TRIN_SESS_DB_LAST_ERROR] = $last_error;
+		trin_set_sess(TRIN_SESS_DB_LAST_ERROR, $last_error);
 	}
 
 	function trin_db_get_last_error($conn)
 	{
 		$db_error = pg_last_error ($conn);
 		$db_sess_error = '';
-		if (!$db_error && isset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]))
+		if (!$db_error && trin_isset_sess(TRIN_SESS_DB_LAST_ERROR))
 		{
-			$db_sess_error = $_SESSION[TRIN_SESS_DB_LAST_ERROR];
-			unset ($_SESSION[TRIN_SESS_DB_LAST_ERROR]);
+			$db_sess_error = trin_get_sess(TRIN_SESS_DB_LAST_ERROR);
+			trin_unset_sess(TRIN_SESS_DB_LAST_ERROR);
 		}
 		if ($db_error)
 		{

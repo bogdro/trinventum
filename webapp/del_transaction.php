@@ -44,11 +44,11 @@
 	}
 	else
 	{
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_DB_TRANS_PARAM_ID]))
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
+		if (trin_isset_post(TRIN_DB_TRANS_PARAM_ID))
 		{
 			// delete transaction
 			if (!$db)
@@ -57,7 +57,7 @@
 				$error = 'Cannot connect to database';
 			}
 			if (! trin_db_delete_transaction ($db,
-				$_POST[TRIN_DB_TRANS_PARAM_ID]))
+				trin_get_post(TRIN_DB_TRANS_PARAM_ID)))
 			{
 				$display_form = TRUE;
 				$error = 'Cannot delete transaction from the database: '

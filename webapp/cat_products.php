@@ -35,7 +35,7 @@
 	{
 		header ('Location: login.php');
 	}
-	else if (! isset ($_GET[TRIN_CAT_DETAIL_PARAM]))
+	else if (! trin_isset_get(TRIN_CAT_DETAIL_PARAM))
 	{
 		header ('Location: main.php');
 	}
@@ -71,14 +71,14 @@
 		trin_display_success();
 
 		$cat_name = '';
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
 		if ($db)
 		{
 			$cat = trin_db_get_product_category_details ($db,
-				$_GET[TRIN_CAT_DETAIL_PARAM]);
+				trin_get_param(TRIN_CAT_DETAIL_PARAM));
 			if ($cat !== FALSE)
 			{
 				$cat_name = $cat[TRIN_DB_PROD_CAT_FIELD_NAME];
@@ -105,7 +105,7 @@
 		$have_prod = FALSE;
 		if ($db)
 		{
-			$products = trin_db_get_product_defs_of_category ($db, $_GET[TRIN_CAT_DETAIL_PARAM]);
+			$products = trin_db_get_product_defs_of_category ($db, trin_get_param(TRIN_CAT_DETAIL_PARAM));
 			if ($products !== FALSE)
 			{
 				while (TRUE)

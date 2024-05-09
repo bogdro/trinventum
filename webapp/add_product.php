@@ -45,27 +45,27 @@
 	}
 	else
 	{
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
 		if (!$db)
 		{
 			$display_form = TRUE;
 			$error = 'Cannot connect to database';
 		}
-		else if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME])
+		else if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
 			&& isset ($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_SIZE])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_COUNT])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_BRAND])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_GENDER])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT])
-			&& isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY])
- 			&& isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_SIZE)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_WIDTH)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_COLOUR)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_COUNT)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_BRAND)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_GENDER)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_COMMENT)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_CATEGORY)
+			&& trin_isset_post(TRIN_DB_PROD_PARAM_COST))
 		{
 			$form_validators = array(
 				TRIN_DB_PROD_PARAM_LENGTH => TRIN_VALIDATION_FIELD_TYPE_NUMBER,
@@ -84,18 +84,18 @@
 			else
 			{
 				if (! trin_db_add_product ($db,
-					$_POST[TRIN_DB_PROD_PARAM_NAME],
+					trin_get_post(TRIN_DB_PROD_PARAM_NAME),
 			       		TRIN_DB_PROD_PARAM_PHOTO,
-					$_POST[TRIN_DB_PROD_PARAM_SIZE],
-					$_POST[TRIN_DB_PROD_PARAM_LENGTH],
-					$_POST[TRIN_DB_PROD_PARAM_WIDTH],
-					$_POST[TRIN_DB_PROD_PARAM_COLOUR],
-					$_POST[TRIN_DB_PROD_PARAM_COUNT],
-					$_POST[TRIN_DB_PROD_PARAM_BRAND],
-					$_POST[TRIN_DB_PROD_PARAM_GENDER],
-					$_POST[TRIN_DB_PROD_PARAM_COMMENT],
-					$_POST[TRIN_DB_PROD_PARAM_CATEGORY],
- 					$_POST[TRIN_DB_PROD_PARAM_COST]))
+					trin_get_post(TRIN_DB_PROD_PARAM_SIZE),
+					trin_get_post(TRIN_DB_PROD_PARAM_LENGTH),
+					trin_get_post(TRIN_DB_PROD_PARAM_WIDTH),
+					trin_get_post(TRIN_DB_PROD_PARAM_COLOUR),
+					trin_get_post(TRIN_DB_PROD_PARAM_COUNT),
+					trin_get_post(TRIN_DB_PROD_PARAM_BRAND),
+					trin_get_post(TRIN_DB_PROD_PARAM_GENDER),
+					trin_get_post(TRIN_DB_PROD_PARAM_COMMENT),
+					trin_get_post(TRIN_DB_PROD_PARAM_CATEGORY),
+					trin_get_post(TRIN_DB_PROD_PARAM_COST)))
 				{
 					$display_form = TRUE;
 					$error = 'Cannot add product to the database: '
@@ -161,57 +161,57 @@
 			$param_pd_category_id = '';
 			$param_pd_version = 0;
 
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_NAME]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME))
 			{
-				$param_pd_name = $_POST[TRIN_DB_PROD_PARAM_NAME];
+				$param_pd_name = trin_get_post(TRIN_DB_PROD_PARAM_NAME);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_PHOTO]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_PHOTO))
 			{
-				$param_pd_photo = $_POST[TRIN_DB_PROD_PARAM_PHOTO];
+				$param_pd_photo = trin_get_post(TRIN_DB_PROD_PARAM_PHOTO);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_SIZE]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_SIZE))
 			{
-				$param_pd_size = $_POST[TRIN_DB_PROD_PARAM_SIZE];
+				$param_pd_size = trin_get_post(TRIN_DB_PROD_PARAM_SIZE);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_LENGTH]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH))
 			{
-				$param_pd_length = $_POST[TRIN_DB_PROD_PARAM_LENGTH];
+				$param_pd_length = trin_get_post(TRIN_DB_PROD_PARAM_LENGTH);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_WIDTH]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_WIDTH))
 			{
-				$param_pd_width = $_POST[TRIN_DB_PROD_PARAM_WIDTH];
+				$param_pd_width = trin_get_post(TRIN_DB_PROD_PARAM_WIDTH);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_COLOUR]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_COLOUR))
 			{
-				$param_pd_colour = $_POST[TRIN_DB_PROD_PARAM_COLOUR];
+				$param_pd_colour = trin_get_post(TRIN_DB_PROD_PARAM_COLOUR);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_COUNT]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_COUNT))
 			{
-				$param_pd_count = $_POST[TRIN_DB_PROD_PARAM_COUNT];
+				$param_pd_count = trin_get_post(TRIN_DB_PROD_PARAM_COUNT);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_BRAND]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_BRAND))
 			{
-				$param_pd_brand = $_POST[TRIN_DB_PROD_PARAM_BRAND];
+				$param_pd_brand = trin_get_post(TRIN_DB_PROD_PARAM_BRAND);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_GENDER]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_GENDER))
 			{
-				$param_pd_gender = $_POST[TRIN_DB_PROD_PARAM_GENDER];
+				$param_pd_gender = trin_get_post(TRIN_DB_PROD_PARAM_GENDER);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_COMMENT]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_COMMENT))
 			{
-				$param_pd_comment = $_POST[TRIN_DB_PROD_PARAM_COMMENT];
+				$param_pd_comment = trin_get_post(TRIN_DB_PROD_PARAM_COMMENT);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_COST]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_COST))
 			{
-				$param_pd_cost = $_POST[TRIN_DB_PROD_PARAM_COST];
+				$param_pd_cost = trin_get_post(TRIN_DB_PROD_PARAM_COST);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_VERSION]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_VERSION))
 			{
-				$param_pd_version = $_POST[TRIN_DB_PROD_PARAM_VERSION];
+				$param_pd_version = trin_get_post(TRIN_DB_PROD_PARAM_VERSION);
 			}
-			if (isset ($_POST[TRIN_DB_PROD_PARAM_CATEGORY]))
+			if (trin_isset_post(TRIN_DB_PROD_PARAM_CATEGORY))
 			{
-				$param_pd_category_id = $_POST[TRIN_DB_PROD_PARAM_CATEGORY];
+				$param_pd_category_id = trin_get_post(TRIN_DB_PROD_PARAM_CATEGORY);
 			}
 
 			if ($db)

@@ -44,15 +44,15 @@
 	}
 	else
 	{
-		$db = trin_db_open ($_SESSION[TRIN_SESS_DB_LOGIN],
-			$_SESSION[TRIN_SESS_DB_PASS],
-			$_SESSION[TRIN_SESS_DB_DBNAME],
-			$_SESSION[TRIN_SESS_DB_HOST]);
-		if (isset ($_POST[TRIN_DB_BUYER_PARAM_NAME])
-			&& isset ($_POST[TRIN_DB_BUYER_PARAM_ADDRESS])
-			&& isset ($_POST[TRIN_DB_BUYER_PARAM_LOGIN])
-			&& isset ($_POST[TRIN_DB_BUYER_PARAM_EMAIL])
-			&& isset ($_POST[TRIN_DB_BUYER_PARAM_COMMENT])
+		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			trin_get_sess(TRIN_SESS_DB_PASS),
+			trin_get_sess(TRIN_SESS_DB_DBNAME),
+			trin_get_sess(TRIN_SESS_DB_HOST));
+		if (trin_isset_post(TRIN_DB_BUYER_PARAM_NAME)
+			&& trin_isset_post(TRIN_DB_BUYER_PARAM_ADDRESS)
+			&& trin_isset_post(TRIN_DB_BUYER_PARAM_LOGIN)
+			&& trin_isset_post(TRIN_DB_BUYER_PARAM_EMAIL)
+			&& trin_isset_post(TRIN_DB_BUYER_PARAM_COMMENT)
 			)
 		{
 			if (!$db)
@@ -60,11 +60,11 @@
 				$error = 'Cannot connect to database';
 			}
 			if (! trin_db_add_buyer ($db,
-				$_POST[TRIN_DB_BUYER_PARAM_NAME],
-				$_POST[TRIN_DB_BUYER_PARAM_ADDRESS],
-				$_POST[TRIN_DB_BUYER_PARAM_LOGIN],
-				$_POST[TRIN_DB_BUYER_PARAM_EMAIL],
-				$_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
+				trin_get_post(TRIN_DB_BUYER_PARAM_NAME),
+				trin_get_post(TRIN_DB_BUYER_PARAM_ADDRESS),
+				trin_get_post(TRIN_DB_BUYER_PARAM_LOGIN),
+				trin_get_post(TRIN_DB_BUYER_PARAM_EMAIL),
+				trin_get_post(TRIN_DB_BUYER_PARAM_COMMENT)))
 			{
 				$error = 'Cannot add buyer to the database: '
 					. trin_db_get_last_error ($db);
@@ -114,33 +114,33 @@
 		$param_buyer_version = 0;
 
 		// reset the form on success, leave the values on error
-		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_NAME]))
+		if ($error && trin_isset_post(TRIN_DB_BUYER_PARAM_NAME))
 		{
-			$param_buyer_name = $_POST[TRIN_DB_BUYER_PARAM_NAME];
+			$param_buyer_name = trin_get_post(TRIN_DB_BUYER_PARAM_NAME);
 		}
 
 		// reset the form on success, leave the values on error
-		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_ADDRESS]))
+		if ($error && trin_isset_post(TRIN_DB_BUYER_PARAM_ADDRESS))
 		{
-			$param_buyer_address = $_POST[TRIN_DB_BUYER_PARAM_ADDRESS];
+			$param_buyer_address = trin_get_post(TRIN_DB_BUYER_PARAM_ADDRESS);
 		}
 
 		// reset the form on success, leave the values on error
-		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_LOGIN]))
+		if ($error && trin_isset_post(TRIN_DB_BUYER_PARAM_LOGIN))
 		{
-			$param_buyer_login = $_POST[TRIN_DB_BUYER_PARAM_LOGIN];
+			$param_buyer_login = trin_get_post(TRIN_DB_BUYER_PARAM_LOGIN);
 		}
 
 		// reset the form on success, leave the values on error
-		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_EMAIL]))
+		if ($error && trin_isset_post(TRIN_DB_BUYER_PARAM_EMAIL))
 		{
-			$param_buyer_email = $_POST[TRIN_DB_BUYER_PARAM_EMAIL];
+			$param_buyer_email = trin_get_post(TRIN_DB_BUYER_PARAM_EMAIL);
 		}
 
 		// reset the form on success, leave the values on error
-		if ($error && isset ($_POST[TRIN_DB_BUYER_PARAM_COMMENT]))
+		if ($error && trin_isset_post(TRIN_DB_BUYER_PARAM_COMMENT))
 		{
-			$param_buyer_comment = $_POST[TRIN_DB_BUYER_PARAM_COMMENT];
+			$param_buyer_comment = trin_get_post(TRIN_DB_BUYER_PARAM_COMMENT);
 		}
 ?>
 <div class="login_box">

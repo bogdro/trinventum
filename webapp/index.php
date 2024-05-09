@@ -34,7 +34,7 @@
 
 	function sess_close ()
 	{
-		trin_db_close ($_SESSION[TRIN_SESS_DB_CONN]);
+		trin_db_close (trin_get_sess(TRIN_SESS_DB_CONN));
 	}
 
 	function sess_read ($id) {}
@@ -43,7 +43,7 @@
 
 	function sess_destroy ($id)
 	{
-		trin_db_close ($_SESSION[TRIN_SESS_DB_CONN]);
+		trin_db_close (trin_get_sess(TRIN_SESS_DB_CONN));
 	}
 
 	function sess_gc ($sesslt) {}
