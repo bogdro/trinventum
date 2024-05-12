@@ -43,8 +43,12 @@ ifeq ($(PREFIX),)
 PREFIX = /srv/www/html
 endif
 
+ifeq ($(SERVERCONF),)
+SERVERCONF = /etc/httpd/conf/webapps.d
+endif
+
 DOCS = AUTHORS ChangeLog COPYING INSTALL-*.txt README
-EXTRA_DIST = $(DOCS) Makefile NEWS $(NAME).spec
+EXTRA_DIST = $(DOCS) Makefile NEWS $(NAME).spec $(NAME)-app.conf
 
 SUBDIRS = webapp scripts
 
@@ -64,8 +68,10 @@ $(NAME)-$(VER)$(PACK1_EXT)$(PACK2_EXT): $(EXTRA_DIST) \
 
 install:
 	$(MKDIR) $(PREFIX)/$(NAME)
-	$(COPY) webapp/* webapp/.htaccess $(PREFIX)/$(NAME)/
-	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php $(PREFIX)/$(NAME)/.htaccess \
+	$(MKDIR) $(SERVERCONF)
+	$(COPY) webapp/* $(PREFIX)/$(NAME)/
+	$(COPY) $(NAME)-app.conf $(SERVERCONF)/
+	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php $(SERVERCONF)/$(NAME)-app.conf \
 		$(PREFIX)/$(NAME)/sql/* $(PREFIX)/$(NAME)/rsrc/*
 	$(CHMOD) 755 $(PREFIX)/$(NAME) $(PREFIX)/$(NAME)/sql $(PREFIX)/$(NAME)/rsrc
 ifneq ($(DOCDIR),)

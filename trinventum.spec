@@ -11,7 +11,8 @@ is a software that helps manage an e-commerce business. Trinventum allows \
 you to register and modify products for sale, add and modify buyers, \
 sellers and transactions.
 
-%define trin_server_path /srv/www/html
+%define trin_server_app_path /srv/www/html
+%define trin_server_conf_path /etc/httpd/conf/webapps.d
 
 # define _unpackaged_files_terminate_build 0
 %define _enable_debug_packages 0
@@ -46,7 +47,8 @@ BuildRequires:	make
 %install
 
 %make_build install \
-	PREFIX=%{buildroot}/%{trin_server_path} \
+	PREFIX=%{buildroot}/%{trin_server_app_path} \
+	SERVERCONF=%{buildroot}/%{trin_server_conf_path} \
 	DOCDIR=%{buildroot}/%{_datadir}/doc
 
 %clean
@@ -61,12 +63,12 @@ BuildRequires:	make
 %doc ChangeLog
 %doc INSTALL-Trinventum.txt
 %doc README
-%dir %attr(755,-,-) %{trin_server_path}/%{trin_name}
-%dir %attr(755,-,-) %{trin_server_path}/%{trin_name}/sql
-%dir %attr(755,-,-) %{trin_server_path}/%{trin_name}/rsrc
-%attr(644,-,-) %{trin_server_path}/%{trin_name}/*.php
-%attr(644,-,-) %{trin_server_path}/%{trin_name}/.htaccess
-%attr(644,-,-) %{trin_server_path}/%{trin_name}/sql/*
-%attr(644,-,-) %{trin_server_path}/%{trin_name}/rsrc/*
+%config(noreplace) %attr(644,-,-) %{trin_server_conf_path}/%{trin_name}-app.conf
+%dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}
+%dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/sql
+%dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/rsrc
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/*.php
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/sql/*
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/*
 
 %changelog
