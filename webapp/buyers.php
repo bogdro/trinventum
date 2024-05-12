@@ -55,25 +55,37 @@
 			&& trin_isset_post(TRIN_DB_BUYER_PARAM_COMMENT)
 			)
 		{
-			if (!$db)
+			$form_validators = array(
+				TRIN_DB_BUYER_PARAM_LOGIN => TRIN_VALIDATION_FIELD_TYPE_REQUIRED
+				);
+			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
+			if (count($validation_failed_fields) != 0)
 			{
-				$error = 'Cannot connect to database';
-			}
-			if (! trin_db_add_buyer ($db,
-				trin_get_post(TRIN_DB_BUYER_PARAM_NAME),
-				trin_get_post(TRIN_DB_BUYER_PARAM_ADDRESS),
-				trin_get_post(TRIN_DB_BUYER_PARAM_LOGIN),
-				trin_get_post(TRIN_DB_BUYER_PARAM_EMAIL),
-				trin_get_post(TRIN_DB_BUYER_PARAM_COMMENT)))
-			{
-				$error = 'Cannot add buyer to the database: '
-					. trin_db_get_last_error ($db);
+				$error = 'Form validation failed - check field values: '
+					. implode(', ', $validation_failed_fields);
 			}
 			else
 			{
-				trin_set_success_msg('Buyer added successfully');
-				header ('Location: ' . trin_get_self_location ());
-				exit;
+				if (!$db)
+				{
+					$error = 'Cannot connect to database';
+				}
+				if (! trin_db_add_buyer ($db,
+					trin_get_post(TRIN_DB_BUYER_PARAM_NAME),
+					trin_get_post(TRIN_DB_BUYER_PARAM_ADDRESS),
+					trin_get_post(TRIN_DB_BUYER_PARAM_LOGIN),
+					trin_get_post(TRIN_DB_BUYER_PARAM_EMAIL),
+					trin_get_post(TRIN_DB_BUYER_PARAM_COMMENT)))
+				{
+					$error = 'Cannot add buyer to the database: '
+						. trin_db_get_last_error ($db);
+				}
+				else
+				{
+					trin_set_success_msg('Buyer added successfully');
+					header ('Location: ' . trin_get_self_location ());
+					exit;
+				}
 			}
 		}
 ?>

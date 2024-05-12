@@ -66,6 +66,9 @@ create table trinventum.product_categories
 	pc_version integer not null default 1 check (pc_version >= 1)
 );
 
+alter table trinventum.product_categories add constraint cat_name_unique unique (pc_name);
+alter table trinventum.product_categories add constraint cat_name_nonempty check (length(pc_name) > 0);
+
 comment on table trinventum.product_categories is 'The table for product categories';
 comment on column trinventum.product_categories.pc_id is 'Product category ID (assigned automatically)';
 comment on column trinventum.product_categories.pc_name is 'Product category name';
@@ -143,6 +146,9 @@ create table trinventum.product_definitions
 	pd_pc_id integer not null default 0 references trinventum.product_categories (pc_id),
 	pd_version integer not null default 1 check (pd_version >= 1)
 );
+
+alter table trinventum.product_definitions add constraint def_name_unique unique (pd_name);
+alter table trinventum.product_definitions add constraint def_name_nonempty check (length(pd_name) > 0);
 
 comment on table trinventum.product_definitions is 'The table for product definitions/types';
 comment on column trinventum.product_definitions.pd_id is 'Product definition ID, taken from trinventum.seq_pd_id';
@@ -387,6 +393,7 @@ create table trinventum.buyers
 );
 
 alter table trinventum.buyers add constraint buyer_login_unique unique (b_login);
+alter table trinventum.buyers add constraint buyer_login_nonempty check (length(b_login) > 0);
 
 comment on table trinventum.buyers is 'The table for product buyers';
 comment on column trinventum.buyers.b_id is 'Buyer ID (assigned automatically)';
@@ -597,4 +604,4 @@ create table trinventum.versions
 comment on table trinventum.versions is 'The table containing the database version';
 comment on column trinventum.versions.db_version is 'The current database version';
 
-insert into trinventum.versions (db_version) values ('5');
+insert into trinventum.versions (db_version) values ('6');

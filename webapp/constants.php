@@ -35,7 +35,7 @@
 	define ('TRIN_SESS_DB_LAST_ERROR', 'trin_sess_db_last_error');
 	define ('TRIN_SESS_LAST_SUCCESS', 'trin_sess_last_success');
 
-	define ('TRIN_EXPECTED_DB_VERSION', '5');
+	define ('TRIN_EXPECTED_DB_VERSION', '6');
 
 	define ('TRIN_DB_PROD_DEF_FIELD_ID', 'id');
 	define ('TRIN_DB_PROD_DEF_FIELD_PHOTO', 'photo');
