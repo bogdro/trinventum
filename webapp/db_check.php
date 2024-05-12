@@ -54,7 +54,7 @@
 				{
 					$error_msg = "Can't update database version from $trin_db_ver to "
 						. TRIN_EXPECTED_DB_VERSION
-						. ' - cannot start transaction: '
+						. ' - cannot start transaction:<br>'
 						. trin_db_get_last_error ($conn);
 				}
 				else
@@ -63,7 +63,7 @@
 					{
 						$error_msg = "Can't update database version from $trin_db_ver to "
 							. TRIN_EXPECTED_DB_VERSION
-							. ': ' . trin_db_get_last_error ($conn);
+							. ':<br>' . trin_db_get_last_error ($conn);
 					}
 					else
 					{
@@ -90,7 +90,7 @@
 					{
 						$error_msg = "Can't update database version from $trin_db_ver to "
 							. TRIN_EXPECTED_DB_VERSION
-							. ' - cannot start transaction: '
+							. ' - cannot start transaction:<br>'
 							. trin_db_get_last_error ($conn);
 						break;
 					}
@@ -98,7 +98,7 @@
 					{
 						$error_msg = "Can't update database version from $trin_db_ver to "
 							. TRIN_EXPECTED_DB_VERSION
-							. ': ' . trin_db_get_last_error ($conn);
+							. ':<br>' . trin_db_get_last_error ($conn);
 						trin_db_query ($conn, 'rollback');
 						break;
 					}
