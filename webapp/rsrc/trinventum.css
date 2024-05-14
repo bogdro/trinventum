@@ -226,6 +226,12 @@ th hr		{	display: none;			}
 			vertical-align: middle;
 		}
 
+.button_img	{
+			height: auto;
+			vertical-align: middle;
+			width: 16px;
+		}
+
 .menu		{
 			padding-top: 20px;
 			padding-bottom: 20px;

@@ -23,9 +23,9 @@
 	 */
 ?>
 <div class="r">
-<a href="help.php">Help</a>
+<a href="help.php"><img src="rsrc/img/about.svg" alt="[Help]" class="button_img"> Help</a>
 |
-<a href="logout.php">Logout</a>
+<a href="logout.php"><img src="rsrc/img/exit.svg" alt="[Logout]" class="button_img"> Logout</a>
 </div>
 <hr>
 <h1 class="c">Trinventum</h1>
