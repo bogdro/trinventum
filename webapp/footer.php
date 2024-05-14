@@ -32,6 +32,6 @@ e-commerce management software version <?php echo TRIN_VERSION; ?>.
 <a href="legal.php" hreflang="en">Legal information</a>
 </p>
 <p class="r">
-<img src="rsrc/valid-html401.png" alt="[Valid HTML 4.01]">
-<img src="rsrc/valid-css.png" alt="[Valid CSS]">
+<img src="rsrc/img/valid-html401.png" alt="[Valid HTML 4.01]">
+<img src="rsrc/img/valid-css.png" alt="[Valid CSS]">
 </p>
