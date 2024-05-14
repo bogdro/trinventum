@@ -92,7 +92,7 @@
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <TITLE> Trinventum - login </TITLE>
-<link rel="icon" type="image/svg+xml" href="rsrc/trinventum-icon.svg">
+<link rel="icon" type="image/svg+xml" href="rsrc/img/trinventum-icon.svg">
 
 <META NAME="Author" CONTENT="Bogdan D.">
 <META NAME="Description" CONTENT="Trinventum e-commerce manager">
@@ -137,7 +137,7 @@
 ?>
 
 <h1 class="title_box c">
-<img src="rsrc/trinventum-icon.svg" class="vert_mid" alt="[Trinventum logo]">
+<img src="rsrc/img/trinventum-icon.svg" class="vert_mid" alt="[Trinventum logo]">
 Trinventum e-commerce management software
 </h1>
 

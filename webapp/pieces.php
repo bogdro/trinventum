@@ -53,7 +53,7 @@
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <TITLE> Trinventum - product pieces </TITLE>
-<link rel="icon" type="image/svg+xml" href="rsrc/trinventum-icon.svg">
+<link rel="icon" type="image/svg+xml" href="rsrc/img/trinventum-icon.svg">
 
 <META NAME="Author" CONTENT="Bogdan D.">
 <META NAME="Description" CONTENT="Trinventum e-commerce manager">
