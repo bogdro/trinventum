@@ -64,11 +64,14 @@ BuildRequires:	make
 %doc INSTALL-Trinventum.txt
 %doc README
 %config(noreplace) %attr(644,-,-) %{trin_server_conf_path}/%{trin_name}-app.conf
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/*.php
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/sql/*
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/*.html
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/*.css
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/img/*
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/sql
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/rsrc
-%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/*.php
-%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/sql/*
-%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/*
+%dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/img
 
 %changelog

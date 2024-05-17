@@ -73,7 +73,8 @@ install:
 	$(COPY) $(NAME)-app.conf $(SERVERCONF)/
 	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php $(SERVERCONF)/$(NAME)-app.conf \
 		$(PREFIX)/$(NAME)/sql/* $(PREFIX)/$(NAME)/rsrc/*
-	$(CHMOD) 755 $(PREFIX)/$(NAME) $(PREFIX)/$(NAME)/sql $(PREFIX)/$(NAME)/rsrc
+	$(CHMOD) 755 $(PREFIX)/$(NAME) $(PREFIX)/$(NAME)/sql \
+		$(PREFIX)/$(NAME)/rsrc $(PREFIX)/$(NAME)/rsrc/img
 ifneq ($(DOCDIR),)
 	$(MKDIR) $(DOCDIR)/$(NAME)
 	$(CHMOD) 755 $(DOCDIR)/$(NAME)
