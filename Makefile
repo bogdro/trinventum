@@ -39,6 +39,10 @@ PACK1_EXT = .tar
 PACK2 = /usr/bin/gzip -9
 PACK2_EXT = .gz
 
+PHP_UNIT_TESTER = phpunit
+PHP_UNIT_TEST_DIR = tests
+PHP_UNIT_TESTER_ARGS = --testdox --colors=auto
+
 ifeq ($(PREFIX),)
 PREFIX = /srv/www/html
 endif
@@ -50,7 +54,7 @@ endif
 DOCS = AUTHORS ChangeLog COPYING INSTALL-*.txt README
 EXTRA_DIST = $(DOCS) Makefile NEWS $(NAME).spec $(NAME)-app.conf
 
-SUBDIRS = webapp scripts
+SUBDIRS = webapp scripts $(PHP_UNIT_TEST_DIR)
 
 all:	dist
 
@@ -86,5 +90,8 @@ uninstall:
 ifneq ($(DOCDIR),)
 	$(RMDIR) $(DOCDIR)/$(NAME)/
 endif
+
+check:
+	$(PHP_UNIT_TESTER) $(PHP_UNIT_TESTER_ARGS) $(PHP_UNIT_TEST_DIR)
 
 .PHONY: all dist install uninstall
