@@ -53,14 +53,16 @@ jobs:
           php-version: '8.1'
           coverage: xdebug
 
-      - name: Create empty composer.json
-        run: |
-          echo '{"require": {}}' > composer.json
-      - name: Install dependencies with composer
-        run: composer update --no-ansi --no-interaction --no-progress
+      #- name: Create empty composer.json
+      #  run: |
+      #    echo '{"require": {}}' > composer.json
+      #- name: Install dependencies with composer
+      #  run: composer update --no-ansi --no-interaction --no-progress
 
       - name: Run tests with phpunit/phpunit
-        run: phpunit/phpunit --coverage-clover=coverage.xml
+        run: |
+          find . -name phpunit
+          phpunit/phpunit --coverage-clover=coverage.xml
 
       - name: Analyze with SonarCloud
 
