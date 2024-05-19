@@ -50,7 +50,7 @@ jobs:
       - name: Setup PHP with Xdebug
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.2'
           tools: phpunit
           coverage: xdebug
 
@@ -60,10 +60,12 @@ jobs:
       #- name: Install dependencies with composer
       #  run: composer update --no-ansi --no-interaction --no-progress
 
-      - name: Run tests with phpunit/phpunit
+      - name: Find phpunit
         run: |
           find . -name phpunit
-          phpunit/phpunit --coverage-clover=coverage.xml
+      - name: Run tests with phpunit/phpunit
+        run: |
+          phpunit --coverage-clover=coverage.xml tests
 
       - name: Analyze with SonarCloud
 
