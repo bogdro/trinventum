@@ -176,6 +176,7 @@
 		{
 ?>
 <p class="warning">
+<img src="rsrc/img/warning.svg" alt="[WARNING]" class="fleft" height="32" width="32">
 <?php echo $warning_msg; ?>
 </p>
 

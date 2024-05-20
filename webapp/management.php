@@ -119,6 +119,7 @@ Use this form to perform generic database queries.
 </p>
 
 <p class="warning">
+<img src="rsrc/img/warning.svg" alt="[WARNING]" class="fleft" height="32" width="32">
 WARNING<br><br>
 Anything you type is sent directly to the database.<br> No validation is done,
 no syntax checking is performed.<br> Some statements can cause damage to the database.
@@ -371,9 +372,12 @@ Sample queries:
 
 <h2 class="c nok">Database destroy</h2>
 
-<p class="error">
+<div class="error">
+<img src="rsrc/img/error.svg" alt="[CAUTION]" class="fleft" height="32" width="32">
+<p class="cright">
 This operation deletes all structures and data in the database and cannot be reversed.
 </p>
+</div>
 
 <form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
 <input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY; ?>" value="Destroy database">
@@ -390,7 +394,8 @@ This operation deletes all structures and data in the database and cannot be rev
 			// double-check
 ?>
 <div class="error c">
-<p>
+<img src="rsrc/img/error.svg" alt="[CAUTION]" class="fleft" height="32" width="32">
+<p class="cright">
 <em class="b">WARNING</em>:
 this operation deletes all structures and data in the database and cannot be reversed.
 </p>

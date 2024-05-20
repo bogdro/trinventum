@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="128.0px"
+   height="128.0px"
+   viewBox="0 0 128.0 128.0"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="warning.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview19007"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="2.570107"
+     inkscape:cx="38.714342"
+     inkscape:cy="82.486839"
+     inkscape:window-width="1366"
+     inkscape:window-height="701"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid19070" />
+  </sodipodi:namedview>
+  <defs
+     id="defs19002" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="star"
+       style="fill:#ffff00;stroke:#ff6600;stroke-width:11.9709;stroke-linecap:round;stroke-linejoin:round"
+       id="path19303"
+       inkscape:flatsided="false"
+       sodipodi:sides="3"
+       sodipodi:cx="63.934723"
+       sodipodi:cy="76.377937"
+       sodipodi:r1="70.36618"
+       sodipodi:r2="35.18309"
+       sodipodi:arg1="0.51520802"
+       sodipodi:arg2="1.5624056"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 125.16669,111.04847 64.229931,111.55979 3.2931775,112.07111 33.318741,59.042669 63.344304,6.0142339 94.255496,58.531354 Z"
+       inkscape:transform-center-x="0.012868692"
+       inkscape:transform-center-y="-16.703054"
+       transform="matrix(0.94436347,0.00824134,-0.00828988,0.94992631,4.2143702,3.8838811)" />
+    <text
+       xml:space="preserve"
+       style="font-size:96px;line-height:1.25;font-family:sans-serif"
+       x="52.468002"
+       y="102.01499"
+       id="text20707"><tspan
+         sodipodi:role="line"
+         id="tspan20705"
+         x="52.468002"
+         y="102.01499"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold'">!</tspan></text>
+  </g>
+</svg>

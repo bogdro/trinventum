@@ -788,7 +788,10 @@
 		{
 ?>
 <div class="error">
+<img src="rsrc/img/error.svg" alt="[ERROR]" class="fleft" height="32" width="32">
+<p class="cright">
 Error: <?php echo $message; ?>
+</p>
 </div>
 <?php
 		}
@@ -815,7 +818,10 @@ Error: <?php echo $message; ?>
 		{
 ?>
 <div class="success">
+<img src="rsrc/img/ok.svg" alt="[OK]" class="fleft" height="32" width="32">
+<p class="cright">
 <?php echo $msg; ?>
+</p>
 </div>
 <?php
 		}

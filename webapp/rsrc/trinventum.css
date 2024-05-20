@@ -159,6 +159,9 @@ th hr		{	display: none;			}
 .fleft		{	float: left;			}
 .fright		{	float: right;			}
 
+.cleft		{	clear: left;			}
+.cright		{	clear: right;			}
+
 .error		{
 			background: #FFD0D0;
 			border: 5px solid;

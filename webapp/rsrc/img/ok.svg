@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="128.0px"
+   height="128.0px"
+   viewBox="0 0 128.0 128.0"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="ok.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview829"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="1.8173401"
+     inkscape:cx="48.422418"
+     inkscape:cy="44.570635"
+     inkscape:window-width="1366"
+     inkscape:window-height="701"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-midpoints="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid892" />
+  </sodipodi:namedview>
+  <defs
+     id="defs824">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect29280"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect28866"
+       is_visible="true"
+       lpeversion="1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <ellipse
+       style="fill:#00ff00;stroke:#008000;stroke-width:11.3386;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path939"
+       cx="63.752331"
+       cy="63.764927"
+       rx="58.443401"
+       ry="58.367249" />
+    <text
+       xml:space="preserve"
+       style="font-size:124.608px;line-height:1.25;font-family:sans-serif;fill:#ffffff;stroke-width:1"
+       x="49.297802"
+       y="107.37773"
+       id="text3465"><tspan
+         sodipodi:role="line"
+         id="tspan3463"
+         x="49.297802"
+         y="107.37773"
+         style="font-weight:bold;font-size:124.608px;fill:#000000;stroke-width:1" /></text>
+    <path
+       style="fill:#ffff00;stroke:#0000ff;stroke-width:9.4488189;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 28.675921,65.117331 45.82372,94.818191"
+       id="path28864"
+       inkscape:path-effect="#path-effect28866"
+       inkscape:original-d="m 28.675921,65.117331 c 5.716933,9.901287 11.432866,19.801573 17.147799,29.70086" />
+    <path
+       style="fill:none;stroke:#0000ff;stroke-width:9.4488189;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 45.82372,94.818191 81.680941,32.711662"
+       id="path29278"
+       inkscape:path-effect="#path-effect29280"
+       inkscape:original-d="M 45.82372,94.818191 C 57.777127,74.117015 69.729534,53.414838 81.680941,32.711662" />
+  </g>
+  <metadata
+     id="metadata18975">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Bogdan 'bogdro' Drozdowski</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
