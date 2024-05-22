@@ -104,16 +104,20 @@
 					$have_prod = TRUE;
 					$counts = trin_db_count_products($db, $next_prod[TRIN_DB_PROD_DEF_FIELD_ID]);
 					$rowclass = 'c';
+					$warn_icon = '';
 					if ((!isset ($counts['READY'])) || ($counts['READY'] == 0))
 					{
 						if ((!isset ($counts['SELLING'])) || ($counts['SELLING'] == 0))
 						{
 							$rowclass .= ' nopieces';
+							$warn_icon = 'error';
 						}
 						else
 						{
 							$rowclass .= ' noready';
+							$warn_icon = 'warning';
 						}
+						$warn_icon = "<img src='rsrc/img/$warn_icon.svg' alt='[ERROR]' class='fleft' height='32' width='32'>";
 					}
 					$prod_det_link = 'details.php?' . TRIN_PROD_DETAIL_PARAM
 						. '=' . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID];
@@ -126,7 +130,7 @@
 						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_SIZE] . '</td>' .
 						'<td>' . trin_get_gender_name($next_prod[TRIN_DB_PROD_DEF_FIELD_GENDER]) . '</td>' .
 						'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_COLOUR]) . '</td>' .
-						'<td>' . $next_prod[TRIN_DB_PROD_DEF_FIELD_COUNT] . '</td>' .
+						'<td>' . $warn_icon . $next_prod[TRIN_DB_PROD_DEF_FIELD_COUNT] . '</td>' .
 						'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_COMMENT]) . '<hr></td></tr>'
 						. "\n";
 				}
