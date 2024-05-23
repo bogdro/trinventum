@@ -64,7 +64,7 @@
 
 <?php
 		include 'inc/header.php';
-		include 'menu.php';
+		include 'inc/menu.php';
 
 		$offset = 0;
 		$limit = 1000000000;
@@ -312,7 +312,7 @@ OR
 
 <?php
 		} // for $m
-		include 'menu.php';
+		include 'inc/menu.php';
 		include 'inc/footer.php';
 ?>
 

@@ -101,7 +101,7 @@
 
 <?php
 		include 'inc/header.php';
-		include 'menu.php';
+		include 'inc/menu.php';
 
 		trin_display_error($error);
 
@@ -417,7 +417,7 @@ After logging-in again, the database structures will be re-created, but with no 
 <?php
 		}
 
-		include 'menu.php';
+		include 'inc/menu.php';
 		include 'inc/footer.php';
 ?>
 

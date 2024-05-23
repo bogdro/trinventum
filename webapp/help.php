@@ -57,7 +57,7 @@
 	if (trin_validate_session ())
 	{
 		include 'inc/header.php';
-		include 'menu.php';
+		include 'inc/menu.php';
 	}
 ?>
 

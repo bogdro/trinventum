@@ -204,7 +204,7 @@
 
 <?php
 			include 'inc/header.php';
-			include 'menu.php';
+			include 'inc/menu.php';
 
 			trin_display_error($error);
 ?>
@@ -789,7 +789,7 @@ Send cost:
 </div>
 
 <?php
-			include 'menu.php';
+			include 'inc/menu.php';
 			include 'inc/footer.php';
 ?>
 

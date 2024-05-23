@@ -81,7 +81,7 @@
 
 <?php
 		include 'inc/header.php';
-		include 'menu.php';
+		include 'inc/menu.php';
 
 		trin_display_success();
 
@@ -411,7 +411,7 @@ OR
 </div>
 
 <?php
-		include 'menu.php';
+		include 'inc/menu.php';
 		include 'inc/footer.php';
 ?>
 

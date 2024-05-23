@@ -62,7 +62,7 @@
 
 <?php
 		include 'inc/header.php';
-		include 'menu.php';
+		include 'inc/menu.php';
 
 		trin_display_success();
 ?>
@@ -118,7 +118,7 @@
 or <a href="all_products.php">view all product types</a>.
 
 <?php
-		include 'menu.php';
+		include 'inc/menu.php';
 		include 'inc/footer.php';
 ?>
 
