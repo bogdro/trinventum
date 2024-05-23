@@ -198,7 +198,6 @@
 	{
 		echo "<input type=\"file\"\n
 			name=\"$name\"\n
-			value=\"" . trin_html_escape ($value) . "\"\n
 			id=\"$name\"\n"
 			;
 		if ($title != '')
