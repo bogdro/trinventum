@@ -39,33 +39,3 @@ Header		set Content-Security-Policy:	"%{CSP_SET_STYLE}e" env=CSP_USE_STYLE
 Header		set X-Content-Security-Policy:	"%{CSP_SET_STYLE}e" env=CSP_USE_STYLE
 Header		set Content-Security-Policy:	"%{CSP_SET_DEF}e" env=!CSP_USE_STYLE
 Header		set X-Content-Security-Policy:	"%{CSP_SET_DEF}e" env=!CSP_USE_STYLE
-
-<Files constants.php>
-	Order deny,allow
-	Deny from all
-</Files>
-
-<Files db_functions.php>
-	Order deny,allow
-	Deny from all
-</Files>
-
-<Files footer.php>
-	Order deny,allow
-	Deny from all
-</Files>
-
-<Files functions.php>
-	Order deny,allow
-	Deny from all
-</Files>
-
-<Files header.php>
-	Order deny,allow
-	Deny from all
-</Files>
-
-<Files menu.php>
-	Order deny,allow
-	Deny from all
-</Files>

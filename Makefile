@@ -74,6 +74,7 @@ install:
 	$(MKDIR) $(PREFIX)/$(NAME)
 	$(MKDIR) $(SERVERCONF)
 	$(COPY) webapp/* $(PREFIX)/$(NAME)/
+	$(RMDIR) $(PREFIX)/$(NAME)/.htaccess $(PREFIX)/$(NAME)/inc/.htaccess
 	$(COPY) $(NAME)-app.conf $(SERVERCONF)/
 	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php $(SERVERCONF)/$(NAME)-app.conf \
 		$(PREFIX)/$(NAME)/inc/* $(PREFIX)/$(NAME)/rsrc/img/* \
