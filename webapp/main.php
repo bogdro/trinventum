@@ -24,9 +24,9 @@
 
 	session_start();
 
-	include_once 'constants.php';
-	include_once 'functions.php';
-	include_once 'db_functions.php';
+	include_once 'inc/constants.php';
+	include_once 'inc/functions.php';
+	include_once 'inc/db_functions.php';
 
 	$t_lastmod = getlastmod ();
 	trin_header_lastmod ($t_lastmod);
@@ -61,7 +61,7 @@
 </HEAD><BODY>
 
 <?php
-		include 'header.php';
+		include 'inc/header.php';
 		include 'menu.php';
 
 		trin_display_success();
@@ -119,7 +119,7 @@ or <a href="all_products.php">view all product types</a>.
 
 <?php
 		include 'menu.php';
-		include 'footer.php';
+		include 'inc/footer.php';
 ?>
 
 </BODY></HTML>
