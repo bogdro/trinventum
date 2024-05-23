@@ -23,7 +23,7 @@
 	 */
 
 	declare(strict_types=1);
-	include_once 'webapp/functions.php';
+	include_once 'webapp/inc/functions.php';
 
 	use PHPUnit\Framework\TestCase;
 
