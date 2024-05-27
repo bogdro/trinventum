@@ -97,4 +97,4 @@ endif
 check:
 	$(PHP_UNIT_TESTER) $(PHP_UNIT_TESTER_ARGS) $(PHP_UNIT_TEST_DIR)
 
-.PHONY: all dist install uninstall
+.PHONY: all check dist install uninstall
