@@ -22,7 +22,7 @@
 
 # Special names here like {__make} come from /usr/lib/rpm/macros, /usr/lib/rpm/macros.rpmbuild
 
-%define trin_version 0.7
+%define trin_version 1.0
 %define trin_release 1
 %define trin_name trinventum
 %define trin_url https://trinventum.sourceforge.io

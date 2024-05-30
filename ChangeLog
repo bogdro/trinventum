@@ -1,3 +1,91 @@
+2024-05-23	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
+
+	* Trinventum version 1.0:
+	  Many look-and-feel updates: new icons, button sizes, HTML and CSS
+	  syntax fixes and updates. Uploading pictures now shows a dialogue
+	  box for pictures by default. Fixes in product history description.
+	  Added support for other database port  numbers. Added a script for
+	  managing database roles with various accesses. A separate page for
+	  legal information. More data is now enforced to be required. Better
+	  order in files. Added a global server configuration file. Added
+	  Docker container configurations and scripts. Added a first unit
+	  test. Many safety just-in-case updates. Many code quality fixes.
+	  Other small layout and functionality fixes. Updates in the build
+	  system. Documentation updates.
+	* help.php: Use the protocol scheme provided by the server to build
+	  the links to the login page and move it to a variable. Made the
+	  usage documentation more consistent with the SourceForge wiki page.
+	* management.php: Remove database dump and restore functionality -
+	  there is no API for this and dumping while the program is running
+	  could be undesired.
+	* {add_transaction,details,functions,help,login,management,
+	  mod_transaction,pieces,ppdetails,transactions}.php: Escape special
+	  characters when displaying data.
+	* login.php: Added the "alt" attribute to the logo on the login page.
+	* add_transaction.php: Fixed <label> elements.
+	* functions.php (trin_create_file_input, trin_create_product_def_form):
+	  Use a new function to generate HTML <input> tags for files. Make
+	  the photo file input accept images by default.
+	* transactions.php: Create direct links to sellers and buyers in
+	  transactions.
+	* add_transaction.php, functions.php, login.php, mod_transaction.php,
+	  ppdetails.php: Added ID attributes and labels to reset buttons.
+	* pieces.php: Fixed the description of product piece history.
+	* login.php, db_functions.php, constants.php, help.php: Added support
+	  for database port numbers.
+	* add_transaction.php, mod_transaction.php: Use the session storage to
+	  hold the intermediate parameters instead of hidden for parameters.
+	  Display also the product name (not just the type ID) when adding or
+	  modifying a transaction.
+	* management.php: Use the session storage for confirmation data when
+	  destroying the database.
+	* functions.php, trinventum.css: Made the Submit buttons bigger and
+	  better separated from the Reset buttons.
+	* scripts/create_roles.pgsql, INSTALL-Trinventum.txt, help.php: Added
+	  a script for creating database roles with just basic privileges and
+	  described how to use them.
+	* legal.php, footer.php: Created a separate page for legal information
+	  - author, license and trademarks.
+	* details.php, functions.php: Make individual names for the "version"
+	  hidden fields so that each <label> gets a unique ID.
+	* details.php: Fixed product count display.
+	* add_product.php: Make the product definition required.
+	* buyers.php: Make the buyer login required.
+	* db_check.php: Show the errors in a new line.
+	* sql/trinventum-{full,v6}.pgsql: Make the buyer login, product
+	  definition name and product category names required and unique.
+	* trinventum.css: Fix a colour name for better compatibility.
+	* header.php, rsrc/trinventum.css, rsrc/img/{about.svg,exit.svg}:
+	  Added the help and logout images.
+	* {db_check,functions,management}.php, rsrc/trinventum.css, rsrc/img/
+	  {error.svg,ok.svg,warning.svg}: Added the "OK", "warning" and
+	  "error" icons.
+	* all_products.php: Added the "warning" and "error" icons to products
+	  that are about to finish or are out of stock already.
+	* footer.php: Moved the valid-xxx.png images to the img/ subdirectory.
+	* webapp/inc: Moved included files: constants.php, db_functions.php,
+	  footer.php, functions.php and header.php to a subdirectory.
+	* .htaccess: Removed the unused CSP-report URL. Moved the permissions
+	  to included files to the subdirectory .htaccess.
+	* webapp/inc/.htaccess: Added a new file for permissions to included
+	  files in their subdirectory.
+	* trinventum-app.conf: Added a proper Apache httpd configuration file.
+	* docker: Added Docker container configurations and scripts.
+	* webapp/*php: Code quality fixes: remove unnecessary parentheses, use
+	  superglobals in just one place.
+	* tests: Added a directory for unit tests, with one test.
+	* webapp/{*php,sql/*,rsrc/trinventum.css,.htaccess},scripts/*: Updated
+	  copyright.
+	* trinventum.spec: Added a license block.
+	* Makefile: Remove the old package before packaging a new one. Added
+	  support for unit tests.
+	* Makefile, trinventum.spec: Install the proper Apache configuration
+	  file instead of the .htaccess file. Support the new icon directory.
+	* INSTALL-Trinventum.txt, help.php: Made the installation documentation
+	  more consistent with each other and the SourceForge wiki page. Added
+	  installation instructions for the Docker containers.
+	* README: Updated the compatibility list.
+
 2022-06-21	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 
 	* Trinventum version 0.7:

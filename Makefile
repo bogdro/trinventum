@@ -21,7 +21,7 @@
 #
 
 NAME = trinventum
-VER = 0.7
+VER = 1.0
 
 RMDIR = /bin/rm -fr
 # when using '-p', no error is generated when the directory exists
