@@ -17,7 +17,13 @@ Requirements:
 -   a PostgreSQL database server (<https://www.postgresql.org/>) with the PL/pgSQL language installed,
 -   a PHP (<https://www.php.net>) interpreter in the web server with the PostgreSQL driver.
 
+Author: Bogdan Drozdowski, bogdro (at) users . sourceforge . net
+
+License: AGPLv3+
+
 Trinventum homepage: <https://trinventum.sourceforge.io/>
+
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=bogdro_trinventum)
 
 ----------------------------------------------------------------
 
