@@ -169,9 +169,13 @@ To install the web application part:
   utilities, you can run <code>make install</code>, passing the prefix of the target
   directory. Trinventum will be installed in <code>$(PREFIX)/trinventum</code>. Examples:</p>
 	<pre>
-	make install PREFIX=/srv/www/html
-	make install PREFIX=/var/www/html
-	make install PREFIX=$HOME/public_html</pre>
+	make install PREFIX=/srv/www/html SERVERCONF=/etc/httpd/conf/webapps.d
+	make install PREFIX=/var/www/html SERVERCONF=/etc/httpd/conf.d
+	make install PREFIX=$HOME/public_html SERVERCONF=$HOME/tmp</pre>
+
+  <p>The <code>SERVERCONF</code> parameter specifies where to put the global web server
+  configuration file. Can be ignored and set to any directory for local
+  installations.</p>
 
   <p>To install the documentation, you can add a chosen directory as the <code>DOCDIR</code>
   parameter to <code>make install</code>. Documentation will be installed in
