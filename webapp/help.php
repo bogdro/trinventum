@@ -205,14 +205,16 @@ To install Trinventum as a Docker container for testing, execute one of (as <cod
 	docker/docker.sh
 	docker-compose -p trinventum -f docker/docker-compose.yaml up -d</pre>
 <p>
-in the Trinventum source code top directory (not the <code>docker</code> subdirectory).
+in the Trinventum source code top directory (<em class="important">NOT</em> the <code>docker</code> subdirectory).
 </p>
 <p>
+<em class="important">WARNING:</em>
 The default configuration has no permanent storage for the database. In order
 to have a persistent, working setup, you <em class="important">must add
 permanent storage</em> to the configuration files.
 </p>
 <p>
+<em class="important">WARNING:</em>
 The default <code>docker-compose.yaml</code> file has hardcoded simple passwords. If you
 wish to use this file and have a secure setup, you <em class="important">must
 change those passwords</em> in the file.
@@ -279,7 +281,7 @@ After having done the installation, point your browser to the Trinventum login p
 <a href="<?php echo $login_link; ?>"><?php echo $login_link; ?></a>.
 You enter 4 parameters there:
 <ol>
- <li>the username of the DATABASE (not system) user you've created</li>
+ <li>the username of the DATABASE (<em class="important">not</em> system) user you've created</li>
  <li>the password of the DATABASE user you've created</li>
  <li>the database address: IP address or hostname, can also be the local socket's
  	directory (<code>/run/postgresql</code> in some versions, <code>/tmp</code> in other)
