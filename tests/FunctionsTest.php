@@ -2,7 +2,7 @@
 	/*
 	 * Trinventum - a test for non-database functions.
 	 *
-	 * Copyright (C) 2024 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
+	 * Copyright (C) 2024-2026 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net
 	 *
 	 * This file is part of Trinventum (Transaction and Inventory Unified Manager),
 	 *  a software that helps manage an e-commerce business.
