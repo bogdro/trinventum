@@ -99,6 +99,7 @@
 </HEAD><BODY>
 
 <?php
+			$page_name = 'Delete a transaction';
 			include 'inc/header.php';
 			include 'inc/menu.php';
 

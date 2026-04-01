@@ -118,6 +118,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'Product piece details';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

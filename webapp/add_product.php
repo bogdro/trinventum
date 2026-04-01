@@ -140,6 +140,7 @@
 </HEAD><BODY>
 
 <?php
+			$page_name = 'Add new product';
 			include 'inc/header.php';
 			include 'inc/menu.php';
 

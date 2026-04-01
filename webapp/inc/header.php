@@ -28,4 +28,4 @@
 <a href="logout.php"><img src="rsrc/img/exit.svg" alt="[Logout]" class="button_img"> Logout</a>
 </div>
 <hr>
-<h1 class="c">Trinventum</h1>
+<h1 class="c"><?php echo $page_name ?></h1>

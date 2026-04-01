@@ -65,6 +65,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'Category products';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

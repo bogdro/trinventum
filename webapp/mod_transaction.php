@@ -203,6 +203,7 @@
 </HEAD><BODY>
 
 <?php
+			$page_name = 'Modify transaction';
 			include 'inc/header.php';
 			include 'inc/menu.php';
 

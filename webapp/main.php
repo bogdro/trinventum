@@ -61,6 +61,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'Main page';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

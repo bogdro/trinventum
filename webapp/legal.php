@@ -56,12 +56,11 @@
 <?php
 	if (trin_validate_session ())
 	{
+		$page_name = 'Legal information';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 	}
 ?>
-
-<h1 class="header">Legal information</h1>
 
 <h2>Author</h2>
 Bogdan 'bogdro' Drozdowski, bogdro (at) users . sourceforge . net

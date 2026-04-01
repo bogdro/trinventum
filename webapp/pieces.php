@@ -63,6 +63,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'Product pieces';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

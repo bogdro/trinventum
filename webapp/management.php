@@ -100,6 +100,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'System management';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

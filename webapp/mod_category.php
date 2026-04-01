@@ -128,6 +128,7 @@
 </HEAD><BODY>
 
 <?php
+			$page_name = 'Modify category';
 			include 'inc/header.php';
 			include 'inc/menu.php';
 

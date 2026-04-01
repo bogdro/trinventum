@@ -80,6 +80,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'Transactions';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

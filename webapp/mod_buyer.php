@@ -118,6 +118,7 @@
 </HEAD><BODY>
 
 <?php
+			$page_name = 'Modify buyer';
 			include 'inc/header.php';
 			include 'inc/menu.php';
 

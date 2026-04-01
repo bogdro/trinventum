@@ -103,6 +103,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'Sellers';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

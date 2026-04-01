@@ -342,6 +342,7 @@
 </HEAD><BODY>
 
 <?php
+		$page_name = 'Product details';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 

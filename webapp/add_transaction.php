@@ -179,6 +179,7 @@
 </HEAD><BODY>
 
 <?php
+			$page_name = 'Register a transaction';
 			include 'inc/header.php';
 			include 'inc/menu.php';
 

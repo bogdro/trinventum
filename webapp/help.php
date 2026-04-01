@@ -56,6 +56,7 @@
 <?php
 	if (trin_validate_session ())
 	{
+		$page_name = 'Help';
 		include 'inc/header.php';
 		include 'inc/menu.php';
 	}
