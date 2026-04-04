@@ -60,6 +60,12 @@
 		include 'inc/header.php';
 		include 'inc/menu.php';
 	}
+	else
+	{
+?>
+		<h1 class="c">Legal information</h1>
+<?php
+	}
 ?>
 
 <h2>Author</h2>
@@ -89,12 +95,23 @@ All other trademarks, logos and names on this page and all subpages are properti
 of their respective owners and are given here only as an example.
 </p>
 
-
-<div class="menu">
-<a href="main.php">Return to the main page</a>
-</div>
-
 <?php
+	if (trin_validate_session())
+	{
+?>
+		<div class="menu">
+		<a href="main.php">Return to the main page</a>
+		</div>
+<?php
+	}
+	else
+	{
+?>
+		<div class="menu">
+		<a href="login.php">Return to the login page</a>
+		</div>
+<?php
+	}
 	include 'inc/footer.php';
 ?>
 
