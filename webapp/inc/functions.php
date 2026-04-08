@@ -750,30 +750,30 @@
 		return '?';
 	}
 
-	function trin_validate_form ($values, $validators)
+	function trin_validate_form($values, $validators)
 	{
 		$failed_fields = array();
-		foreach ($validators as $field_name => $field_type)
+		foreach ($validators as $field_name => $field_flags)
 		{
 			if (isset($values[$field_name]))
 			{
-				if ($field_type == TRIN_VALIDATION_FIELD_TYPE_NUMBER)
+				if (($field_flags & TRIN_VALIDATION_FIELD_TYPE_NUMBER) == TRIN_VALIDATION_FIELD_TYPE_NUMBER)
 				{
-					$value = str_replace (',', '.', $values[$field_name]);
-					if (! is_numeric ($value))
+					$value = str_replace(',', '.', $values[$field_name]);
+					if (! is_numeric($value))
 					{
 						$failed_fields[] = $field_name;
 					}
 				}
-				if ($field_type == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
+				if (($field_flags & TRIN_VALIDATION_FIELD_TYPE_REQUIRED) == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
 				{
-					if (strlen ($values[$field_name]) == 0)
+					if (strlen($values[$field_name]) == 0)
 					{
 						$failed_fields[] = $field_name;
 					}
 				}
 			}
-			else if ($field_type == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
+			else if ($field_flags == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
 			{
 				$failed_fields[] = $field_name;
 			}
