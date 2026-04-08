@@ -741,7 +741,7 @@
 				$photo_data = pg_fetch_assoc ($photo_result);
 				if ($photo_data !== FALSE)
 				{
-					echo fix_bytea_from_db ($photo_data['pd_photo']);
+					return fix_bytea_from_db($photo_data['pd_photo']);
 				}
 			}
 		}
@@ -762,7 +762,7 @@
 				$photo_data = pg_fetch_assoc ($photo_result);
 				if ($photo_data !== FALSE)
 				{
-					echo fix_bytea_from_db ($photo_data['his_pd_photo']);
+					return fix_bytea_from_db($photo_data['his_pd_photo']);
 				}
 			}
 		}

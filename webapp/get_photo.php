@@ -22,35 +22,55 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	session_start ();
+	session_start();
 
 	include_once 'inc/constants.php';
 	include_once 'inc/functions.php';
 	include_once 'inc/db_functions.php';
 
-	if (trin_validate_session ())
+	if (trin_validate_session())
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
 		if ($db)
 		{
-			// a type must be specified, but it seems that
-			// any type will do, as long as it's an image type
-			header ('Content-Type: image/jpeg');
-
+			$buf = '';
 			if (trin_isset_get(TRIN_PROD_PHOTO_PARAM))
 			{
-				echo trin_db_get_photo ($db, trin_get_param(TRIN_PROD_PHOTO_PARAM));
+				$buf = trin_db_get_photo($db, trin_get_param(TRIN_PROD_PHOTO_PARAM));
 			}
 			else if (trin_isset_get(TRIN_PROD_PHOTO_PARAM_HIS)
 				&& trin_isset_get(TRIN_PROD_PHOTO_PARAM_HIS_VERSION))
 			{
-				echo trin_db_get_history_photo ($db,
+				$buf = trin_db_get_history_photo($db,
 					trin_get_param(TRIN_PROD_PHOTO_PARAM_HIS),
 					trin_get_param(TRIN_PROD_PHOTO_PARAM_HIS_VERSION));
 			}
+			$mime = '';
+			if ($buf)
+			{
+				$finfo = new finfo(FILEINFO_MIME_TYPE);
+				if ($finfo)
+				{
+					$mime = $finfo->buffer($buf);
+					finfo_close($finfo);
+					if (!$mime)
+					{
+						$mime = '';
+					}
+				}
+			}
+			if ($mime === '' || strpos($mime, 'image/') !== 0)
+			{
+				$mime = 'image/jpeg';
+			}
+			// a type must be specified. It seems that
+			// any type will do, as long as it's an image type,
+			// but we can try to be more accurate
+			header("Content-Type: $mime");
+			echo $buf;
 		}
 	}
 ?>
