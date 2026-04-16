@@ -176,6 +176,12 @@
 <META NAME="Language" CONTENT="en">
 <META NAME="Generator" CONTENT="KWrite/Kate; www.kate-editor.org">
 
+<?php
+			trin_add_jq();
+			trin_add_datepicker();
+?>
+<script type="text/javascript" src="rsrc/js/add_transaction.js"></script>
+
 </HEAD><BODY>
 
 <?php
@@ -464,7 +470,7 @@
 					$param_trans_paid,
 					array('YES', 'NO'),
 					array('YES', 'NO'),
-					$validation_failed_fields)
+					$validation_failed_fields);
 ?>
 </p>
 
@@ -475,7 +481,7 @@
 					$param_trans_sent,
 					array('YES', 'NO'),
 					array('YES', 'NO'),
-					$validation_failed_fields)
+					$validation_failed_fields);
 ?>
 </p>
 
