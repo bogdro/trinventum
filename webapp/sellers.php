@@ -31,20 +31,20 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$error = '';
 	$validation_failed_fields = array();
 	$db = NULL;
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -65,16 +65,16 @@
 				{
 					$error = 'Cannot connect to database';
 				}
-				if (! trin_db_add_seller ($db,
+				if (! trin_db_add_seller($db,
 					trin_get_post(TRIN_DB_SELLER_PARAM_NAME)))
 				{
 					$error = 'Cannot add seller to the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 				else
 				{
 					trin_set_success_msg('Seller added successfully');
-					header ('Location: ' . trin_get_self_location ());
+					header('Location: ' . trin_get_self_location());
 					exit;
 				}
 			}
@@ -87,8 +87,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -122,8 +122,8 @@
 			$param_seller_name = trin_get_post(TRIN_DB_SELLER_PARAM_NAME);
 		}
 
-		trin_create_seller_form (
-			trin_get_self_action (), 'Add seller',
+		trin_create_seller_form(
+			trin_get_self_action(), 'Add seller',
 			TRIN_DB_SELLER_PARAM_NAME, $param_seller_name,
 			TRIN_DB_SELLER_PARAM_VERSION, $param_seller_version,
 			$validation_failed_fields
@@ -143,12 +143,12 @@
 		$have_seller = FALSE;
 		if ($db)
 		{
-			$sellers = trin_db_get_sellers ($db);
+			$sellers = trin_db_get_sellers($db);
 			if ($sellers !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_seller = trin_db_get_next_seller ($db, $sellers);
+					$next_seller = trin_db_get_next_seller($db, $sellers);
 					if ($next_seller === FALSE)
 					{
 						break;
@@ -160,7 +160,7 @@
 						"<td><a href=\"$seller_det_link\">" .
 							$next_seller[TRIN_DB_SELLER_PARAM_ID] . '</a></td>' .
 						"<td><a href=\"$seller_det_link\">"
-							. trin_html_escape ($next_seller[TRIN_DB_SELLER_PARAM_NAME])
+							. trin_html_escape($next_seller[TRIN_DB_SELLER_PARAM_NAME])
 							. '</a></td></tr>'
 						. "\n";
 				}
@@ -168,7 +168,7 @@
 			else
 			{
 				$error = 'Cannot read seller database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -179,7 +179,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="2" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="2" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_seller) && (! $error))
@@ -205,12 +205,12 @@
 		$have_sale = FALSE;
 		if ($db)
 		{
-			$sales = trin_db_get_seller_transactions ($db);
+			$sales = trin_db_get_seller_transactions($db);
 			if ($sales !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_sale = trin_db_get_next_seller_transaction ($db, $sales);
+					$next_sale = trin_db_get_next_seller_transaction($db, $sales);
 					if ($next_sale === FALSE)
 					{
 						break;
@@ -221,7 +221,7 @@
 					echo '<tr class="c">' .
 						'<td>' . $next_sale[TRIN_DB_SELLER_PARAM_NAME] . '</td>' .
 						"<td><a href=\"$product_link\">"
-							. trin_html_escape ($next_sale[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
+							. trin_html_escape($next_sale[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
 						'<td>' . $next_sale[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
 						. "\n";
 				}
@@ -229,7 +229,7 @@
 			else
 			{
 				$error = 'Cannot read product sale database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -240,7 +240,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="3" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="3" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_sale) && (! $error))

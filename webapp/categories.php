@@ -31,20 +31,20 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$error = '';
 	$validation_failed_fields = array();
 	$db = NULL;
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -65,16 +65,16 @@
 				{
 					$error = 'Cannot connect to database';
 				}
-				if (! trin_db_add_product_category ($db,
+				if (! trin_db_add_product_category($db,
 					trin_get_post(TRIN_DB_PROD_CAT_FIELD_NAME)))
 				{
 					$error = 'Cannot add category to the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 				else
 				{
 					trin_set_success_msg('Category added successfully');
-					header ('Location: ' . trin_get_self_location ());
+					header('Location: ' . trin_get_self_location());
 					exit;
 				}
 			}
@@ -87,8 +87,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -122,8 +122,8 @@
 			$param_category_name = trin_get_post(TRIN_DB_PROD_CAT_FIELD_NAME);
 		}
 
-		trin_create_category_form (
-			trin_get_self_action (), 'Add category',
+		trin_create_category_form(
+			trin_get_self_action(), 'Add category',
 			TRIN_DB_PROD_CAT_FIELD_NAME, $param_category_name,
 			TRIN_DB_PROD_CAT_FIELD_VERSION, $param_category_version,
 			$validation_failed_fields
@@ -143,12 +143,12 @@
 		$have_category = FALSE;
 		if ($db)
 		{
-			$categories = trin_db_get_product_categories ($db);
+			$categories = trin_db_get_product_categories($db);
 			if ($categories !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_category = trin_db_get_next_product_category ($db, $categories);
+					$next_category = trin_db_get_next_product_category($db, $categories);
 					if ($next_category === FALSE)
 					{
 						break;
@@ -163,7 +163,7 @@
 								. $next_category[TRIN_DB_PROD_CAT_FIELD_ID]
 								. '</a></td>' .
 							"<td><a href=\"$category_det_link\">"
-								. trin_html_escape (
+								. trin_html_escape(
 									$next_category[TRIN_DB_PROD_CAT_FIELD_NAME]
 								)
 								. '</a></td></tr>'
@@ -174,7 +174,7 @@
 						echo '<tr class="c">' .
 							'<td>' . $next_category[TRIN_DB_PROD_CAT_FIELD_ID] . '</td>' .
 							'<td>' .
-							trin_html_escape ($next_category[TRIN_DB_PROD_CAT_FIELD_NAME])
+							trin_html_escape($next_category[TRIN_DB_PROD_CAT_FIELD_NAME])
 							. '</td></tr>'
 							. "\n";
 					}
@@ -183,7 +183,7 @@
 			else
 			{
 				$error = 'Cannot read category database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -194,7 +194,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="2" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="2" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_category) && (! $error))

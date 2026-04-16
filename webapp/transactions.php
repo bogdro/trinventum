@@ -31,17 +31,17 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$error = '';
 	$db = NULL;
 	$validation_failed_fields = array();
 	$use_mod_button = TRUE;
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
@@ -64,8 +64,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -116,7 +116,7 @@
 </div>
 
 <div class="menu">
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="GET">
+<form action="<?php echo trin_html_escape(trin_get_self_action()); ?>" method="GET">
 List
 <?php
 		trin_create_text_input('text', '11', TRIN_DB_TRANS_LIST_PARAM_COUNT,
@@ -170,20 +170,20 @@ OR
 <?php
 			$error = '';
 			$have_trans = FALSE;
-			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 				trin_get_sess(TRIN_SESS_DB_PASS),
 				trin_get_sess(TRIN_SESS_DB_DBNAME),
 				trin_get_sess(TRIN_SESS_DB_HOST));
 			if ($db)
 			{
-				$trans = trin_db_get_transactions ($db, $offset, $limit);
+				$trans = trin_db_get_transactions($db, $offset, $limit);
 				if ($trans !== FALSE)
 				{
 					$yes = '<span class="ok">YES</span>';
 					$no = '<span class="nok">NO</span>';
 					while (TRUE)
 					{
-						$next_tran = trin_db_get_next_transaction ($db, $trans);
+						$next_tran = trin_db_get_next_transaction($db, $trans);
 						if ($next_tran === FALSE)
 						{
 							break;
@@ -234,7 +234,7 @@ OR
 								. $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</a></td>';
 						}
 						echo '<td><a href="' . $product_def_link . '">'
-							. trin_html_escape ($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
+							. trin_html_escape($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
 							. '</a></td>' .
 							'<td><a href="' . $product_link . '">'
 								. $next_tran[TRIN_DB_PROD_INST_FIELD_ID]
@@ -267,7 +267,7 @@ OR
 				else
 				{
 					$error = 'Cannot read transaction database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 			}
 			else
@@ -278,7 +278,7 @@ OR
 			if ($error)
 			{
 ?>
-<tr><td colspan="<?php echo $ncols; ?>" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="<?php echo $ncols; ?>" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 			} // $error
 			if ((! $have_trans) && (! $error))
@@ -310,20 +310,20 @@ OR
 <?php
 			$error = '';
 			$have_trans = FALSE;
-			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 				trin_get_sess(TRIN_SESS_DB_PASS),
 				trin_get_sess(TRIN_SESS_DB_DBNAME),
 				trin_get_sess(TRIN_SESS_DB_HOST));
 			if ($db)
 			{
-				$trans = trin_db_get_deleted_transactions ($db, $offset, $limit);
+				$trans = trin_db_get_deleted_transactions($db, $offset, $limit);
 				if ($trans !== FALSE)
 				{
 					$yes = '<span class="ok">YES</span>';
 					$no = '<span class="nok">NO</span>';
 					while (TRUE)
 					{
-						$next_tran = trin_db_get_next_transaction ($db, $trans);
+						$next_tran = trin_db_get_next_transaction($db, $trans);
 						if ($next_tran === FALSE)
 						{
 							break;
@@ -378,7 +378,7 @@ OR
 				else
 				{
 					$error = 'Cannot read transaction history database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 			}
 			else
@@ -389,7 +389,7 @@ OR
 			if ($error)
 			{
 ?>
-<tr><td colspan="11" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="11" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 			} // $error
 			if ((! $have_trans) && (! $error))

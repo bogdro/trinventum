@@ -31,29 +31,29 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$display_form = FALSE;
 	$error = '';
 	$validation_failed_fields = array();
 	$db = NULL;
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else if (! trin_isset_get(TRIN_CAT_DETAIL_PARAM))
 	{
-		header ('Location: categories.php');
+		header('Location: categories.php');
 	}
 	else if (trin_get_param(TRIN_CAT_DETAIL_PARAM) == '0')
 	{
-		header ('Location: categories.php');
+		header('Location: categories.php');
 	}
 	else
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -76,14 +76,14 @@
 					$display_form = TRUE;
 					$error = 'Cannot connect to database';
 				}
-				if (! trin_db_update_category ($db,
+				if (! trin_db_update_category($db,
 					trin_get_param(TRIN_CAT_DETAIL_PARAM),
 					trin_get_post(TRIN_DB_PROD_CAT_FIELD_NAME),
 					trin_get_post(TRIN_DB_PROD_CAT_FIELD_VERSION)))
 				{
 					$display_form = TRUE;
 					$error = 'Cannot update category in the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 				else
 				{
@@ -92,7 +92,7 @@
 			}
 			if (! $display_form)
 			{
-				header ('Location: categories.php');
+				header('Location: categories.php');
 				exit;
 			}
 		}
@@ -112,8 +112,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-			trin_meta_lastmod ($t_lastmod);
-			trin_include_css ();
+			trin_meta_lastmod($t_lastmod);
+			trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -139,7 +139,7 @@
 			$param_category_name = '';
 			$param_category_version = 0;
 
-			$category = trin_db_get_product_category_details ($db, trin_get_param(TRIN_CAT_DETAIL_PARAM));
+			$category = trin_db_get_product_category_details($db, trin_get_param(TRIN_CAT_DETAIL_PARAM));
 			if ($category !== FALSE)
 			{
 				$param_category_name = $category[TRIN_DB_PROD_CAT_FIELD_NAME];
@@ -147,7 +147,7 @@
 			}
 			else
 			{
-				trin_display_error ('Cannot read category details: No data');
+				trin_display_error('Cannot read category details: No data');
 			}
 
 			// if the category failed to be updated,
@@ -168,8 +168,8 @@
 				*/
 			}
 
-			trin_create_category_form (
-				trin_get_self_action (), 'Update category',
+			trin_create_category_form(
+				trin_get_self_action(), 'Update category',
 				TRIN_DB_PROD_CAT_FIELD_NAME, $param_category_name,
 				TRIN_DB_PROD_CAT_FIELD_VERSION, $param_category_version,
 				$validation_failed_fields
@@ -190,20 +190,20 @@
 		$have_cat = FALSE;
 		if ($db)
 		{
-			$cat_his = trin_db_get_product_category_history ($db,
+			$cat_his = trin_db_get_product_category_history($db,
 				trin_get_param(TRIN_CAT_DETAIL_PARAM));
 			if ($cat_his !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_his = trin_db_get_next_product_category_history_entry ($db, $cat_his);
+					$next_his = trin_db_get_next_product_category_history_entry($db, $cat_his);
 					if ($next_his === FALSE)
 					{
 						break;
 					}
 					$have_cat = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_CAT_FIELD_NAME]) . '</td>' .
+						'<td>' . trin_html_escape($next_his[TRIN_DB_PROD_CAT_FIELD_NAME]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_CAT_FIELD_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_CAT_FIELD_TIMESTAMP] . '</td></tr>'
 						. "\n";
@@ -212,7 +212,7 @@
 			else
 			{
 				$error = 'Cannot read category database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -223,7 +223,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="3" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="3" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_cat) && (! $error))

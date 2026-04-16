@@ -31,17 +31,17 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$display_form = FALSE;
 	$error = '';
 	$db = NULL;
 	$validation_failed_fields = array();
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
@@ -52,7 +52,7 @@
 			trin_unset_sess(TRIN_ALL_PROD_NAMES);
 		}
 		$button_title = 'Next step';
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -106,7 +106,7 @@
 							$display_form = TRUE;
 							$error = 'Cannot connect to database';
 						}
-						if (trin_db_add_transaction ($db,
+						if (trin_db_add_transaction($db,
 							trin_get_sess(TRIN_DB_PROD_INST_FIELD_ID),
 							trin_get_post(TRIN_DB_SELLER_PARAM_ID),
 							trin_get_post(TRIN_DB_BUYER_PARAM_ID),
@@ -124,13 +124,13 @@
 						{
 							$display_form = TRUE;
 							$error = 'Cannot add transaction to the database: '
-								. trin_db_get_last_error ($db);
+								. trin_db_get_last_error($db);
 						}
 					}
 					if (! $display_form)
 					{
 						trin_set_success_msg('Transaction added successfully');
-						header ('Location: transactions.php');
+						header('Location: transactions.php');
 						exit;
 					}
 				}
@@ -163,8 +163,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-			trin_meta_lastmod ($t_lastmod);
-			trin_include_css ();
+			trin_meta_lastmod($t_lastmod);
+			trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -192,7 +192,7 @@
 			trin_display_error($error);
 ?>
 <div class="login_box c">
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST">
+<form action="<?php echo trin_html_escape(trin_get_self_action()); ?>" method="POST">
 <?php
 			$error = '';
 
@@ -203,7 +203,7 @@
 				// display a list of product categories
 				if ($db)
 				{
-					$products = trin_db_get_product_defs ($db);
+					$products = trin_db_get_product_defs($db);
 					if ($products !== FALSE)
 					{
 						echo '<p><label for="' . TRIN_PROD_DETAIL_PARAM . '">Product type:</label>' . "\n";
@@ -213,7 +213,7 @@
 						trin_set_sess(TRIN_ALL_PROD_NAMES, array());
 						while (TRUE)
 						{
-							$next_prod = trin_db_get_next_product ($db,
+							$next_prod = trin_db_get_next_product($db,
 								$products);
 							if ($next_prod === FALSE)
 							{
@@ -240,7 +240,7 @@
 					else
 					{
 						$error = 'Cannot read product database: '
-							. trin_db_get_last_error ($db);
+							. trin_db_get_last_error($db);
 					}
 				}
 				else
@@ -250,7 +250,7 @@
 			}
 			else
 			{
-				echo 'Product type: ' . trin_html_escape (trin_get_sess(TRIN_PROD_DETAIL_PARAM))
+				echo 'Product type: ' . trin_html_escape(trin_get_sess(TRIN_PROD_DETAIL_PARAM))
 					. ' - ' . trin_get_sess(TRIN_ALL_PROD_NAMES)[trin_get_sess(TRIN_PROD_DETAIL_PARAM)]
 					. "<br>\n";
 				if (! $have_prod_inst_param)
@@ -260,7 +260,7 @@
 					if ($db && trin_isset_sess(TRIN_PROD_DETAIL_PARAM))
 					{
 						// get only products marked for selling
-						$products = trin_db_get_product_instances_with_status ($db,
+						$products = trin_db_get_product_instances_with_status($db,
 							trin_get_sess(TRIN_PROD_DETAIL_PARAM),
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
 						if ($products !== FALSE)
@@ -288,7 +288,7 @@
 						else
 						{
 							$error = 'Cannot read product instance database: '
-								. trin_db_get_last_error ($db);
+								. trin_db_get_last_error($db);
 						}
 					}
 					else if (!$db)
@@ -309,7 +309,7 @@
 				// and the remaining fields for a transaction
 				if ($db)
 				{
-					$buyers = trin_db_get_buyers ($db);
+					$buyers = trin_db_get_buyers($db);
 					if ($buyers !== FALSE)
 					{
 						echo '<p><label for="' . TRIN_DB_BUYER_PARAM_ID . '">Buyer:</label>' . "\n";
@@ -318,7 +318,7 @@
 						$buyer_values = array();
 						while (TRUE)
 						{
-							$next_buyer = trin_db_get_next_buyer ($db, $buyers);
+							$next_buyer = trin_db_get_next_buyer($db, $buyers);
 							if ($next_buyer === FALSE)
 							{
 								break;
@@ -337,7 +337,7 @@
 					else
 					{
 						$error = 'Cannot read buyer database: '
-							. trin_db_get_last_error ($db);
+							. trin_db_get_last_error($db);
 					}
 				}
 				else
@@ -347,7 +347,7 @@
 
 				if ($db)
 				{
-					$sellers = trin_db_get_sellers ($db);
+					$sellers = trin_db_get_sellers($db);
 					if ($sellers !== FALSE)
 					{
 						echo '<p><label for="' . TRIN_DB_SELLER_PARAM_ID . '">Seller:</label>' . "\n";
@@ -356,7 +356,7 @@
 						$seller_values = array();
 						while (TRUE)
 						{
-							$next_seller = trin_db_get_next_seller ($db, $sellers);
+							$next_seller = trin_db_get_next_seller($db, $sellers);
 							if ($next_seller === FALSE)
 							{
 								break;
@@ -375,7 +375,7 @@
 					else
 					{
 						$error = 'Cannot read seller database: '
-							. trin_db_get_last_error ($db);
+							. trin_db_get_last_error($db);
 					}
 				}
 				else
@@ -411,7 +411,7 @@
 				else
 				{
 					/*
-					$curr_time = getdate ();
+					$curr_time = getdate();
 					$param_trans_selldate = $curr_time['year'] . '-'
 						. $curr_time['mon'] . '-'
 						. $curr_time['mday'] . ' '
@@ -524,7 +524,7 @@
 <p>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("add_transaction");
+	trin_create_reset("add_transaction");
 ?>
 </p>
 

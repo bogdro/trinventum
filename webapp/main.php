@@ -28,12 +28,12 @@
 	include_once 'inc/functions.php';
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
@@ -45,8 +45,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -72,13 +72,13 @@
 <?php
 		$error = '';
 		$have_cat = FALSE;
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
 		if ($db)
 		{
-			$categories = trin_db_get_product_categories ($db);
+			$categories = trin_db_get_product_categories($db);
 			if ($categories !== FALSE)
 			{
 				echo "<ul>\n";
@@ -86,7 +86,7 @@
 				//echo "<li><a href=\"$cat_det_link\">Uncategorised</a></li>\n";
 				while (TRUE)
 				{
-					$next_cat = trin_db_get_next_product_category ($db, $categories);
+					$next_cat = trin_db_get_next_product_category($db, $categories);
 					if ($next_cat === FALSE)
 					{
 						break;
@@ -95,14 +95,14 @@
 					$cat_det_link = 'cat_products.php?' . TRIN_CAT_DETAIL_PARAM
 						. '=' . $next_cat[TRIN_DB_PROD_CAT_FIELD_ID];
 					echo "<li><a href=\"$cat_det_link\">"
-						. trin_html_escape ($next_cat[TRIN_DB_PROD_CAT_FIELD_NAME])
+						. trin_html_escape($next_cat[TRIN_DB_PROD_CAT_FIELD_NAME])
 						. "</a></li>\n";
 				}
 				echo "</ul>\n";
 			}
 			else
 			{
-				$error = 'Cannot read category database: ' . trin_db_get_last_error ($db);
+				$error = 'Cannot read category database: ' . trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -125,5 +125,5 @@ or <a href="all_products.php">view all product types</a>.
 
 </BODY></HTML>
 <?php
-	} // trin_validate_session ()
+	} // trin_validate_session()
 ?>

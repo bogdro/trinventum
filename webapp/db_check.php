@@ -28,46 +28,46 @@
 	include_once 'inc/functions.php';
 	include_once 'inc/db_functions.php';
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	$error_msg = '';
 	$warning_msg = '';
 	// disable errors if the version-check table doesn't exist (fresh install):
-	error_reporting (0);
+	error_reporting(0);
 
-	$conn = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+	$conn = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
 	if ($conn)
 	{
-		$trin_db_ver = trin_db_get_version ($conn);
+		$trin_db_ver = trin_db_get_version($conn);
 		if ((int)$trin_db_ver == 0)
 		{
 			// just run the full script
-			$file = file_get_contents ("sql/trinventum-full.pgsql");
+			$file = file_get_contents("sql/trinventum-full.pgsql");
 			if ($file !== FALSE)
 			{
-				if (! trin_db_query ($conn, 'begin'))
+				if (! trin_db_query($conn, 'begin'))
 				{
 					$error_msg = "Can't update database version from $trin_db_ver to "
 						. TRIN_EXPECTED_DB_VERSION
 						. ' - cannot start transaction:<br>'
-						. trin_db_get_last_error ($conn);
+						. trin_db_get_last_error($conn);
 				}
 				else
 				{
-					if (! trin_db_query ($conn, $file))
+					if (! trin_db_query($conn, $file))
 					{
 						$error_msg = "Can't update database version from $trin_db_ver to "
 							. TRIN_EXPECTED_DB_VERSION
-							. ':<br>' . trin_db_get_last_error ($conn);
+							. ':<br>' . trin_db_get_last_error($conn);
 					}
 					else
 					{
-						trin_db_query ($conn, 'commit');
+						trin_db_query($conn, 'commit');
 					}
 				}
 			}
@@ -83,28 +83,28 @@
 			for ($i = (int)$trin_db_ver + 1; $i <= (int)TRIN_EXPECTED_DB_VERSION; $i++)
 			{
 				// run the missing scripts
-				$file = file_get_contents ("sql/trinventum-v$i.pgsql");
+				$file = file_get_contents("sql/trinventum-v$i.pgsql");
 				if ($file !== FALSE)
 				{
-					if (! trin_db_query ($conn, 'begin'))
+					if (! trin_db_query($conn, 'begin'))
 					{
 						$error_msg = "Can't update database version from $trin_db_ver to "
 							. TRIN_EXPECTED_DB_VERSION
 							. ' - cannot start transaction:<br>'
-							. trin_db_get_last_error ($conn);
+							. trin_db_get_last_error($conn);
 						break;
 					}
-					if (! trin_db_query ($conn, $file))
+					if (! trin_db_query($conn, $file))
 					{
 						$error_msg = "Can't update database version from $trin_db_ver to "
 							. TRIN_EXPECTED_DB_VERSION
-							. ':<br>' . trin_db_get_last_error ($conn);
-						trin_db_query ($conn, 'rollback');
+							. ':<br>' . trin_db_get_last_error($conn);
+						trin_db_query($conn, 'rollback');
 						break;
 					}
 					else
 					{
-						trin_db_query ($conn, 'commit');
+						trin_db_query($conn, 'commit');
 					}
 				}
 				else
@@ -124,7 +124,7 @@
 				. 'You can <a href="main.php">continue</a> or '
 				. '<a href="logout.php">logout and install the correct application version</a>.';
 		}
-		trin_db_close ($conn);
+		trin_db_close($conn);
 	}
 	else
 	{
@@ -135,18 +135,18 @@
 
 	if ($error_msg == '' && $warning_msg == '')
 	{
-		header ('Location: main.php');
+		header('Location: main.php');
 	}
 	else
 	{
 		if ($error_msg != '')
 		{
 			// Errors can't be skipped over. Make it impossible to continue
-			session_destroy ();
+			session_destroy();
 		}
 
-		$t_lastmod = getlastmod ();
-		trin_header_lastmod ($t_lastmod);
+		$t_lastmod = getlastmod();
+		trin_header_lastmod($t_lastmod);
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
@@ -155,8 +155,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 

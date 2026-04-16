@@ -31,25 +31,25 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$display_form = FALSE;
 	$error = '';
 	$validation_failed_fields = array();
 	$db = NULL;
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else if (! trin_isset_get(TRIN_DB_SELLER_PARAM_ID))
 	{
-		header ('Location: sellers.php');
+		header('Location: sellers.php');
 	}
 	else
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -72,14 +72,14 @@
 					$display_form = TRUE;
 					$error = 'Cannot connect to database';
 				}
-				if (! trin_db_update_seller ($db,
+				if (! trin_db_update_seller($db,
 					trin_get_param(TRIN_DB_SELLER_PARAM_ID),
 					trin_get_post(TRIN_DB_SELLER_PARAM_NAME),
 					trin_get_post(TRIN_DB_SELLER_PARAM_VERSION)))
 				{
 					$display_form = TRUE;
 					$error = 'Cannot update seller in the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 				else
 				{
@@ -88,7 +88,7 @@
 			}
 			if (! $display_form)
 			{
-				header ('Location: sellers.php');
+				header('Location: sellers.php');
 				exit;
 			}
 		}
@@ -108,8 +108,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-			trin_meta_lastmod ($t_lastmod);
-			trin_include_css ();
+			trin_meta_lastmod($t_lastmod);
+			trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -135,7 +135,7 @@
 			$param_seller_name = '';
 			$param_seller_version = 0;
 
-			$seller = trin_db_get_seller_details ($db, trin_get_param(TRIN_DB_SELLER_PARAM_ID));
+			$seller = trin_db_get_seller_details($db, trin_get_param(TRIN_DB_SELLER_PARAM_ID));
 			if ($seller !== FALSE)
 			{
 				$param_seller_name = $seller[TRIN_DB_SELLER_PARAM_NAME];
@@ -143,7 +143,7 @@
 			}
 			else
 			{
-				trin_display_error ('Cannot read seller details: No data');
+				trin_display_error('Cannot read seller details: No data');
 			}
 
 			// if the seller failed to be updated,
@@ -164,8 +164,8 @@
 				*/
 			}
 
-			trin_create_seller_form (
-				trin_get_self_action (), 'Update seller',
+			trin_create_seller_form(
+				trin_get_self_action(), 'Update seller',
 				TRIN_DB_SELLER_PARAM_NAME, $param_seller_name,
 				TRIN_DB_SELLER_PARAM_VERSION, $param_seller_version,
 				$validation_failed_fields
@@ -186,20 +186,20 @@
 		$have_his = FALSE;
 		if ($db)
 		{
-			$seller_his = trin_db_get_seller_history ($db,
+			$seller_his = trin_db_get_seller_history($db,
 				trin_get_param(TRIN_DB_SELLER_PARAM_ID));
 			if ($seller_his !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_his = trin_db_get_next_seller_hist_entry ($db, $seller_his);
+					$next_his = trin_db_get_next_seller_hist_entry($db, $seller_his);
 					if ($next_his === FALSE)
 					{
 						break;
 					}
 					$have_his = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . trin_html_escape ($next_his[TRIN_DB_SELLER_PARAM_NAME]) . '</td>' .
+						'<td>' . trin_html_escape($next_his[TRIN_DB_SELLER_PARAM_NAME]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_SELLER_PARAM_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_SELLER_PARAM_TIMESTAMP] . '</td></tr>'
 						. "\n";
@@ -208,7 +208,7 @@
 			else
 			{
 				$error = 'Cannot read seller database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -219,7 +219,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="3" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="3" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_his) && (! $error))

@@ -31,8 +31,8 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$display_form = FALSE;
 	$error = '';
@@ -45,7 +45,7 @@
 		&& trin_isset_post(TRIN_SESS_DB_HOST)
 		&& trin_isset_post(TRIN_SESS_DB_PORT))
 	{
-		$db = trin_db_open (trin_get_post(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_post(TRIN_SESS_DB_LOGIN),
 			trin_get_post(TRIN_SESS_DB_PASS),
 			trin_get_post(TRIN_SESS_DB_DBNAME),
 			trin_get_post(TRIN_SESS_DB_HOST),
@@ -55,11 +55,11 @@
 			$display_form = TRUE;
 			$error = 'Cannot connect to database';
 		}
-		else if (! trin_db_check ($db))
+		else if (! trin_db_check($db))
 		{
 			$display_form = TRUE;
-			$error = 'Cannot check the database: ' . trin_db_get_last_error ($db);
-			trin_db_close ($db);
+			$error = 'Cannot check the database: ' . trin_db_get_last_error($db);
+			trin_db_close($db);
 		}
 		if (! $display_form)
 		{
@@ -68,7 +68,7 @@
 			trin_set_sess(TRIN_SESS_DB_DBNAME, trin_get_post(TRIN_SESS_DB_DBNAME));
 			trin_set_sess(TRIN_SESS_DB_HOST, trin_get_post(TRIN_SESS_DB_HOST));
 			trin_set_sess(TRIN_SESS_DB_PORT, trin_get_post(TRIN_SESS_DB_PORT));
-			header ('Location: db_check.php');
+			header('Location: db_check.php');
 		}
 	}
 	else
@@ -86,8 +86,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -142,7 +142,7 @@ Trinventum e-commerce management software
 </h1>
 
 <div class="login_box">
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST">
+<form action="<?php echo trin_html_escape(trin_get_self_action()); ?>" method="POST">
 
 <p class="c">
 Database connection parameters:
@@ -211,7 +211,7 @@ Database connection parameters:
 <p class="c">
 <input type="submit" value="Login">
 <?php
-	trin_create_reset ("login_form");
+	trin_create_reset("login_form");
 ?>
 </p>
 

@@ -31,20 +31,20 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$display_form = FALSE;
 	$error = '';
 	$db = NULL;
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -56,12 +56,12 @@
 				$display_form = TRUE;
 				$error = 'Cannot connect to database';
 			}
-			if (! trin_db_delete_transaction ($db,
+			if (! trin_db_delete_transaction($db,
 				trin_get_post(TRIN_DB_TRANS_PARAM_ID)))
 			{
 				$display_form = TRUE;
 				$error = 'Cannot delete transaction from the database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 			else
 			{
@@ -70,7 +70,7 @@
 		}
 		if (! $display_form)
 		{
-			header ('Location: transactions.php?' . TRIN_DB_TRANS_PARAM_LIST . '=1');
+			header('Location: transactions.php?' . TRIN_DB_TRANS_PARAM_LIST . '=1');
 			exit;
 		}
 		else
@@ -83,8 +83,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-			trin_meta_lastmod ($t_lastmod);
-			trin_include_css ();
+			trin_meta_lastmod($t_lastmod);
+			trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 

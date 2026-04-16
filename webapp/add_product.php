@@ -31,21 +31,21 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$display_form = FALSE;
 	$error = '';
 	$db = NULL;
 	$validation_failed_fields = array();
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -55,7 +55,7 @@
 			$error = 'Cannot connect to database';
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
-			&& isset ($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
+			&& isset($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_SIZE)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_WIDTH)
@@ -84,7 +84,7 @@
 			}
 			else
 			{
-				if (! trin_db_add_product ($db,
+				if (! trin_db_add_product($db,
 					trin_get_post(TRIN_DB_PROD_PARAM_NAME),
 			       		TRIN_DB_PROD_PARAM_PHOTO,
 					trin_get_post(TRIN_DB_PROD_PARAM_SIZE),
@@ -100,13 +100,13 @@
 				{
 					$display_form = TRUE;
 					$error = 'Cannot add product to the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 			}
 			if (! $display_form)
 			{
 				trin_set_success_msg('Product added successfully');
-				header ('Location: main.php');
+				header('Location: main.php');
 			}
 		}
 		else
@@ -124,8 +124,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-			trin_meta_lastmod ($t_lastmod);
-			trin_include_css ();
+			trin_meta_lastmod($t_lastmod);
+			trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -219,14 +219,14 @@
 			if ($db)
 			{
 				$param_category_option_names_values =
-					trin_db_get_product_categories_as_options ($db);
+					trin_db_get_product_categories_as_options($db);
 			}
 			else
 			{
 				$param_category_option_names_values = array();
 			}
-			trin_create_product_def_form (
-				trin_get_self_action (), 'Add product',
+			trin_create_product_def_form(
+				trin_get_self_action(), 'Add product',
 				TRIN_DB_PROD_PARAM_NAME, $param_pd_name,
 				TRIN_DB_PROD_PARAM_PHOTO, $param_pd_photo,
 				TRIN_DB_PROD_PARAM_SIZE, $param_pd_size,

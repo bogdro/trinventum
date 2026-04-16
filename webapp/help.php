@@ -28,8 +28,8 @@
 	include_once 'inc/functions.php';
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
@@ -38,8 +38,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-	trin_meta_lastmod ($t_lastmod);
-	trin_include_css ();
+	trin_meta_lastmod($t_lastmod);
+	trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -54,7 +54,7 @@
 </HEAD><BODY>
 
 <?php
-	if (trin_validate_session ())
+	if (trin_validate_session())
 	{
 		$page_name = 'Help';
 		include 'inc/header.php';
@@ -285,7 +285,7 @@ You enter 4 parameters there:
  <li>the username of the DATABASE (<em class="important">not</em> system) user you've created</li>
  <li>the password of the DATABASE user you've created</li>
  <li>the database address: IP address or hostname, can also be the local socket's
- 	directory (<code>/run/postgresql</code> in some versions, <code>/tmp</code> in other)
+	directory (<code>/run/postgresql</code> in some versions, <code>/tmp</code> in other)
 	if the database is running locally using the default settings</li>
  <li>the database port: the port number on which the database is running,
 	can also be the local socket's file's extension</li>

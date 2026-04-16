@@ -31,18 +31,18 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 	$error = '';
 	$validation_failed_fields = array();
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else if (! trin_isset_get(TRIN_DB_PROD_INST_FIELD_ID))
 	{
-		header ('Location: main.php');
+		header('Location: main.php');
 	}
 	else
 	{
@@ -53,7 +53,7 @@
 			$return_link = 'details.php?'
 				. TRIN_PROD_DETAIL_PARAM . '=' . trin_get_param(TRIN_PROD_DETAIL_PARAM);
 		}
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -76,19 +76,19 @@
 				{
 					$error = 'Cannot connect to database';
 				}
-				if (! trin_db_update_product_instance ($db,
+				if (! trin_db_update_product_instance($db,
 					$product_inst_id,
 					trin_get_post(TRIN_DB_PROD_INST_FIELD_STATUS),
 					trin_get_post(TRIN_DB_PROD_INST_FIELD_COST),
 					trin_get_post(TRIN_DB_PROD_INST_FIELD_VERSION)))
 				{
 					$error = 'Cannot update product piece in the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 				else
 				{
 					trin_set_success_msg('Product piece updated successfully');
-					header ("Location: $return_link");
+					header("Location: $return_link");
 					exit;
 				}
 			}
@@ -102,8 +102,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -138,7 +138,7 @@
 		$have_prod = FALSE;
 		if ($db)
 		{
-			$product_det = trin_db_get_product_instance_details ($db,
+			$product_det = trin_db_get_product_instance_details($db,
 				$product_inst_id);
 			if ($product_det !== FALSE)
 			{
@@ -147,14 +147,14 @@
 				$param_pp_cost = $product_det[TRIN_DB_PROD_INST_FIELD_COST];
 				$param_pp_version = $product_det[TRIN_DB_PROD_INST_FIELD_VERSION];
 
-				echo 	'<p>Status: ' . trin_html_escape ($param_pp_status) . '</p>' .
+				echo 	'<p>Status: ' . trin_html_escape($param_pp_status) . '</p>' .
 					'<p>Cost: ' . $param_pp_cost . '</p>'
 					;
 			}
 			else
 			{
 				$error = 'Cannot read product instance details from the database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -177,7 +177,7 @@ Update product piece details (warning - this updates ALL the given details):
 </p>
 
 <div class="login_box c">
-<form action="<?php echo trin_get_self_action (); ?>" method="POST">
+<form action="<?php echo trin_get_self_action(); ?>" method="POST">
 <?php
 		// if the product piece failed to be updated,
 		// refresh it from the DB and make the user
@@ -239,7 +239,7 @@ Cost:
 <p>
 <input type="submit" value="Update product piece">
 <?php
-	trin_create_reset ("update_piece");
+	trin_create_reset("update_piece");
 ?>
 </p>
 
@@ -260,19 +260,19 @@ Cost:
 		$have_prod = FALSE;
 		if ($db)
 		{
-			$product_his = trin_db_get_product_instance_history ($db, $product_inst_id);
+			$product_his = trin_db_get_product_instance_history($db, $product_inst_id);
 			if ($product_his !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_his = trin_db_get_next_product_instance_hist_entry ($db, $product_his);
+					$next_his = trin_db_get_next_product_instance_hist_entry($db, $product_his);
 					if ($next_his === FALSE)
 					{
 						break;
 					}
 					$have_prod = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . trin_html_escape ($next_his[TRIN_DB_PROD_INST_FIELD_STATUS]) . '</td>' .
+						'<td>' . trin_html_escape($next_his[TRIN_DB_PROD_INST_FIELD_STATUS]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_COST] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_USER] . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_TIMESTAMP] . '</td></tr>'
@@ -282,7 +282,7 @@ Cost:
 			else
 			{
 				$error = 'Cannot read product database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -293,7 +293,7 @@ Cost:
 		if ($error)
 		{
 ?>
-<tr><td colspan="4" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="4" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_prod) && (! $error))
@@ -317,5 +317,5 @@ Cost:
 
 </BODY></HTML>
 <?php
-	} // trin_validate_session ()
+	} // trin_validate_session()
 ?>

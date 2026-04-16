@@ -24,10 +24,10 @@
 
 	include_once 'constants.php';
 
-	function trin_error_reporting ()
+	function trin_error_reporting()
 	{
-		//error_reporting (E_ALL|E_NOTICE);
-		error_reporting (0);
+		//error_reporting(E_ALL|E_NOTICE);
+		error_reporting(0);
 	}
 
 	function trin_isset_sess($name)
@@ -80,46 +80,46 @@
 		return $_SERVER[$name];
 	}
 
-	function trin_header_lastmod ($last_mod)
+	function trin_header_lastmod($last_mod)
 	{
 		// must be gmdate(), and not date(), because the HTTP specification says this
-		$mod_header = gmdate (TRIN_HTTP_DATE_FORMAT, $last_mod);
-		header ("Last-Modified: $mod_header");
+		$mod_header = gmdate(TRIN_HTTP_DATE_FORMAT, $last_mod);
+		header("Last-Modified: $mod_header");
 	}
 
-	function trin_meta_lastmod ($last_mod)
+	function trin_meta_lastmod($last_mod)
 	{
 		// must be gmdate(), and not date(), because the HTTP specification says this
-		$mod_header = gmdate (TRIN_HTTP_DATE_FORMAT, $last_mod);
+		$mod_header = gmdate(TRIN_HTTP_DATE_FORMAT, $last_mod);
 ?>
 <META HTTP-EQUIV="Last-Modified"      CONTENT="<?php echo $mod_header; ?>">
 <?php
 	}
 
-	function trin_include_css ()
+	function trin_include_css()
 	{
 ?>
 <LINK rel="stylesheet" type="text/css" href="rsrc/trinventum.css">
 <?php
 	}
 
-	function trin_validate_session ()
+	function trin_validate_session()
 	{
-		if (trin_isset_sess (TRIN_SESS_DB_LOGIN)
-			&& trin_isset_sess (TRIN_SESS_DB_PASS)
-			&& trin_isset_sess (TRIN_SESS_DB_DBNAME)
-			&& trin_isset_sess (TRIN_SESS_DB_HOST))
+		if (trin_isset_sess(TRIN_SESS_DB_LOGIN)
+			&& trin_isset_sess(TRIN_SESS_DB_PASS)
+			&& trin_isset_sess(TRIN_SESS_DB_DBNAME)
+			&& trin_isset_sess(TRIN_SESS_DB_HOST))
 		{
 			return TRUE;
 		}
 		return FALSE;
 	}
 
-	function trin_create_text_input ($type, $size, $name, $value,
+	function trin_create_text_input($type, $size, $name, $value,
 		$validation_failed_fields, $title = '', $class = '')
 	{
 		echo "<input type=\"$type\"\n
-			value=\"" . trin_html_escape ($value) . "\"\n
+			value=\"" . trin_html_escape($value) . "\"\n
 			name=\"$name\"\n
 			id=\"$name\"\n"
 			;
@@ -131,7 +131,7 @@
 		{
 			echo "title=\"$title\"\n";
 		}
-		if (in_array ($name, $validation_failed_fields))
+		if (in_array($name, $validation_failed_fields))
 		{
 			echo "class=\"$class red_frame\"\n";
 		}
@@ -142,7 +142,7 @@
 		echo ">\n";
 	}
 
-	function trin_create_textarea ($rows, $cols, $name, $value,
+	function trin_create_textarea($rows, $cols, $name, $value,
 		$validation_failed_fields, $title = '')
 	{
 		echo "<textarea cols=\"$cols\"\n
@@ -154,14 +154,14 @@
 			echo "title=\"$title\"\n";
 		}
 		$tclass = 'vert_mid';
-		if (in_array ($name, $validation_failed_fields))
+		if (in_array($name, $validation_failed_fields))
 		{
 			$tclass .= ' red_frame';
 		}
-		echo "class=\"$tclass\">" . trin_html_escape ($value) . "</textarea>\n";
+		echo "class=\"$tclass\">" . trin_html_escape($value) . "</textarea>\n";
 	}
 
-	function trin_create_select ($name, $value, $option_names,
+	function trin_create_select($name, $value, $option_names,
 		$option_values, $validation_failed_fields, $title = '')
 	{
 		echo "<select name=\"$name\"
@@ -170,7 +170,7 @@
 		{
 			echo "title=\"$title\"\n";
 		}
-		if (in_array ($name, $validation_failed_fields))
+		if (in_array($name, $validation_failed_fields))
 		{
 			echo "class=\"red_frame\"\n";
 		}
@@ -186,18 +186,18 @@
 		{
 			for ($i = 0; $i < $nopts; $i++)
 			{
-				echo '<option value="' . trin_html_escape ($option_values[$i]) . '"';
+				echo '<option value="' . trin_html_escape($option_values[$i]) . '"';
 				if ($value == $option_values[$i])
 				{
 					echo ' selected="selected"';
 				}
-				echo '>' . trin_html_escape ($option_names[$i]) . "</option>\n";
+				echo '>' . trin_html_escape($option_names[$i]) . "</option>\n";
 			}
 		}
 		echo "</select>\n";
 	}
 
-	function trin_create_file_input ($name, $accept_type, $value,
+	function trin_create_file_input($name, $accept_type, $value,
 		$validation_failed_fields, $title = '')
 	{
 		echo "<input type=\"file\"\n
@@ -212,24 +212,24 @@
 		{
 			echo "accept=\"$accept_type\"\n";
 		}
-		if (in_array ($name, $validation_failed_fields))
+		if (in_array($name, $validation_failed_fields))
 		{
 			echo "class=\"red_frame\"\n";
 		}
 		echo ">\n";
 	}
 
-	function trin_create_reset ($name)
+	function trin_create_reset($name)
 	{
 		echo "<br><br><label for=\"reset_$name\">Reset form:</label>\n"
 			. "<input type=\"reset\" id=\"reset_$name\" value=\"Reset\">\n";
 	}
 
-	function trin_create_submits ($name, $value, $add_reset,
+	function trin_create_submits($name, $value, $add_reset,
 		$title = '')
 	{
 		echo "<input type=\"submit\"
-			value=\"" . trin_html_escape ($value) . "\"\n";
+			value=\"" . trin_html_escape($value) . "\"\n";
 		if ($name != '')
 		{
 			echo "name=\"$name\"\n";
@@ -241,11 +241,11 @@
 		echo ">\n";
 		if ($add_reset === TRUE)
 		{
-			trin_create_reset ($name);
+			trin_create_reset($name);
 		}
 	}
 
-	function trin_create_product_def_form (
+	function trin_create_product_def_form(
 		$action, $button_title,
 		$param_name_name, $param_name_value,
 		$param_photo_name, $param_photo_value,
@@ -279,7 +279,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_name_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_name_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_name_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -307,7 +307,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_category_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_category_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_category_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -327,7 +327,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_photo_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_photo_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_photo_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -347,7 +347,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_size_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_size_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_size_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -368,7 +368,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_length_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_length_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_length_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -389,7 +389,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_width_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_width_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_width_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -409,7 +409,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_colour_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_colour_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_colour_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -419,7 +419,7 @@
 ?>
 <hr>
 <p>
-<label for="<?php echo $param_count_name ?>">Count (number of pieces):</label>
+<label for="<?php echo $param_count_name ?>">Count(number of pieces):</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_count_name,
@@ -429,7 +429,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_count_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_count_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_count_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -449,7 +449,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_brand_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_brand_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_brand_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -471,7 +471,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_gender_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_gender_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_gender_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -491,7 +491,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_comment_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_comment_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_comment_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -512,7 +512,7 @@
 		{
 			trin_create_text_input('hidden', '', $param_cost_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
-			trin_create_submits (TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_cost_name,
+			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_cost_name,
 				'Update', TRUE);
 ?>
 </form>
@@ -527,7 +527,7 @@
 <p>
 <input type="submit" value="<?php echo trin_html_escape($button_title); ?>">
 <?php
-	trin_create_reset ("prod_def_form");
+	trin_create_reset("prod_def_form");
 ?>
 </p>
 </form>
@@ -535,7 +535,7 @@
 		}
 	}
 
-	function trin_create_buyer_form (
+	function trin_create_buyer_form(
 		$action, $button_title,
 		$param_buyer_name, $param_buyer_name_value,
 		$param_buyer_address, $param_buyer_address_value,
@@ -616,7 +616,7 @@
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("buyer_form");
+	trin_create_reset("buyer_form");
 ?>
 </p>
 
@@ -625,7 +625,7 @@
 	}
 
 
-	function trin_create_seller_form (
+	function trin_create_seller_form(
 		$action, $button_title,
 		$param_seller_name, $param_seller_name_value,
 		$param_version_name, $param_version_value,
@@ -654,7 +654,7 @@
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("seller_form");
+	trin_create_reset("seller_form");
 ?>
 </p>
 
@@ -663,7 +663,7 @@
 <?php
 	}
 
-	function trin_create_category_form (
+	function trin_create_category_form(
 		$action, $button_title,
 		$param_category_name, $param_category_name_value,
 		$param_version_name, $param_version_value,
@@ -692,7 +692,7 @@
 ?>
 <input type="submit" value="<?php echo $button_title; ?>">
 <?php
-	trin_create_reset ("category_form");
+	trin_create_reset("category_form");
 ?>
 </p>
 
@@ -701,10 +701,10 @@
 <?php
 	}
 
-	function trin_get_current_date_string ()
+	function trin_get_current_date_string()
 	{
 		return date("Y-m-d H:i:s"); // better with leading zeros
-		/*$curr_time = getdate ();
+		/*$curr_time = getdate();
 		return $curr_time['year'] . '-'
 			. $curr_time['mon'] . '-'
 			. $curr_time['mday'] . ' '
@@ -713,7 +713,7 @@
 			. $curr_time['seconds'];*/
 	}
 
-	function trin_get_self_action ()
+	function trin_get_self_action()
 	{
 		$action = trin_html_escape(trin_get_server('PHP_SELF'));
 		if (trin_isset_server('QUERY_STRING') && trin_get_server('QUERY_STRING') != '')
@@ -723,7 +723,7 @@
 		return $action;
 	}
 
-	function trin_get_self_location ()
+	function trin_get_self_location()
 	{
 		$action = trin_html_escape(trin_get_server('PHP_SELF'));
 		if (trin_isset_server('QUERY_STRING') && trin_get_server('QUERY_STRING') != '')
@@ -733,7 +733,7 @@
 		return $action;
 	}
 
-	function trin_get_gender_name ($abbrev)
+	function trin_get_gender_name($abbrev)
 	{
 		if ($abbrev == 'M')
 		{
@@ -785,7 +785,7 @@
 		return $failed_fields;
 	}
 
-	function trin_display_error ($message)
+	function trin_display_error($message)
 	{
 		if ($message !== '')
 		{
@@ -800,12 +800,12 @@ Error: <?php echo $message; ?>
 		}
 	}
 
-	function trin_set_success_msg ($message)
+	function trin_set_success_msg($message)
 	{
 		trin_set_sess(TRIN_SESS_LAST_SUCCESS, $message);
 	}
 
-	function trin_display_success ($message = '')
+	function trin_display_success($message = '')
 	{
 		$msg = '';
 		if ($message !== '')
@@ -831,9 +831,9 @@ Error: <?php echo $message; ?>
 		trin_unset_sess(TRIN_SESS_LAST_SUCCESS);
 	}
 
-	function trin_html_escape ($string)
+	function trin_html_escape($string)
 	{
-		return htmlspecialchars ($string, ENT_HTML401 | ENT_QUOTES);
+		return htmlspecialchars($string, ENT_HTML401 | ENT_QUOTES);
 	}
 
 	function trin_add_datepicker()

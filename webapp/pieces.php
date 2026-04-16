@@ -28,14 +28,14 @@
 	include_once 'inc/functions.php';
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$validation_failed_fields = array();
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
@@ -47,8 +47,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -80,14 +80,14 @@
 			$limit = trin_get_param(TRIN_DB_PROD_INST_LIST_PARAM_COUNT);
 		}
 
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
 ?>
 
 <div class="menu">
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="GET">
+<form action="<?php echo trin_html_escape(trin_get_self_action()); ?>" method="GET">
 List
 <?php
 		trin_create_text_input('text', '11', TRIN_DB_PROD_INST_LIST_PARAM_COUNT,
@@ -127,13 +127,13 @@ OR
 			$have_prod = FALSE;
 			if ($db)
 			{
-				$products = trin_db_get_all_product_instances ($db,
+				$products = trin_db_get_all_product_instances($db,
 					$offset, $limit);
 				if ($products !== FALSE)
 				{
 					while (TRUE)
 					{
-						$next_prod = trin_db_get_next_product_instance ($db, $products);
+						$next_prod = trin_db_get_next_product_instance($db, $products);
 						if ($next_prod === FALSE)
 						{
 							break;
@@ -149,8 +149,8 @@ OR
 							"<td><a href=\"$det_link\">"
 								. $next_prod[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
 							"<td><a href=\"$prod_link\">"
-								. trin_html_escape ($next_prod[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
-							'<td>' . trin_html_escape ($next_prod[TRIN_DB_PROD_INST_FIELD_STATUS]) . '</td>' .
+								. trin_html_escape($next_prod[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
+							'<td>' . trin_html_escape($next_prod[TRIN_DB_PROD_INST_FIELD_STATUS]) . '</td>' .
 							'<td>' . $next_prod[TRIN_DB_PROD_INST_FIELD_COST] . '</td></tr>'
 							. "\n";
 					}
@@ -158,7 +158,7 @@ OR
 				else
 				{
 					$error = 'Cannot read product database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 			}
 			else
@@ -169,7 +169,7 @@ OR
 			if ($error)
 			{
 ?>
-<tr><td colspan="4" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="4" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 			} // $error
 			if ((! $have_prod) && (! $error))
@@ -199,7 +199,7 @@ OR
 		$have_prod = FALSE;
 		if ($db)
 		{
-			$products = trin_db_count_all_products ($db);
+			$products = trin_db_count_all_products($db);
 			if ($products !== FALSE)
 			{
 				foreach ($products as $status => $count)
@@ -213,7 +213,7 @@ OR
 			else
 			{
 				$error = 'Cannot read product database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -224,7 +224,7 @@ OR
 		if ($error)
 		{
 ?>
-<tr><td colspan="2" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="2" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_prod) && (! $error))
@@ -270,10 +270,10 @@ OR
 			$have_prod = FALSE;
 			if ($db)
 			{
-				$products = trin_db_get_product_status_changes ($db, $m);
+				$products = trin_db_get_product_status_changes($db, $m);
 				if ($products !== FALSE)
 				{
-					if (count ($products) > 0)
+					if (count($products) > 0)
 					{
 						foreach ($products as $status => $count)
 						{
@@ -287,7 +287,7 @@ OR
 				else
 				{
 					$error = 'Cannot read product database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 			}
 			else
@@ -298,7 +298,7 @@ OR
 			if ($error)
 			{
 ?>
-<tr><td colspan="2" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="2" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 			} // $error
 			if ((! $have_prod) && (! $error))
@@ -319,5 +319,5 @@ OR
 
 </BODY></HTML>
 <?php
-	} // trin_validate_session ()
+	} // trin_validate_session()
 ?>

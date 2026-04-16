@@ -22,7 +22,7 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	session_start ();
+	session_start();
 
 	include_once 'inc/constants.php';
 	include_once 'inc/functions.php';
@@ -30,35 +30,35 @@
 	/*
 	include_once 'inc/db_functions.php';
 
-	function sess_open ($path, $name) {}
+	function sess_open($path, $name) {}
 
-	function sess_close ()
+	function sess_close()
 	{
-		trin_db_close (trin_get_sess(TRIN_SESS_DB_CONN));
+		trin_db_close(trin_get_sess(TRIN_SESS_DB_CONN));
 	}
 
-	function sess_read ($id) {}
+	function sess_read($id) {}
 
-	function sess_write ($id, $data) {}
+	function sess_write($id, $data) {}
 
-	function sess_destroy ($id)
+	function sess_destroy($id)
 	{
-		trin_db_close (trin_get_sess(TRIN_SESS_DB_CONN));
+		trin_db_close(trin_get_sess(TRIN_SESS_DB_CONN));
 	}
 
-	function sess_gc ($sesslt) {}
+	function sess_gc($sesslt) {}
 
-	session_set_save_handler ('sess_open', 'sess_close',
+	session_set_save_handler('sess_open', 'sess_close',
 		'sess_read', 'sess_write', 'sess_destroy',
 		'sess_gc');
 	*/
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
-		header ('Location: main.php');
+		header('Location: main.php');
 	}
 ?>

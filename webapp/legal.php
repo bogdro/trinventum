@@ -28,8 +28,8 @@
 	include_once 'inc/functions.php';
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
@@ -38,8 +38,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-	trin_meta_lastmod ($t_lastmod);
-	trin_include_css ();
+	trin_meta_lastmod($t_lastmod);
+	trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -54,7 +54,7 @@
 </HEAD><BODY>
 
 <?php
-	if (trin_validate_session ())
+	if (trin_validate_session())
 	{
 		$page_name = 'Legal information';
 		include 'inc/header.php';

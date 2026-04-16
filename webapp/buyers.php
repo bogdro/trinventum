@@ -31,20 +31,20 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$error = '';
 	$validation_failed_fields = array();
 	$db = NULL;
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
-		$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
 			trin_get_sess(TRIN_SESS_DB_HOST));
@@ -70,7 +70,7 @@
 				{
 					$error = 'Cannot connect to database';
 				}
-				if (! trin_db_add_buyer ($db,
+				if (! trin_db_add_buyer($db,
 					trin_get_post(TRIN_DB_BUYER_PARAM_NAME),
 					trin_get_post(TRIN_DB_BUYER_PARAM_ADDRESS),
 					trin_get_post(TRIN_DB_BUYER_PARAM_LOGIN),
@@ -78,12 +78,12 @@
 					trin_get_post(TRIN_DB_BUYER_PARAM_COMMENT)))
 				{
 					$error = 'Cannot add buyer to the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 				else
 				{
 					trin_set_success_msg('Buyer added successfully');
-					header ('Location: ' . trin_get_self_location ());
+					header('Location: ' . trin_get_self_location());
 					exit;
 				}
 			}
@@ -96,8 +96,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -158,8 +158,8 @@
 ?>
 <div class="login_box">
 <?php
-		trin_create_buyer_form (
-			trin_get_self_action (), 'Add buyer',
+		trin_create_buyer_form(
+			trin_get_self_action(), 'Add buyer',
 			TRIN_DB_BUYER_PARAM_NAME, $param_buyer_name,
 			TRIN_DB_BUYER_PARAM_ADDRESS, $param_buyer_address,
 			TRIN_DB_BUYER_PARAM_LOGIN, $param_buyer_login,
@@ -188,12 +188,12 @@
 		$have_buyer = FALSE;
 		if ($db)
 		{
-			$buyers = trin_db_get_buyers ($db);
+			$buyers = trin_db_get_buyers($db);
 			if ($buyers !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_buyer = trin_db_get_next_buyer ($db, $buyers);
+					$next_buyer = trin_db_get_next_buyer($db, $buyers);
 					if ($next_buyer === FALSE)
 					{
 						break;
@@ -208,18 +208,18 @@
 						. '</a>';
 					echo '<tr class="c">' .
 						"<td><a href=\"$buyer_det_link\">" . $next_buyer[TRIN_DB_BUYER_PARAM_ID] . '</a></td>' .
-						"<td><a href=\"$buyer_det_link\">" . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
-						'<td>' . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_ADDRESS]) . '</td>' .
-						'<td>' . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_LOGIN]) . '</td>' .
+						"<td><a href=\"$buyer_det_link\">" . trin_html_escape($next_buyer[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
+						'<td>' . trin_html_escape($next_buyer[TRIN_DB_BUYER_PARAM_ADDRESS]) . '</td>' .
+						'<td>' . trin_html_escape($next_buyer[TRIN_DB_BUYER_PARAM_LOGIN]) . '</td>' .
 						'<td>' . $buyer_email . '</td>' .
-						'<td>' . trin_html_escape ($next_buyer[TRIN_DB_BUYER_PARAM_COMMENT]) . '</td></tr>'
+						'<td>' . trin_html_escape($next_buyer[TRIN_DB_BUYER_PARAM_COMMENT]) . '</td></tr>'
 						. "\n";
 				}
 			}
 			else
 			{
 				$error = 'Cannot read buyer database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -230,7 +230,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="6" class="c"> <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="6" class="c"> <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_buyer) && (! $error))
@@ -256,12 +256,12 @@
 		$have_sale = FALSE;
 		if ($db)
 		{
-			$sales = trin_db_get_buyer_transactions ($db);
+			$sales = trin_db_get_buyer_transactions($db);
 			if ($sales !== FALSE)
 			{
 				while (TRUE)
 				{
-					$next_sale = trin_db_get_next_buyer_transaction ($db, $sales);
+					$next_sale = trin_db_get_next_buyer_transaction($db, $sales);
 					if ($next_sale === FALSE)
 					{
 						break;
@@ -270,9 +270,9 @@
 						. '=' . $next_sale[TRIN_DB_PROD_DEF_FIELD_ID];
 					$have_sale = TRUE;
 					echo '<tr class="c">' .
-						'<td>' . trin_html_escape ($next_sale[TRIN_DB_BUYER_PARAM_NAME]) . '</td>' .
+						'<td>' . trin_html_escape($next_sale[TRIN_DB_BUYER_PARAM_NAME]) . '</td>' .
 						"<td><a href=\"$product_link\">"
-							. trin_html_escape ($next_sale[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
+							. trin_html_escape($next_sale[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</a></td>' .
 						'<td>' . $next_sale[TRIN_DB_TRANS_PARAM_COUNT] . '</td></tr>'
 						. "\n";
 				}
@@ -280,7 +280,7 @@
 			else
 			{
 				$error = 'Cannot read product sale database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 		}
 		else
@@ -291,7 +291,7 @@
 		if ($error)
 		{
 ?>
-<tr><td colspan="3" class="c">Error: <?php trin_display_error ($error); ?></td></tr>
+<tr><td colspan="3" class="c">Error: <?php trin_display_error($error); ?></td></tr>
 <?php
 		} // $error
 		if ((! $have_sale) && (! $error))

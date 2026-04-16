@@ -31,16 +31,16 @@
 
 	include_once 'inc/db_functions.php';
 
-	$t_lastmod = getlastmod ();
-	trin_header_lastmod ($t_lastmod);
+	$t_lastmod = getlastmod();
+	trin_header_lastmod($t_lastmod);
 
 	$error = '';
 	$db = NULL;
 	$validation_failed_fields = array();
 
-	if (! trin_validate_session ())
+	if (! trin_validate_session())
 	{
-		header ('Location: login.php');
+		header('Location: login.php');
 	}
 	else
 	{
@@ -56,7 +56,7 @@
 			&& trin_isset_post(TRIN_FORM_SUBMIT_DB_DESTROY2))
 		{
 			// destroy and logout if successful
-			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 				trin_get_sess(TRIN_SESS_DB_PASS),
 				trin_get_sess(TRIN_SESS_DB_DBNAME),
 				trin_get_sess(TRIN_SESS_DB_HOST));
@@ -65,15 +65,15 @@
 				$display_form = TRUE;
 				$error = 'Cannot connect to database';
 			}
-			else if (! trin_db_destroy_schema ($db))
+			else if (! trin_db_destroy_schema($db))
 			{
 				$display_form = TRUE;
 				$error = 'Cannot destroy the database: '
-					. trin_db_get_last_error ($db);
+					. trin_db_get_last_error($db);
 			}
 			else
 			{
-				header ('Location: logout.php');
+				header('Location: logout.php');
 			}
 		}
 ?>
@@ -84,8 +84,8 @@
 <META HTTP-EQUIV="Content-Type"       CONTENT="text/html; charset=UTF-8">
 <META HTTP-EQUIV="Content-Language"   CONTENT="en">
 <?php
-		trin_meta_lastmod ($t_lastmod);
-		trin_include_css ();
+		trin_meta_lastmod($t_lastmod);
+		trin_include_css();
 ?>
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -106,7 +106,7 @@
 
 		trin_display_error($error);
 
-		if (count ($_POST) == 0 ||
+		if (count($_POST) == 0 ||
 			trin_isset_post(TRIN_FORM_PARAM_DB_QUERY))
 		{
 ?>
@@ -208,7 +208,7 @@ Sample queries:
 	where t_sell_date > now()::date - 365</pre>
 	</li>
  <li>Calculate the selling amount and profit of all transactions
- 	from the last year (sum of selling amounts
+	from the last year (sum of selling amounts
  	plus the profit from sending minus the costs of product pieces):
 	<pre>
 	select sum(t.t_price) as sell_value,
@@ -219,7 +219,7 @@ Sample queries:
 	</li>
 </ul>
 
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
+<form action="<?php echo trin_html_escape(trin_get_self_action()); ?>" method="POST" class="c">
 <label for="<?php echo TRIN_FORM_PARAM_DB_QUERY ?>">Query:</label>
 <?php
 			$param_db_query_value = '';
@@ -229,7 +229,7 @@ Sample queries:
 					trin_get_post(TRIN_FORM_PARAM_DB_QUERY);
 			}
 
-			trin_create_textarea ('15', '70', TRIN_FORM_PARAM_DB_QUERY,
+			trin_create_textarea('15', '70', TRIN_FORM_PARAM_DB_QUERY,
 				$param_db_query_value, $validation_failed_fields)
 ?>
 
@@ -239,7 +239,7 @@ Sample queries:
 <?php
 			if (trin_isset_post(TRIN_FORM_PARAM_DB_QUERY))
 			{
-				$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+				$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 					trin_get_sess(TRIN_SESS_DB_PASS),
 					trin_get_sess(TRIN_SESS_DB_DBNAME),
 					trin_get_sess(TRIN_SESS_DB_HOST));
@@ -247,27 +247,27 @@ Sample queries:
 				{
 					$error = 'Cannot connect to database';
 				}
-				$res = trin_db_query ($db,
+				$res = trin_db_query($db,
 					trin_get_post(TRIN_FORM_PARAM_DB_QUERY));
 				if (! $res)
 				{
 					$error = 'Error querying the database: '
-						. trin_db_get_last_error ($db);
+						. trin_db_get_last_error($db);
 				}
 				trin_display_error($error);
 				if ($res)
 				{
-					$nrows = trin_db_query_get_numrows ($res);
+					$nrows = trin_db_query_get_numrows($res);
 					echo '<p>Number of rows returned: ' . $nrows . '</p>';
-					$ncolumns = trin_db_query_get_numfields ($res);
+					$ncolumns = trin_db_query_get_numfields($res);
 					$coltypes = array();
 
 					echo "<table>\n<thead><tr>\n";
 					for ($i = 0; $i < $ncolumns; $i++)
 					{
-						$coltype = trin_db_query_get_column_type ($res, $i);
+						$coltype = trin_db_query_get_column_type($res, $i);
 						echo '<th>'
-							. trin_db_query_get_column_name ($res, $i)
+							. trin_db_query_get_column_name($res, $i)
 							. "<br>$coltype"
 							. "<hr></th>\n";
 						$coltypes[] = $coltype;
@@ -275,7 +275,7 @@ Sample queries:
 					echo "</tr></thead>\n<tbody>\n";
 					for ($r = 0; $r < $nrows; $r++)
 					{
-						$row = trin_db_query_get_next_row ($res);
+						$row = trin_db_query_get_next_row($res);
 						if ($row !== FALSE)
 						{
 							echo '<tr>';
@@ -322,7 +322,7 @@ Sample queries:
 <h2 class="c">Connection parameters</h2>
 
 <?php
-			$db = trin_db_open (trin_get_sess(TRIN_SESS_DB_LOGIN),
+			$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 				trin_get_sess(TRIN_SESS_DB_PASS),
 				trin_get_sess(TRIN_SESS_DB_DBNAME),
 				trin_get_sess(TRIN_SESS_DB_HOST));
@@ -333,29 +333,29 @@ Sample queries:
 
 			echo '<p>Database host: ' . trin_get_sess(TRIN_SESS_DB_HOST) . "</p>\n";
 
-			echo '<p>Connection options, if any: ' . pg_options ($db) . "</p>\n";
+			echo '<p>Connection options, if any: ' . pg_options($db) . "</p>\n";
 
-			echo '<p>Backend PID for this call: ' . pg_get_pid ($db) . "</p>\n";
+			echo '<p>Backend PID for this call: ' . pg_get_pid($db) . "</p>\n";
 
 			echo "<p>Parameters:</p>\n<ul>\n";
-			echo ' <li>server_version = ' . pg_parameter_status ($db, 'server_version') . "</li>\n";
-			echo ' <li>server_encoding = ' . pg_parameter_status ($db, 'server_encoding') . "</li>\n";
-			echo ' <li>client_encoding = ' . pg_parameter_status ($db, 'client_encoding') . "</li>\n";
-			echo ' <li>is_superuser = ' . pg_parameter_status ($db, 'is_superuser') . "</li>\n";
-			echo ' <li>session_authorization = ' . pg_parameter_status ($db, 'session_authorization') . "</li>\n";
-			echo ' <li>DateStyle = ' . pg_parameter_status ($db, 'DateStyle') . "</li>\n";
-			echo ' <li>TimeZone = ' . pg_parameter_status ($db, 'TimeZone') . "</li>\n";
-			echo ' <li>integer_datetimes = ' . pg_parameter_status ($db, 'integer_datetimes') . "</li>\n";
+			echo ' <li>server_version = ' . pg_parameter_status($db, 'server_version') . "</li>\n";
+			echo ' <li>server_encoding = ' . pg_parameter_status($db, 'server_encoding') . "</li>\n";
+			echo ' <li>client_encoding = ' . pg_parameter_status($db, 'client_encoding') . "</li>\n";
+			echo ' <li>is_superuser = ' . pg_parameter_status($db, 'is_superuser') . "</li>\n";
+			echo ' <li>session_authorization = ' . pg_parameter_status($db, 'session_authorization') . "</li>\n";
+			echo ' <li>DateStyle = ' . pg_parameter_status($db, 'DateStyle') . "</li>\n";
+			echo ' <li>TimeZone = ' . pg_parameter_status($db, 'TimeZone') . "</li>\n";
+			echo ' <li>integer_datetimes = ' . pg_parameter_status($db, 'integer_datetimes') . "</li>\n";
 			echo "</ul>\n";
 
-			echo '<p>Host and port (if applicable): ' . pg_host ($db)
-				. ':' . pg_port ($db) . "</p>\n";
+			echo '<p>Host and port(if applicable): ' . pg_host($db)
+				. ':' . pg_port($db) . "</p>\n";
 
 			echo "<p>Version information:</p>\n<pre>";
-			print_r (pg_version ($db));
+			print_r(pg_version($db));
 			echo "</pre>\n";
 
-			//echo '<p>Client encoding: ' . pg_client_encoding ($db) . "</p>\n"; // same as in "Parameters"
+			//echo '<p>Client encoding: ' . pg_client_encoding($db) . "</p>\n"; // same as in "Parameters"
 ?>
 
 <!-- ========================== Database destroy =========================== -->
@@ -366,7 +366,7 @@ Sample queries:
 // <!-- ========================== Database destroy confirmation =========================== -->
 
 
-		} // count ($_POST) == 0 || isset (trin_get_post(TRIN_FORM_PARAM_DB_QUERY)
+		} // count($_POST) == 0 || isset(trin_get_post(TRIN_FORM_PARAM_DB_QUERY)
 		if (! trin_isset_sess(TRIN_FORM_SUBMIT_DB_DESTROY))
 		{
 ?>
@@ -380,7 +380,7 @@ This operation deletes all structures and data in the database and cannot be rev
 </p>
 </div>
 
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
+<form action="<?php echo trin_html_escape(trin_get_self_action()); ?>" method="POST" class="c">
 <input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY; ?>" value="Destroy database">
 </form>
 
@@ -409,7 +409,7 @@ If you proceed, you will be logged-out as the application will no longer be usab
 After logging-in again, the database structures will be re-created, but with no data.
 </p>
 
-<form action="<?php echo trin_html_escape(trin_get_self_action ()); ?>" method="POST" class="c">
+<form action="<?php echo trin_html_escape(trin_get_self_action()); ?>" method="POST" class="c">
 <input type="submit" name="<?php echo TRIN_FORM_SUBMIT_DB_DESTROY2; ?>" value="Proceed">
 </form>
 
