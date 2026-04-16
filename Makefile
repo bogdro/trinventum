@@ -39,6 +39,8 @@ PACK1_EXT = .tar
 PACK2 = /usr/bin/gzip -9
 PACK2_EXT = .gz
 
+GET = wget -O -
+
 PHP_UNIT_TESTER = phpunit
 PHP_UNIT_TEST_DIR = tests
 PHP_UNIT_TESTER_ARGS = --testdox --colors=auto
@@ -70,7 +72,7 @@ $(NAME)-$(VER)$(PACK1_EXT)$(PACK2_EXT): $(EXTRA_DIST) \
 	$(PACK2) $(NAME)-$(VER)$(PACK1_EXT)
 	$(RMDIR) $(NAME)-$(VER)
 
-install:
+install: update_js
 	$(MKDIR) $(PREFIX)/$(NAME)
 	$(MKDIR) $(SERVERCONF)
 	$(COPY) webapp/* $(PREFIX)/$(NAME)/
@@ -88,6 +90,13 @@ ifneq ($(DOCDIR),)
 	$(COPY) $(DOCS) $(DOCDIR)/$(NAME)/
 endif
 
+update_js: webapp/rsrc/flatpickr.min.css webapp/rsrc/js/flatpickr.js
+
+webapp/rsrc/flatpickr.min.css:
+	$(GET) https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css > $@
+webapp/rsrc/js/flatpickr.js:
+	$(GET) https://cdn.jsdelivr.net/npm/flatpickr > $@
+
 uninstall:
 	$(RMDIR) $(PREFIX)/$(NAME)/
 ifneq ($(DOCDIR),)
@@ -97,4 +106,4 @@ endif
 check:
 	$(PHP_UNIT_TESTER) $(PHP_UNIT_TESTER_ARGS) $(PHP_UNIT_TEST_DIR)
 
-.PHONY: all check dist install uninstall
+.PHONY: all check dist install uninstall update_js
