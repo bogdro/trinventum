@@ -116,7 +116,7 @@
 	}
 
 	function trin_create_text_input ($type, $size, $name, $value,
-		$validation_failed_fields, $title = '')
+		$validation_failed_fields, $title = '', $class = '')
 	{
 		echo "<input type=\"$type\"\n
 			value=\"" . trin_html_escape ($value) . "\"\n
@@ -133,7 +133,11 @@
 		}
 		if (in_array ($name, $validation_failed_fields))
 		{
-			echo "class=\"red_frame\"\n";
+			echo "class=\"$class red_frame\"\n";
+		}
+		else
+		{
+			echo "class=\"$class\"\n";
 		}
 		echo ">\n";
 	}
@@ -830,5 +834,20 @@ Error: <?php echo $message; ?>
 	function trin_html_escape ($string)
 	{
 		return htmlspecialchars ($string, ENT_HTML401 | ENT_QUOTES);
+	}
+
+	function trin_add_datepicker()
+	{
+?>
+<link rel="stylesheet" type="text/css" href="rsrc/flatpickr.min.css">
+<script type="text/javascript" src="rsrc/js/flatpickr.js"></script>
+<?php
+	}
+
+	function trin_add_jq()
+	{
+?>
+<script type="text/javascript" src="rsrc/js/jquery.min.js"></script>
+<?php
 	}
 ?>
