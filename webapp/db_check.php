@@ -48,7 +48,7 @@
 		{
 			// just run the full script
 			$file = file_get_contents("sql/trinventum-full.pgsql");
-			if ($file !== FALSE)
+			if ($file !== false)
 			{
 				if (! trin_db_query($conn, 'begin'))
 				{
@@ -84,7 +84,7 @@
 			{
 				// run the missing scripts
 				$file = file_get_contents("sql/trinventum-v$i.pgsql");
-				if ($file !== FALSE)
+				if ($file !== false)
 				{
 					if (! trin_db_query($conn, 'begin'))
 					{

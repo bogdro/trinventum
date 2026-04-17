@@ -36,7 +36,7 @@
 
 	$error = '';
 	$validation_failed_fields = array();
-	$db = NULL;
+	$db = null;
 
 	if (! trin_validate_session())
 	{
@@ -140,20 +140,20 @@
 <tbody>
 <?php
 		$error = '';
-		$have_category = FALSE;
+		$have_category = false;
 		if ($db)
 		{
 			$categories = trin_db_get_product_categories($db);
-			if ($categories !== FALSE)
+			if ($categories !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_category = trin_db_get_next_product_category($db, $categories);
-					if ($next_category === FALSE)
+					if ($next_category === false)
 					{
 						break;
 					}
-					$have_category = TRUE;
+					$have_category = true;
 					if ($next_category[TRIN_DB_PROD_CAT_FIELD_ID] != 0)
 					{
 						$category_det_link = 'mod_category.php?' . TRIN_CAT_DETAIL_PARAM

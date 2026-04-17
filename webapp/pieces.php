@@ -124,17 +124,17 @@ OR
 <tbody>
 <?php
 			$error = '';
-			$have_prod = FALSE;
+			$have_prod = false;
 			if ($db)
 			{
 				$products = trin_db_get_all_product_instances($db,
 					$offset, $limit);
-				if ($products !== FALSE)
+				if ($products !== false)
 				{
-					while (TRUE)
+					while (true)
 					{
 						$next_prod = trin_db_get_next_product_instance($db, $products);
-						if ($next_prod === FALSE)
+						if ($next_prod === false)
 						{
 							break;
 						}
@@ -144,7 +144,7 @@ OR
 							. '=' . $next_prod[TRIN_DB_PROD_DEF_FIELD_ID]
 							. '&amp;' . TRIN_DB_PROD_INST_FIELD_ID
 							. '=' . $next_prod[TRIN_DB_PROD_INST_FIELD_ID];
-						$have_prod = TRUE;
+						$have_prod = true;
 						echo '<tr class="c">' .
 							"<td><a href=\"$det_link\">"
 								. $next_prod[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
@@ -196,18 +196,18 @@ OR
 <tbody>
 <?php
 		$error = '';
-		$have_prod = FALSE;
+		$have_prod = false;
 		if ($db)
 		{
 			$products = trin_db_count_all_products($db);
-			if ($products !== FALSE)
+			if ($products !== false)
 			{
 				foreach ($products as $status => $count)
 				{
 					echo '<tr class="c">' .
 						"<td>$status</td>" .
 						"<td>$count</td></tr>\n";
-					$have_prod = TRUE;
+					$have_prod = true;
 				}
 			}
 			else
@@ -267,11 +267,11 @@ OR
 <tbody>
 <?php
 			$error = '';
-			$have_prod = FALSE;
+			$have_prod = false;
 			if ($db)
 			{
 				$products = trin_db_get_product_status_changes($db, $m);
-				if ($products !== FALSE)
+				if ($products !== false)
 				{
 					if (count($products) > 0)
 					{
@@ -281,7 +281,7 @@ OR
 								"<td>$status</td>" .
 								"<td>$count</td></tr>\n";
 						}
-						$have_prod = TRUE;
+						$have_prod = true;
 					}
 				}
 				else

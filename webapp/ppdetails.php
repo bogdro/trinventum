@@ -135,14 +135,14 @@
 		$param_pp_version = 0;
 
 		$error = '';
-		$have_prod = FALSE;
+		$have_prod = false;
 		if ($db)
 		{
 			$product_det = trin_db_get_product_instance_details($db,
 				$product_inst_id);
-			if ($product_det !== FALSE)
+			if ($product_det !== false)
 			{
-				$have_prod = TRUE;
+				$have_prod = true;
 				$param_pp_status = $product_det[TRIN_DB_PROD_INST_FIELD_STATUS];
 				$param_pp_cost = $product_det[TRIN_DB_PROD_INST_FIELD_COST];
 				$param_pp_version = $product_det[TRIN_DB_PROD_INST_FIELD_VERSION];
@@ -257,20 +257,20 @@ Cost:
 <tbody>
 <?php
 		$error = '';
-		$have_prod = FALSE;
+		$have_prod = false;
 		if ($db)
 		{
 			$product_his = trin_db_get_product_instance_history($db, $product_inst_id);
-			if ($product_his !== FALSE)
+			if ($product_his !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_his = trin_db_get_next_product_instance_hist_entry($db, $product_his);
-					if ($next_his === FALSE)
+					if ($next_his === false)
 					{
 						break;
 					}
-					$have_prod = TRUE;
+					$have_prod = true;
 					echo '<tr class="c">' .
 						'<td>' . trin_html_escape($next_his[TRIN_DB_PROD_INST_FIELD_STATUS]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_INST_FIELD_COST] . '</td>' .

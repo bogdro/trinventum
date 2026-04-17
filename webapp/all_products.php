@@ -85,7 +85,7 @@
 <tbody>
 <?php
 		$error = '';
-		$have_prod = FALSE;
+		$have_prod = false;
 		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
@@ -93,16 +93,16 @@
 		if ($db)
 		{
 			$products = trin_db_get_product_defs($db);
-			if ($products !== FALSE)
+			if ($products !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_prod = trin_db_get_next_product($db, $products);
-					if ($next_prod === FALSE)
+					if ($next_prod === false)
 					{
 						break;
 					}
-					$have_prod = TRUE;
+					$have_prod = true;
 					$counts = trin_db_count_products($db, $next_prod[TRIN_DB_PROD_DEF_FIELD_ID]);
 					$rowclass = 'c';
 					$warn_icon = '';

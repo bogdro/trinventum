@@ -34,10 +34,10 @@
 	$t_lastmod = getlastmod();
 	trin_header_lastmod($t_lastmod);
 
-	$display_form = FALSE;
+	$display_form = false;
 	$error = '';
 	$validation_failed_fields = array();
-	$db = NULL;
+	$db = null;
 
 	if (! trin_validate_session())
 	{
@@ -65,7 +65,7 @@
 			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
 			if (count($validation_failed_fields) != 0)
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Form validation failed - check field values: '
 					. implode(', ', $validation_failed_fields);
 			}
@@ -73,7 +73,7 @@
 			{
 				if (!$db)
 				{
-					$display_form = TRUE;
+					$display_form = true;
 					$error = 'Cannot connect to database';
 				}
 				if (! trin_db_update_category($db,
@@ -81,7 +81,7 @@
 					trin_get_post(TRIN_DB_PROD_CAT_FIELD_NAME),
 					trin_get_post(TRIN_DB_PROD_CAT_FIELD_VERSION)))
 				{
-					$display_form = TRUE;
+					$display_form = true;
 					$error = 'Cannot update category in the database: '
 						. trin_db_get_last_error($db);
 				}
@@ -98,7 +98,7 @@
 		}
 		else
 		{
-			$display_form = TRUE;
+			$display_form = true;
 		}
 
 		$update_error = $error;
@@ -140,7 +140,7 @@
 			$param_category_version = 0;
 
 			$category = trin_db_get_product_category_details($db, trin_get_param(TRIN_CAT_DETAIL_PARAM));
-			if ($category !== FALSE)
+			if ($category !== false)
 			{
 				$param_category_name = $category[TRIN_DB_PROD_CAT_FIELD_NAME];
 				$param_category_version = $category[TRIN_DB_PROD_CAT_FIELD_VERSION];
@@ -187,21 +187,21 @@
 <tbody>
 <?php
 		$error = '';
-		$have_cat = FALSE;
+		$have_cat = false;
 		if ($db)
 		{
 			$cat_his = trin_db_get_product_category_history($db,
 				trin_get_param(TRIN_CAT_DETAIL_PARAM));
-			if ($cat_his !== FALSE)
+			if ($cat_his !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_his = trin_db_get_next_product_category_history_entry($db, $cat_his);
-					if ($next_his === FALSE)
+					if ($next_his === false)
 					{
 						break;
 					}
-					$have_cat = TRUE;
+					$have_cat = true;
 					echo '<tr class="c">' .
 						'<td>' . trin_html_escape($next_his[TRIN_DB_PROD_CAT_FIELD_NAME]) . '</td>' .
 						'<td>' . $next_his[TRIN_DB_PROD_CAT_FIELD_USER] . '</td>' .

@@ -398,7 +398,7 @@
 		trin_db_clear_last_error();
 		$result = pg_query($conn, TRIN_QUERY_DB_CHECK);
 		trin_db_set_last_error($conn);
-		return $result !== FALSE;
+		return $result !== false;
 	}
 
 	function trin_db_get_version($conn)
@@ -406,10 +406,10 @@
 		trin_db_clear_last_error();
 		$result = pg_query($conn, TRIN_QUERY_DB_VERSION_CHECK);
 		trin_db_set_last_error($conn);
-		if ($result !== FALSE)
+		if ($result !== false)
 		{
 			$row = pg_fetch_assoc($result);
-			if ($row !== FALSE)
+			if ($row !== false)
 			{
 				return (int)$row['db_version'];
 			}
@@ -436,25 +436,25 @@
 
 		$product = pg_fetch_assoc($categories);
 		trin_db_set_last_error($conn);
-		if ($product !== FALSE)
+		if ($product !== false)
 		{
 			$result[TRIN_DB_PROD_CAT_FIELD_ID] = $product['pc_id'];
 			$result[TRIN_DB_PROD_CAT_FIELD_NAME] = $product['pc_name'];
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_get_product_categories_as_options($db)
 	{
 		$res = array();
 		$categories = trin_db_get_product_categories($db);
-		if ($categories !== FALSE)
+		if ($categories !== false)
 		{
-			while (TRUE)
+			while (true)
 			{
 				$next_cat = trin_db_get_next_product_category($db, $categories);
-				if ($next_cat === FALSE)
+				if ($next_cat === false)
 				{
 					break;
 				}
@@ -485,7 +485,7 @@
 
 		$his_entry = pg_fetch_assoc($product_his);
 		trin_db_set_last_error($db);
-		if ($his_entry !== FALSE)
+		if ($his_entry !== false)
 		{
 			$result[TRIN_DB_PROD_CAT_FIELD_ID] = $his_entry['his_pc_id'];
 			$result[TRIN_DB_PROD_CAT_FIELD_NAME] = $his_entry['his_pc_name'];
@@ -493,7 +493,7 @@
 			$result[TRIN_DB_PROD_CAT_FIELD_TIMESTAMP] = $his_entry['his_pc_record_timestamp'];
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_get_product_category_details($db, $id)
@@ -508,10 +508,10 @@
 			TRIN_QUERY_GET_PRODUCT_CATEGORY_DET, array($id));
 		trin_db_set_last_error($db);
 
-		if ($cat_res !== FALSE)
+		if ($cat_res !== false)
 		{
 			$cat = pg_fetch_assoc($cat_res);
-			if ($cat !== FALSE)
+			if ($cat !== false)
 			{
 				$result[TRIN_DB_PROD_CAT_FIELD_ID] = $cat['pc_id'];
 				$result[TRIN_DB_PROD_CAT_FIELD_NAME] = $cat['pc_name'];
@@ -523,7 +523,7 @@
 				trin_db_set_last_error('No data');
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_get_product_defs_of_category($db, $id)
@@ -546,17 +546,17 @@
 	{
 		trin_db_clear_last_error();
 		$det = trin_db_get_product_category_details($db, $s_id);
-		if ($det === FALSE)
+		if ($det === false)
 		{
 			trin_db_set_last_error('Cannot read record before update');
-			return FALSE;
+			return false;
 		}
 		else if ((int)$det[TRIN_DB_PROD_CAT_FIELD_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error("Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_CAT_FIELD_VERSION]
 				. ', got: ' . $version);
-			return FALSE;
+			return false;
 		}
 
 		$res = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_CATEGORY,
@@ -599,12 +599,12 @@
 
 		$product = pg_fetch_assoc($products);
 		trin_db_set_last_error($conn);
-		if ($product !== FALSE)
+		if ($product !== false)
 		{
 			$pd_id = $product['pd_id'];
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $pd_id;
 			if (//pg_field_is_null($products, 'pd_photo') == 0
-				$product['pd_photo'] !== NULL)
+				$product['pd_photo'] !== null)
 			{
 				$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] =
 					trin_create_photo_img_tag($pd_id);
@@ -639,7 +639,7 @@
 			$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = $product['pc_name'];
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_create_historical_photo_img_tag($prod_id, $prod_version)
@@ -677,11 +677,11 @@
 
 		$his_entry = pg_fetch_assoc($product_his);
 		trin_db_set_last_error($conn);
-		if ($his_entry !== FALSE)
+		if ($his_entry !== false)
 		{
 			$pd_id = $his_entry['his_pd_id'];
 			if (//pg_field_is_null($products, 'pd_photo') == 0
-				$his_entry['his_pd_photo'] !== NULL)
+				$his_entry['his_pd_photo'] !== null)
 			{
 				$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] =
 					trin_create_historical_photo_img_tag(
@@ -712,7 +712,7 @@
 			$result[TRIN_DB_PROD_DEF_FIELD_CATEGORY] = $his_entry['pc_name'];
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function fix_bytea_from_db($data)
@@ -734,12 +734,12 @@
 		trin_db_clear_last_error();
 		$photo_result = pg_query_params($db, TRIN_QUERY_GET_PRODUCT_PHOTO, array($id));
 		trin_db_set_last_error($db);
-		if ($photo_result !== FALSE)
+		if ($photo_result !== false)
 		{
 			if (! pg_field_is_null($photo_result, 0, 'pd_photo'))
 			{
 				$photo_data = pg_fetch_assoc($photo_result);
-				if ($photo_data !== FALSE)
+				if ($photo_data !== false)
 				{
 					return fix_bytea_from_db($photo_data['pd_photo']);
 				}
@@ -755,12 +755,12 @@
 			TRIN_QUERY_GET_PRODUCT_HIST_PHOTO,
 			array($prod_id, $prod_ver));
 		trin_db_set_last_error($db);
-		if ($photo_result !== FALSE)
+		if ($photo_result !== false)
 		{
 			if (! pg_field_is_null($photo_result, 0, 'his_pd_photo'))
 			{
 				$photo_data = pg_fetch_assoc($photo_result);
-				if ($photo_data !== FALSE)
+				if ($photo_data !== false)
 				{
 					return fix_bytea_from_db($photo_data['his_pd_photo']);
 				}
@@ -785,7 +785,7 @@
 		}
 		else
 		{
-			$photo_data = NULL;
+			$photo_data = null;
 		}
 
 		$param_pd_length = str_replace(',', '.', $param_pd_length);
@@ -793,24 +793,24 @@
 		$param_pd_cost = str_replace(',', '.', $param_pd_cost);
 
 		$nextseq_res = pg_query($db, TRIN_QUERY_GET_PRODUCT_NEXT_ID);
-		if ($nextseq_res === FALSE)
+		if ($nextseq_res === false)
 		{
 			trin_db_set_last_error($db);
-			return FALSE;
+			return false;
 		}
 		$nextseq_val = pg_fetch_row($nextseq_res);
-		if ($nextseq_val === FALSE)
+		if ($nextseq_val === false)
 		{
 			trin_db_set_last_error($db);
-			return FALSE;
+			return false;
 		}
 		$pd_id = $nextseq_val[0];
 
 		$res = pg_query($db, 'begin');
-		if ($res === FALSE)
+		if ($res === false)
 		{
 			trin_db_set_last_error($db);
-			return FALSE;
+			return false;
 		}
 
 		// add the product definition:
@@ -821,17 +821,17 @@
 			$param_pd_category));
 
 		// add entries in trinventum.products(product instances):
-		if ($result !== FALSE)
+		if ($result !== false)
 		{
-			$success = TRUE;
+			$success = true;
 
 			for ($i = 0; $i < (int)$param_pd_count; $i++)
 			{
 				$result = pg_query_params($db, TRIN_QUERY_ADD_PRODUCT_INSTANCE,
 					array($pd_id, TRIN_PROD_STATUS_READY, $param_pd_cost));
-				if ($result === FALSE)
+				if ($result === false)
 				{
-					$success = FALSE;
+					$success = false;
 					trin_db_set_last_error($db);
 					break;
 				}
@@ -846,14 +846,14 @@
 			{
 				trin_db_set_last_error($db);
 				pg_query($db, 'rollback');
-				return FALSE;
+				return false;
 			}
 		}
 		else
 		{
 			trin_db_set_last_error($db);
 			pg_query($db, 'rollback');
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -879,15 +879,15 @@
 			TRIN_QUERY_GET_PRODUCT_DET, array($id));
 		trin_db_set_last_error($db);
 
-		if ($product_res !== FALSE)
+		if ($product_res !== false)
 		{
 			$product = pg_fetch_assoc($product_res);
-			if ($product !== FALSE)
+			if ($product !== false)
 			{
 				$pd_id = $product['pd_id'];
 				$result[TRIN_DB_PROD_DEF_FIELD_ID] = $pd_id;
 				if (//pg_field_is_null($product_res, 'pd_photo') == 0
-					$product['pd_photo'] !== NULL)
+					$product['pd_photo'] !== null)
 				{
 					$result[TRIN_DB_PROD_DEF_FIELD_PHOTO] =
 						trin_create_photo_img_tag($pd_id);
@@ -924,25 +924,25 @@
 				trin_db_set_last_error($db, 'No data');
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_validate_product_version($db, $pd_id, $param_pd_version)
 	{
 		$det = trin_db_get_product_details($db, $pd_id);
-		if ($det === FALSE)
+		if ($det === false)
 		{
 			trin_db_set_last_error($db, 'Cannot read record before update');
-			return FALSE;
+			return false;
 		}
 		else if ((int)$det[TRIN_DB_PROD_DEF_FIELD_VERSION] !=(int)$param_pd_version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_DEF_FIELD_VERSION]
 				. ', got: ' . $param_pd_version);
-			return FALSE;
+			return false;
 		}
-		return TRUE;
+		return true;
 	}
 
 	function trin_db_update_product_name($db, $pd_id,
@@ -951,7 +951,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_NAME,
@@ -966,7 +966,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		if (is_uploaded_file($_FILES[$param_pd_photo]['tmp_name']))
@@ -978,7 +978,7 @@
 		}
 		else
 		{
-			$photo_data = NULL;
+			$photo_data = null;
 		}
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_PHOTO,
 			array($pd_id, $photo_data));
@@ -992,7 +992,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_SIZE,
@@ -1007,7 +1007,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$param_pd_length = str_replace(',', '.', $param_pd_length);
@@ -1023,7 +1023,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$param_pd_width = str_replace(',', '.', $param_pd_width);
@@ -1039,7 +1039,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_COLOUR,
@@ -1054,7 +1054,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		// get the current product instance count:
@@ -1074,7 +1074,7 @@
 			$param_pd_count = $old_pd_count;
 		}
 
-		$success = TRUE;
+		$success = true;
 		if ($old_pd_count < (int)$param_pd_count)
 		{
 			// new product instances to be added:
@@ -1084,10 +1084,10 @@
 					TRIN_QUERY_ADD_PRODUCT_INSTANCE,
 					array($pd_id, TRIN_PROD_STATUS_READY,
 						$param_pd_cost));
-				if ($result === FALSE)
+				if ($result === false)
 				{
 					trin_db_set_last_error($db);
-					$success = FALSE;
+					$success = false;
 					break;
 				}
 			}
@@ -1101,7 +1101,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_BRAND,
@@ -1116,7 +1116,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_GENDER,
@@ -1131,7 +1131,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_COMMENT,
@@ -1146,7 +1146,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$param_pd_cost = str_replace(',', '.', $param_pd_cost);
@@ -1155,10 +1155,10 @@
 		$result = pg_query_params($db,
 			TRIN_QUERY_UPDATE_PRODUCT_INSTANCE_COST,
 			array($pd_id, $param_pd_cost));
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			trin_db_set_last_error($db);
-			return FALSE;
+			return false;
 		}
 		return $result;
 	}
@@ -1169,7 +1169,7 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = pg_query_params($db, TRIN_QUERY_UPDATE_PRODUCT_DEF_CATEGORY,
@@ -1189,14 +1189,14 @@
 		trin_db_clear_last_error();
 		if (! trin_db_validate_product_version($db, $pd_id, $param_pd_version))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$res = pg_query($db, 'begin');
-		if ($res === FALSE)
+		if ($res === false)
 		{
 			trin_db_set_last_error($db);
-			return FALSE;
+			return false;
 		}
 
 		// update the product definition:
@@ -1206,7 +1206,7 @@
 			$param_pd_length, $param_pd_width, $param_pd_gender,
 			$param_pd_colour, $param_pd_comment, $param_pd_brand));
 		*/
-		$result = TRUE;
+		$result = true;
 		$result = $result && trin_db_update_product_name($db, $pd_id,
 			$param_pd_name, $param_pd_version);
 		$param_pd_version++;
@@ -1244,7 +1244,7 @@
 			$param_pd_category, $param_pd_version);
 		$param_pd_version++;
 
-		if ($result !== FALSE)
+		if ($result !== false)
 		{
 			$res = pg_query($db, 'commit');
 			trin_db_set_last_error($db);
@@ -1254,7 +1254,7 @@
 		{
 			trin_db_set_last_error($db);
 			pg_query($db, 'rollback');
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -1266,12 +1266,12 @@
 			TRIN_QUERY_GET_PRODUCT_COUNTS, array($id));
 		trin_db_set_last_error($conn);
 
-		if ($count_result !== FALSE)
+		if ($count_result !== false)
 		{
-			while (TRUE)
+			while (true)
 			{
 				$row = pg_fetch_assoc($count_result);
-				if ($row === FALSE)
+				if ($row === false)
 				{
 					break;
 				}
@@ -1289,12 +1289,12 @@
 			TRIN_QUERY_GET_ALL_PRODUCT_COUNTS);
 		trin_db_set_last_error($conn);
 
-		if ($count_result !== FALSE)
+		if ($count_result !== false)
 		{
-			while (TRUE)
+			while (true)
 			{
 				$row = pg_fetch_assoc($count_result);
-				if ($row === FALSE)
+				if ($row === false)
 				{
 					break;
 				}
@@ -1313,12 +1313,12 @@
 			array($months_ago));
 		trin_db_set_last_error($conn);
 
-		if ($count_result !== FALSE)
+		if ($count_result !== false)
 		{
-			while (TRUE)
+			while (true)
 			{
 				$row = pg_fetch_assoc($count_result);
-				if ($row === FALSE)
+				if ($row === false)
 				{
 					break;
 				}
@@ -1370,7 +1370,7 @@
 
 		$product = pg_fetch_assoc($product_insts);
 		trin_db_set_last_error($conn);
-		if ($product !== FALSE)
+		if ($product !== false)
 		{
 			$result[TRIN_DB_PROD_INST_FIELD_ID] = $product['p_id'];
 			$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $product['p_status'];
@@ -1386,7 +1386,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_get_product_instance_details($db, $p_id)
@@ -1402,10 +1402,10 @@
 			TRIN_QUERY_GET_PRODUCT_INSTANCE_DET, array($p_id));
 		trin_db_set_last_error($db);
 
-		if ($pinst_res !== FALSE)
+		if ($pinst_res !== false)
 		{
 			$p_inst = pg_fetch_assoc($pinst_res);
-			if ($p_inst !== FALSE)
+			if ($p_inst !== false)
 			{
 				$result[TRIN_DB_PROD_INST_FIELD_ID] = $p_inst['p_id'];
 				$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $p_inst['p_status'];
@@ -1418,7 +1418,7 @@
 				trin_db_set_last_error($db, 'No data');
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_update_product_instance($db, $p_id,
@@ -1426,17 +1426,17 @@
 	{
 		trin_db_clear_last_error();
 		$det = trin_db_get_product_instance_details($db, $p_id);
-		if ($det === FALSE)
+		if ($det === false)
 		{
 			trin_db_set_last_error($db, 'Cannot read record before update');
-			return FALSE;
+			return false;
 		}
 		else if ((int)$det[TRIN_DB_PROD_INST_FIELD_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_INST_FIELD_VERSION]
 				. ', got: ' . $version);
-			return FALSE;
+			return false;
 		}
 
 		$cost = str_replace(',', '.', $cost);
@@ -1466,7 +1466,7 @@
 
 		$product_his = pg_fetch_assoc($product_inst_his);
 		trin_db_set_last_error($conn);
-		if ($product_his !== FALSE)
+		if ($product_his !== false)
 		{
 			$result[TRIN_DB_PROD_INST_FIELD_STATUS] = $product_his['his_p_status'];
 			$result[TRIN_DB_PROD_INST_FIELD_COST] = $product_his['his_p_cost'];
@@ -1475,7 +1475,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	// =================== Sellers =====================
@@ -1497,14 +1497,14 @@
 
 		$seller = pg_fetch_assoc($sellers);
 		trin_db_set_last_error($conn);
-		if ($seller !== FALSE)
+		if ($seller !== false)
 		{
 			$result[TRIN_DB_SELLER_PARAM_ID] = $seller['s_id'];
 			$result[TRIN_DB_SELLER_PARAM_NAME] = $seller['s_name'];
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_add_seller($db, $name)
@@ -1527,10 +1527,10 @@
 			TRIN_QUERY_GET_SELLER_DET, array($id));
 		trin_db_set_last_error($db);
 
-		if ($seller_res !== FALSE)
+		if ($seller_res !== false)
 		{
 			$seller = pg_fetch_assoc($seller_res);
-			if ($seller !== FALSE)
+			if ($seller !== false)
 			{
 				$result[TRIN_DB_SELLER_PARAM_ID] = $seller['s_id'];
 				$result[TRIN_DB_SELLER_PARAM_NAME] = $seller['s_name'];
@@ -1542,24 +1542,24 @@
 				trin_db_set_last_error($db, 'No data');
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_update_seller($db, $s_id, $name, $version)
 	{
 		trin_db_clear_last_error();
 		$det = trin_db_get_seller_details($db, $s_id);
-		if ($det === FALSE)
+		if ($det === false)
 		{
 			trin_db_set_last_error($db, 'Cannot read record before update');
-			return FALSE;
+			return false;
 		}
 		else if ((int)$det[TRIN_DB_SELLER_PARAM_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_SELLER_PARAM_VERSION]
 				. ', got: ' . $version);
-			return FALSE;
+			return false;
 		}
 
 		$res = pg_query_params($db, TRIN_QUERY_UPDATE_SELLER,
@@ -1587,7 +1587,7 @@
 
 		$s_his = pg_fetch_assoc($seller_his);
 		trin_db_set_last_error($conn);
-		if ($s_his !== FALSE)
+		if ($s_his !== false)
 		{
 			$result[TRIN_DB_SELLER_PARAM_NAME] = $s_his['his_s_name'];
 			$result[TRIN_DB_SELLER_PARAM_USER] = $s_his['his_s_user'];
@@ -1595,7 +1595,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	// =================== Buyers =====================
@@ -1621,7 +1621,7 @@
 
 		$buyer = pg_fetch_assoc($buyers);
 		trin_db_set_last_error($conn);
-		if ($buyer !== FALSE)
+		if ($buyer !== false)
 		{
 			$result[TRIN_DB_BUYER_PARAM_ID] = $buyer['b_id'];
 			$result[TRIN_DB_BUYER_PARAM_NAME] = $buyer['b_name'];
@@ -1632,7 +1632,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_add_buyer($db, $name, $address, $login, $email, $comment)
@@ -1660,10 +1660,10 @@
 			TRIN_QUERY_GET_BUYER_DET, array($id));
 		trin_db_set_last_error($db);
 
-		if ($buyer_res !== FALSE)
+		if ($buyer_res !== false)
 		{
 			$buyer = pg_fetch_assoc($buyer_res);
-			if ($buyer !== FALSE)
+			if ($buyer !== false)
 			{
 				$result[TRIN_DB_BUYER_PARAM_ID] = $buyer['b_id'];
 				$result[TRIN_DB_BUYER_PARAM_NAME] = $buyer['b_name'];
@@ -1679,7 +1679,7 @@
 				trin_db_set_last_error($db, 'No data');
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_update_buyer($db, $b_id, $name, $address,
@@ -1687,17 +1687,17 @@
 	{
 		trin_db_clear_last_error();
 		$det = trin_db_get_buyer_details($db, $b_id);
-		if ($det === FALSE)
+		if ($det === false)
 		{
 			trin_db_set_last_error($db, 'Cannot read record before update');
-			return FALSE;
+			return false;
 		}
 		else if ((int)$det[TRIN_DB_BUYER_PARAM_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_BUYER_PARAM_VERSION]
 				. ', got: ' . $version);
-			return FALSE;
+			return false;
 		}
 
 		$res = pg_query_params($db, TRIN_QUERY_UPDATE_BUYER,
@@ -1729,7 +1729,7 @@
 
 		$b_his = pg_fetch_assoc($buyer_his);
 		trin_db_set_last_error($conn);
-		if ($b_his !== FALSE)
+		if ($b_his !== false)
 		{
 			$result[TRIN_DB_BUYER_PARAM_NAME] = $b_his['his_b_name'];
 			$result[TRIN_DB_BUYER_PARAM_ADDRESS] = $b_his['his_b_postal_address'];
@@ -1741,7 +1741,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	// =================== Transactions =====================
@@ -1785,7 +1785,7 @@
 
 		$tran = pg_fetch_assoc($trans);
 		trin_db_set_last_error($conn);
-		if ($tran !== FALSE)
+		if ($tran !== false)
 		{
 			$result[TRIN_DB_TRANS_PARAM_ID] = $tran['t_id'];
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $tran['p_pd_id'];
@@ -1804,7 +1804,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_add_transaction($db, $t_product_id, $t_seller, $t_buyer,
@@ -1814,7 +1814,7 @@
 		$res = pg_query($db, 'begin');
 		trin_db_set_last_error($db);
 
-		if ($res !== FALSE)
+		if ($res !== false)
 		{
 			$t_price = str_replace(',', '.', $t_price);
 			$t_send_price = str_replace(',', '.', $t_send_price);
@@ -1823,13 +1823,13 @@
 				array($t_product_id, $t_seller, $t_buyer,
 					$t_price, $t_paid, $t_sent, $t_sell_date,
 					$t_send_price, $t_send_cost));
-			if ($res !== FALSE)
+			if ($res !== false)
 			{
 				// mark product instance as sold
 				$res = pg_query_params($db,
 					TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
 					array($t_product_id, TRIN_PROD_STATUS_SOLD));
-				if ($res !== FALSE)
+				if ($res !== false)
 				{
 					$res = pg_query($db, 'commit');
 					trin_db_set_last_error($db);
@@ -1839,14 +1839,14 @@
 				{
 					trin_db_set_last_error($db);
 					pg_query($db, 'rollback');
-					return FALSE;
+					return false;
 				}
 			}
 			else
 			{
 				trin_db_set_last_error($db);
 				pg_query($db, 'rollback');
-				return FALSE;
+				return false;
 			}
 		}
 		return $res;
@@ -1876,10 +1876,10 @@
 			TRIN_QUERY_GET_TRANSACTION_DET, array($id));
 		trin_db_set_last_error($db);
 
-		if ($trans_res !== FALSE)
+		if ($trans_res !== false)
 		{
 			$trans = pg_fetch_assoc($trans_res);
-			if ($trans !== FALSE)
+			if ($trans !== false)
 			{
 				$result[TRIN_DB_TRANS_PARAM_ID] = $trans['t_id'];
 				$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['p_pd_id'];
@@ -1903,7 +1903,7 @@
 				trin_db_set_last_error($db, 'No data');
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_update_transaction($db, $trans_id, $t_product_id,
@@ -1914,14 +1914,14 @@
 		$res = pg_query($db, 'begin');
 		trin_db_set_last_error($db);
 
-		if ($res !== FALSE)
+		if ($res !== false)
 		{
 			$trans = trin_db_get_transaction_details($db, $trans_id);
-			if ($trans === FALSE)
+			if ($trans === false)
 			{
 				trin_db_set_last_error($db, 'Cannot read record before update');
 				pg_query($db, 'rollback');
-				return FALSE;
+				return false;
 			}
 			else if ((int)$trans[TRIN_DB_TRANS_PARAM_VERSION] != (int)$t_version)
 			{
@@ -1929,7 +1929,7 @@
 					. $trans[TRIN_DB_TRANS_PARAM_VERSION]
 					. ', got: ' . $t_version);
 				pg_query($db, 'rollback');
-				return FALSE;
+				return false;
 			}
 
 			// mark the old product instance as READY
@@ -1937,7 +1937,7 @@
 				TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
 				array($trans[TRIN_DB_PROD_INST_FIELD_ID],
 					TRIN_PROD_STATUS_READY));
-			if ($res !== FALSE)
+			if ($res !== false)
 			{
 				$t_price = str_replace(',', '.', $t_price);
 				$t_send_price = str_replace(',', '.', $t_send_price);
@@ -1946,13 +1946,13 @@
 					array($trans_id, $t_product_id, $t_seller,
 						$t_buyer, $t_price, $t_paid, $t_sent,
 						$t_sell_date, $t_send_price, $t_send_cost));
-				if ($res !== FALSE)
+				if ($res !== false)
 				{
 					// mark new product instance as sold
 					$res = pg_query_params($db,
 						TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
 						array($t_product_id, TRIN_PROD_STATUS_SOLD));
-					if ($res !== FALSE)
+					if ($res !== false)
 					{
 						$res = pg_query($db, 'commit');
 						trin_db_set_last_error($db);
@@ -1962,21 +1962,21 @@
 					{
 						trin_db_set_last_error($db);
 						pg_query($db, 'rollback');
-						return FALSE;
+						return false;
 					}
 				}
 				else
 				{
 					trin_db_set_last_error($db);
 					pg_query($db, 'rollback');
-					return FALSE;
+					return false;
 				}
 			}
 			else
 			{
 				trin_db_set_last_error($db);
 				pg_query($db, 'rollback');
-				return FALSE;
+				return false;
 			}
 		}
 		return $res;
@@ -1988,19 +1988,19 @@
 		$res = pg_query($db, 'begin');
 		trin_db_set_last_error($db);
 
-		if ($res !== FALSE)
+		if ($res !== false)
 		{
 			$trans_det = trin_db_get_transaction_details($db, $t_id);
 			$res = pg_query_params($db, TRIN_QUERY_DELETE_TRANSACTION,
 				array($t_id));
-			if ($res !== FALSE)
+			if ($res !== false)
 			{
 				// mark product instance as ready
 				$res = pg_query_params($db,
 					TRIN_QUERY_CHANGE_PRODUCT_INSTANCE_STATUS,
 					array($trans_det[TRIN_DB_PROD_INST_FIELD_ID],
 						TRIN_PROD_STATUS_READY));
-				if ($res !== FALSE)
+				if ($res !== false)
 				{
 					$res = pg_query($db, 'commit');
 					trin_db_set_last_error($db);
@@ -2010,14 +2010,14 @@
 				{
 					trin_db_set_last_error($db);
 					pg_query($db, 'rollback');
-					return FALSE;
+					return false;
 				}
 			}
 			else
 			{
 				trin_db_set_last_error($db);
 				pg_query($db, 'rollback');
-				return FALSE;
+				return false;
 			}
 		}
 		return $res;
@@ -2054,7 +2054,7 @@
 
 		$t_his = pg_fetch_assoc($trans_his);
 		trin_db_set_last_error($conn);
-		if ($t_his !== FALSE)
+		if ($t_his !== false)
 		{
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $t_his['p_pd_id'];
 			$result[TRIN_DB_PROD_INST_FIELD_ID] = $t_his['his_t_product_id'];
@@ -2074,7 +2074,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	// =================== Analytics =====================
@@ -2098,7 +2098,7 @@
 
 		$buy = pg_fetch_assoc($buys);
 		trin_db_set_last_error($conn);
-		if ($buy !== FALSE)
+		if ($buy !== false)
 		{
 			$result[TRIN_DB_BUYER_PARAM_ID] = $buy['b_id'];
 			$result[TRIN_DB_BUYER_PARAM_NAME] = $buy['b_name'];
@@ -2106,7 +2106,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_get_product_sales($conn, $pd_id)
@@ -2128,7 +2128,7 @@
 
 		$sale = pg_fetch_assoc($sales);
 		trin_db_set_last_error($conn);
-		if ($sale !== FALSE)
+		if ($sale !== false)
 		{
 			$result[TRIN_DB_SELLER_PARAM_ID] = $sale['s_id'];
 			$result[TRIN_DB_SELLER_PARAM_NAME] = $sale['s_name'];
@@ -2136,7 +2136,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_get_seller_transactions($conn)
@@ -2160,7 +2160,7 @@
 
 		$trans = pg_fetch_assoc($seller_trans);
 		trin_db_set_last_error($conn);
-		if ($trans !== FALSE)
+		if ($trans !== false)
 		{
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['pd_id'];
 			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $trans['pd_name'];
@@ -2170,7 +2170,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_db_get_buyer_transactions($conn)
@@ -2194,7 +2194,7 @@
 
 		$trans = pg_fetch_assoc($buyer_trans);
 		trin_db_set_last_error($conn);
-		if ($trans !== FALSE)
+		if ($trans !== false)
 		{
 			$result[TRIN_DB_PROD_DEF_FIELD_ID] = $trans['pd_id'];
 			$result[TRIN_DB_PROD_DEF_FIELD_NAME] = $trans['pd_name'];
@@ -2204,7 +2204,7 @@
 
 			return $result;
 		}
-		return FALSE;
+		return false;
 	}
 
 	// =================== Management =====================
@@ -2232,7 +2232,7 @@
 			return;
 		}
 		$last_error = pg_last_error($conn);
-		if ($last_error === '' || $last_error === FALSE)
+		if ($last_error === '' || $last_error === false)
 		{
 			$last_error = $error;
 		}

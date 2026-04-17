@@ -34,10 +34,10 @@
 	$t_lastmod = getlastmod();
 	trin_header_lastmod($t_lastmod);
 
-	$display_form = FALSE;
+	$display_form = false;
 	$error = '';
 	$validation_failed_fields = array();
-	$db = NULL;
+	$db = null;
 
 	if (! trin_validate_session())
 	{
@@ -63,7 +63,7 @@
 		{
 			if (!$db)
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Cannot connect to database';
 			}
 			if (! trin_db_update_buyer($db,
@@ -75,7 +75,7 @@
 				trin_get_post(TRIN_DB_BUYER_PARAM_COMMENT),
 				trin_get_post(TRIN_DB_BUYER_PARAM_VERSION)))
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Cannot update buyer in the database: '
 					. trin_db_get_last_error($db);
 			}
@@ -88,7 +88,7 @@
 		}
 		else
 		{
-			$display_form = TRUE;
+			$display_form = true;
 		}
 
 		$update_error = $error;
@@ -134,7 +134,7 @@
 			$param_buyer_version = 0;
 
 			$buyer = trin_db_get_buyer_details($db, trin_get_param(TRIN_DB_BUYER_PARAM_ID));
-			if ($buyer !== FALSE)
+			if ($buyer !== false)
 			{
 				$param_buyer_name = $buyer[TRIN_DB_BUYER_PARAM_NAME];
 				$param_buyer_address = $buyer[TRIN_DB_BUYER_PARAM_ADDRESS];
@@ -213,21 +213,21 @@
 <tbody>
 <?php
 		$error = '';
-		$have_his = FALSE;
+		$have_his = false;
 		if ($db)
 		{
 			$buyer_his = trin_db_get_buyer_history($db,
 				trin_get_param(TRIN_DB_BUYER_PARAM_ID));
-			if ($buyer_his !== FALSE)
+			if ($buyer_his !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_his = trin_db_get_next_buyer_hist_entry($db, $buyer_his);
-					if ($next_his === FALSE)
+					if ($next_his === false)
 					{
 						break;
 					}
-					$have_his = TRUE;
+					$have_his = true;
 					$buyer_email = '<a href="mailto:'
 						. $next_his[TRIN_DB_BUYER_PARAM_EMAIL]
 						. '">'

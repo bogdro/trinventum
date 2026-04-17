@@ -34,10 +34,10 @@
 	$t_lastmod = getlastmod();
 	trin_header_lastmod($t_lastmod);
 
-	$display_form = FALSE;
+	$display_form = false;
 	$error = '';
 	$validation_failed_fields = array();
-	$db = NULL;
+	$db = null;
 	$return_link = 'transactions.php?' . TRIN_DB_TRANS_PARAM_LIST . '=1';
 
 	if (! trin_validate_session())
@@ -115,7 +115,7 @@
 					$validation_failed_fields = trin_validate_form($_POST, $form_validators);
 					if (count($validation_failed_fields) != 0)
 					{
-						$display_form = TRUE;
+						$display_form = true;
 						$error = 'Form validation failed - check field values: '
 							. implode(', ', $validation_failed_fields);
 					}
@@ -124,7 +124,7 @@
 						// update transaction
 						if (!$db)
 						{
-							$display_form = TRUE;
+							$display_form = true;
 							$error = 'Cannot connect to database';
 						}
 						if (trin_db_update_transaction($db,
@@ -145,7 +145,7 @@
 						}
 						else
 						{
-							$display_form = TRUE;
+							$display_form = true;
 							$error = 'Cannot update transaction in the database: '
 								. trin_db_get_last_error($db);
 						}
@@ -160,20 +160,20 @@
 				else
 				{
 					// seller, buyer and the other parameters not selected
-					$display_form = TRUE;
+					$display_form = true;
 					$button_title = 'Update transaction';
 				}
 			}
 			else
 			{
 				// product instance not selected - display a list of product instances
-				$display_form = TRUE;
+				$display_form = true;
 			}
 		}
 		else
 		{
 			// no product selected - display the main form
-			$display_form = TRUE;
+			$display_form = true;
 		}
 
 		$update_error = $error;
@@ -231,12 +231,12 @@
 			$param_trans_version = 0;
 
 			$error = '';
-			$have_trans = FALSE;
+			$have_trans = false;
 
 			if ($db)
 			{
 				$trans = trin_db_get_transaction_details($db, $t_id);
-				if ($trans !== FALSE)
+				if ($trans !== false)
 				{
 					$param_trans_prod = $trans[TRIN_DB_PROD_INST_FIELD_ID];
 					$param_trans_seller = $trans[TRIN_DB_SELLER_PARAM_ID];
@@ -267,7 +267,7 @@
 
 					$yes = '<span class="ok">YES</span>';
 					$no = '<span class="nok">NO</span>';
-					$have_trans = TRUE;
+					$have_trans = true;
 
 					$paid = $yes;
 					if ($trans[TRIN_DB_TRANS_PARAM_PAID] === 'f')
@@ -334,7 +334,7 @@ Update details (warning - this updates ALL the given details):
 <?php
 			$error = '';
 
-			$display_trans_params = FALSE;
+			$display_trans_params = false;
 
 			if (! $have_prod_detail_param)
 			{
@@ -342,18 +342,18 @@ Update details (warning - this updates ALL the given details):
 				if ($db)
 				{
 					$products = trin_db_get_product_defs($db);
-					if ($products !== FALSE)
+					if ($products !== false)
 					{
 						echo "<p>Product type:\n";
 
 						$product_names = array();
 						$product_values = array();
 						trin_set_sess(TRIN_ALL_PROD_NAMES, array());
-						while (TRUE)
+						while (true)
 						{
 							$next_prod = trin_db_get_next_product($db,
 								$products);
-							if ($next_prod === FALSE)
+							if ($next_prod === false)
 							{
 								break;
 							}
@@ -409,16 +409,16 @@ Update details (warning - this updates ALL the given details):
 						$products = trin_db_get_product_instances_with_status($db,
 							trin_get_sess(TRIN_PROD_DETAIL_PARAM),
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
-						if ($products !== FALSE)
+						if ($products !== false)
 						{
 							echo "<p>Product piece:\n";
 
 							$product_options = array();
-							while (TRUE)
+							while (true)
 							{
-								$next_prod = trin_db_get_next_product_instance
-									($db, $products);
-								if ($next_prod === FALSE)
+								$next_prod = trin_db_get_next_product_instance(
+									$db, $products);
+								if ($next_prod === false)
 								{
 									break;
 								}
@@ -445,7 +445,7 @@ Update details (warning - this updates ALL the given details):
 				}
 				else
 				{
-					$display_trans_params = TRUE;
+					$display_trans_params = true;
 				}
 			}
 
@@ -457,16 +457,16 @@ Update details (warning - this updates ALL the given details):
 				if ($db)
 				{
 					$buyers = trin_db_get_buyers($db);
-					if ($buyers !== FALSE)
+					if ($buyers !== false)
 					{
 						echo "<p>Buyer:\n";
 
 						$buyer_names = array();
 						$buyer_values = array();
-						while (TRUE)
+						while (true)
 						{
 							$next_buyer = trin_db_get_next_buyer($db, $buyers);
-							if ($next_buyer === FALSE)
+							if ($next_buyer === false)
 							{
 								break;
 							}
@@ -495,16 +495,16 @@ Update details (warning - this updates ALL the given details):
 				if ($db)
 				{
 					$sellers = trin_db_get_sellers($db);
-					if ($sellers !== FALSE)
+					if ($sellers !== false)
 					{
 						echo "<p>Seller:\n";
 
 						$seller_names = array();
 						$seller_values = array();
-						while (TRUE)
+						while (true)
 						{
 							$next_seller = trin_db_get_next_seller($db, $sellers);
-							if ($next_seller === FALSE)
+							if ($next_seller === false)
 							{
 								break;
 							}
@@ -699,22 +699,22 @@ Send cost:
 <tbody>
 <?php
 			$error = '';
-			$have_trans = FALSE;
+			$have_trans = false;
 			if ($db)
 			{
 				$trans = trin_db_get_transaction_history($db, $t_id);
-				if ($trans !== FALSE)
+				if ($trans !== false)
 				{
 					$yes = '<span class="ok">YES</span>';
 					$no = '<span class="nok">NO</span>';
-					while (TRUE)
+					while (true)
 					{
 						$next_tran = trin_db_get_next_transaction_hist_entry($db, $trans);
-						if ($next_tran === FALSE)
+						if ($next_tran === false)
 						{
 							break;
 						}
-						$have_trans = TRUE;
+						$have_trans = true;
 
 						$paid = $yes;
 						if ($next_tran[TRIN_DB_TRANS_PARAM_PAID] === 'f')

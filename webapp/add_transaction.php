@@ -34,9 +34,9 @@
 	$t_lastmod = getlastmod();
 	trin_header_lastmod($t_lastmod);
 
-	$display_form = FALSE;
+	$display_form = false;
 	$error = '';
-	$db = NULL;
+	$db = null;
 	$validation_failed_fields = array();
 
 	if (! trin_validate_session())
@@ -94,7 +94,7 @@
 					$validation_failed_fields = trin_validate_form($_POST, $form_validators);
 					if (count($validation_failed_fields) != 0)
 					{
-						$display_form = TRUE;
+						$display_form = true;
 						$error = 'Form validation failed - check field values: '
 							. implode(', ', $validation_failed_fields);
 					}
@@ -103,7 +103,7 @@
 						// register transaction
 						if (!$db)
 						{
-							$display_form = TRUE;
+							$display_form = true;
 							$error = 'Cannot connect to database';
 						}
 						if (trin_db_add_transaction($db,
@@ -122,7 +122,7 @@
 						}
 						else
 						{
-							$display_form = TRUE;
+							$display_form = true;
 							$error = 'Cannot add transaction to the database: '
 								. trin_db_get_last_error($db);
 						}
@@ -137,20 +137,20 @@
 				else
 				{
 					// seller, buyer and the other parameters not selected
-					$display_form = TRUE;
+					$display_form = true;
 					$button_title = 'Add transaction';
 				}
 			}
 			else
 			{
 				// product instance not selected - display a list of product instances
-				$display_form = TRUE;
+				$display_form = true;
 			}
 		}
 		else
 		{
 			// no product selected - display the main form
-			$display_form = TRUE;
+			$display_form = true;
 		}
 
 		if ($display_form)
@@ -196,7 +196,7 @@
 <?php
 			$error = '';
 
-			$display_trans_params = FALSE;
+			$display_trans_params = false;
 
 			if (! $have_prod_detail_param)
 			{
@@ -204,18 +204,18 @@
 				if ($db)
 				{
 					$products = trin_db_get_product_defs($db);
-					if ($products !== FALSE)
+					if ($products !== false)
 					{
 						echo '<p><label for="' . TRIN_PROD_DETAIL_PARAM . '">Product type:</label>' . "\n";
 
 						$product_names = array();
 						$product_values = array();
 						trin_set_sess(TRIN_ALL_PROD_NAMES, array());
-						while (TRUE)
+						while (true)
 						{
 							$next_prod = trin_db_get_next_product($db,
 								$products);
-							if ($next_prod === FALSE)
+							if ($next_prod === false)
 							{
 								break;
 							}
@@ -263,16 +263,16 @@
 						$products = trin_db_get_product_instances_with_status($db,
 							trin_get_sess(TRIN_PROD_DETAIL_PARAM),
 							TRIN_PROD_STATUS_SALE_IN_PROGRESS);
-						if ($products !== FALSE)
+						if ($products !== false)
 						{
 							echo '<p><label for="' . TRIN_DB_PROD_INST_FIELD_ID . '">Product piece:</label>' . "\n";
 
 							$product_options = array();
-							while (TRUE)
+							while (true)
 							{
-								$next_prod = trin_db_get_next_product_instance
-									($db, $products);
-								if ($next_prod === FALSE)
+								$next_prod = trin_db_get_next_product_instance(
+									$db, $products);
+								if ($next_prod === false)
 								{
 									break;
 								}
@@ -298,7 +298,7 @@
 				}
 				else
 				{
-					$display_trans_params = TRUE;
+					$display_trans_params = true;
 				}
 			}
 
@@ -310,16 +310,16 @@
 				if ($db)
 				{
 					$buyers = trin_db_get_buyers($db);
-					if ($buyers !== FALSE)
+					if ($buyers !== false)
 					{
 						echo '<p><label for="' . TRIN_DB_BUYER_PARAM_ID . '">Buyer:</label>' . "\n";
 
 						$buyer_names = array();
 						$buyer_values = array();
-						while (TRUE)
+						while (true)
 						{
 							$next_buyer = trin_db_get_next_buyer($db, $buyers);
-							if ($next_buyer === FALSE)
+							if ($next_buyer === false)
 							{
 								break;
 							}
@@ -348,16 +348,16 @@
 				if ($db)
 				{
 					$sellers = trin_db_get_sellers($db);
-					if ($sellers !== FALSE)
+					if ($sellers !== false)
 					{
 						echo '<p><label for="' . TRIN_DB_SELLER_PARAM_ID . '">Seller:</label>' . "\n";
 
 						$seller_names = array();
 						$seller_values = array();
-						while (TRUE)
+						while (true)
 						{
 							$next_seller = trin_db_get_next_seller($db, $sellers);
-							if ($next_seller === FALSE)
+							if ($next_seller === false)
 							{
 								break;
 							}

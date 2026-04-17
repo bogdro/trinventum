@@ -35,7 +35,7 @@
 	trin_header_lastmod($t_lastmod);
 	$error = '';
 	$validation_failed_fields = array();
-	$product_updated = FALSE;
+	$product_updated = false;
 
 	if (! trin_validate_session())
 	{
@@ -104,7 +104,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
@@ -121,7 +121,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (isset($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
@@ -138,7 +138,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_SIZE)
@@ -155,7 +155,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH)
@@ -172,7 +172,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_WIDTH)
@@ -189,7 +189,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COLOUR)
@@ -206,7 +206,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COUNT)
@@ -223,7 +223,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_BRAND)
@@ -240,7 +240,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_GENDER)
@@ -257,7 +257,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COMMENT)
@@ -274,7 +274,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COST)
@@ -291,7 +291,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_CATEGORY)
@@ -308,7 +308,7 @@
 			}
 			else
 			{
-				$product_updated = TRUE;
+				$product_updated = true;
 			}
 		}
 		if ($product_updated)
@@ -373,14 +373,14 @@
 		$param_pd_version = 0;
 
 		$error = '';
-		$have_prod = FALSE;
+		$have_prod = false;
 		if ($db)
 		{
 			$product_det = trin_db_get_product_details($db,
 				$product_id);
-			if ($product_det !== FALSE)
+			if ($product_det !== false)
 			{
-				$have_prod = TRUE;
+				$have_prod = true;
 				$param_pd_name = $product_det[TRIN_DB_PROD_DEF_FIELD_NAME];
 				$param_pd_size = $product_det[TRIN_DB_PROD_DEF_FIELD_SIZE];
 				$param_pd_length = $product_det[TRIN_DB_PROD_DEF_FIELD_LENGTH];
@@ -536,7 +536,7 @@ Update product details:
 			TRIN_DB_PROD_PARAM_CATEGORY, $param_pd_category_id,
 			$param_category_option_names_values,
 			TRIN_DB_PROD_PARAM_VERSION, $param_pd_version,
-			$validation_failed_fields, TRUE
+			$validation_failed_fields, true
 		);
 ?>
 </div>
@@ -551,16 +551,16 @@ Update product details:
 <tbody>
 <?php
 		$error = '';
-		$have_prod = FALSE;
+		$have_prod = false;
 		if ($db)
 		{
 			$products = trin_db_get_product_instances($db, $product_id);
-			if ($products !== FALSE)
+			if ($products !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_prod = trin_db_get_next_product_instance($db, $products);
-					if ($next_prod === FALSE)
+					if ($next_prod === false)
 					{
 						break;
 					}
@@ -568,7 +568,7 @@ Update product details:
 						. '=' . trin_get_param(TRIN_PROD_DETAIL_PARAM)
 						. '&' . TRIN_DB_PROD_INST_FIELD_ID
 						. '=' . $next_prod[TRIN_DB_PROD_INST_FIELD_ID];
-					$have_prod = TRUE;
+					$have_prod = true;
 					echo '<tr class="c">' .
 						'<td><a href="' . trin_html_escape($det_link) . '">'
 							. $next_prod[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
@@ -613,22 +613,22 @@ Update product details:
 <tbody>
 <?php
 		$error = '';
-		$have_buy = FALSE;
+		$have_buy = false;
 		if ($db)
 		{
 			$buys = trin_db_get_product_buys($db, $product_id);
-			if ($buys !== FALSE)
+			if ($buys !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_buy = trin_db_get_next_product_buy($db, $buys);
-					if ($next_buy === FALSE)
+					if ($next_buy === false)
 					{
 						break;
 					}
 					$buyer_link = 'mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
 						. '=' . $next_buy[TRIN_DB_BUYER_PARAM_ID];
-					$have_buy = TRUE;
+					$have_buy = true;
 					echo '<tr class="c">' .
 						"<td><a href=\"$buyer_link\">"
 							. trin_html_escape($next_buy[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
@@ -672,22 +672,22 @@ Update product details:
 <tbody>
 <?php
 		$error = '';
-		$have_sale = FALSE;
+		$have_sale = false;
 		if ($db)
 		{
 			$sales = trin_db_get_product_sales($db, $product_id);
-			if ($sales !== FALSE)
+			if ($sales !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_sale = trin_db_get_next_product_sale($db, $sales);
-					if ($next_sale === FALSE)
+					if ($next_sale === false)
 					{
 						break;
 					}
 					$seller_link = 'mod_seller.php?' . TRIN_DB_SELLER_PARAM_ID
 						. '=' . $next_sale[TRIN_DB_SELLER_PARAM_ID];
-					$have_sale = TRUE;
+					$have_sale = true;
 					echo '<tr class="c">' .
 						"<td><a href=\"$seller_link\">"
 							. trin_html_escape($next_sale[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
@@ -739,20 +739,20 @@ Update product details:
 <tbody>
 <?php
 		$error = '';
-		$have_his = FALSE;
+		$have_his = false;
 		if ($db)
 		{
 			$his = trin_db_get_product_history($db, $product_id);
-			if ($his !== FALSE)
+			if ($his !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_his = trin_db_get_next_product_history_entry($db, $his);
-					if ($next_his === FALSE)
+					if ($next_his === false)
 					{
 						break;
 					}
-					$have_his = TRUE;
+					$have_his = true;
 					echo '<tr class="c">' .
 						'<td>' . $next_his[TRIN_DB_PROD_DEF_FIELD_PHOTO] . '</td>' .
 						'<td>' . trin_html_escape($next_his[TRIN_DB_PROD_DEF_FIELD_NAME]) . '</td>' .

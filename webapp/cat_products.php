@@ -80,7 +80,7 @@
 		{
 			$cat = trin_db_get_product_category_details($db,
 				trin_get_param(TRIN_CAT_DETAIL_PARAM));
-			if ($cat !== FALSE)
+			if ($cat !== false)
 			{
 				$cat_name = $cat[TRIN_DB_PROD_CAT_FIELD_NAME];
 			}
@@ -103,20 +103,20 @@
 <tbody>
 <?php
 		$error = '';
-		$have_prod = FALSE;
+		$have_prod = false;
 		if ($db)
 		{
 			$products = trin_db_get_product_defs_of_category($db, trin_get_param(TRIN_CAT_DETAIL_PARAM));
-			if ($products !== FALSE)
+			if ($products !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_prod = trin_db_get_next_product($db, $products);
-					if ($next_prod === FALSE)
+					if ($next_prod === false)
 					{
 						break;
 					}
-					$have_prod = TRUE;
+					$have_prod = true;
 					$counts = trin_db_count_products($db, $next_prod[TRIN_DB_PROD_DEF_FIELD_ID]);
 					$rowclass = 'c';
 					if ((!isset($counts['READY'])) || ($counts['READY'] == 0))

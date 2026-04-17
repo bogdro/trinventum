@@ -34,9 +34,9 @@
 	$t_lastmod = getlastmod();
 	trin_header_lastmod($t_lastmod);
 
-	$display_form = FALSE;
+	$display_form = false;
 	$error = '';
-	$db = NULL;
+	$db = null;
 
 	if (! trin_validate_session())
 	{
@@ -53,13 +53,13 @@
 			// delete transaction
 			if (!$db)
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Cannot connect to database';
 			}
 			if (! trin_db_delete_transaction($db,
 				trin_get_post(TRIN_DB_TRANS_PARAM_ID)))
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Cannot delete transaction from the database: '
 					. trin_db_get_last_error($db);
 			}

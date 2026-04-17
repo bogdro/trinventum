@@ -35,9 +35,9 @@
 	trin_header_lastmod($t_lastmod);
 
 	$error = '';
-	$db = NULL;
+	$db = null;
 	$validation_failed_fields = array();
-	$use_mod_button = TRUE;
+	$use_mod_button = true;
 
 	if (! trin_validate_session())
 	{
@@ -52,7 +52,7 @@
 		$validation_failed_fields = trin_validate_form($_GET, $form_validators);
 		if (count($validation_failed_fields) != 0)
 		{
-			$display_form = TRUE;
+			$display_form = true;
 			$error = 'Form validation failed - check field values: '
 				. implode(', ', $validation_failed_fields);
 		}
@@ -169,7 +169,7 @@ OR
 <tbody>
 <?php
 			$error = '';
-			$have_trans = FALSE;
+			$have_trans = false;
 			$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 				trin_get_sess(TRIN_SESS_DB_PASS),
 				trin_get_sess(TRIN_SESS_DB_DBNAME),
@@ -177,18 +177,18 @@ OR
 			if ($db)
 			{
 				$trans = trin_db_get_transactions($db, $offset, $limit);
-				if ($trans !== FALSE)
+				if ($trans !== false)
 				{
 					$yes = '<span class="ok">YES</span>';
 					$no = '<span class="nok">NO</span>';
-					while (TRUE)
+					while (true)
 					{
 						$next_tran = trin_db_get_next_transaction($db, $trans);
-						if ($next_tran === FALSE)
+						if ($next_tran === false)
 						{
 							break;
 						}
-						$have_trans = TRUE;
+						$have_trans = true;
 
 						$paid = $yes;
 						if ($next_tran[TRIN_DB_TRANS_PARAM_PAID] === 'f')
@@ -309,7 +309,7 @@ OR
 <tbody>
 <?php
 			$error = '';
-			$have_trans = FALSE;
+			$have_trans = false;
 			$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 				trin_get_sess(TRIN_SESS_DB_PASS),
 				trin_get_sess(TRIN_SESS_DB_DBNAME),
@@ -317,18 +317,18 @@ OR
 			if ($db)
 			{
 				$trans = trin_db_get_deleted_transactions($db, $offset, $limit);
-				if ($trans !== FALSE)
+				if ($trans !== false)
 				{
 					$yes = '<span class="ok">YES</span>';
 					$no = '<span class="nok">NO</span>';
-					while (TRUE)
+					while (true)
 					{
 						$next_tran = trin_db_get_next_transaction($db, $trans);
-						if ($next_tran === FALSE)
+						if ($next_tran === false)
 						{
 							break;
 						}
-						$have_trans = TRUE;
+						$have_trans = true;
 
 						$paid = $yes;
 						if ($next_tran[TRIN_DB_TRANS_PARAM_PAID] === 'f')

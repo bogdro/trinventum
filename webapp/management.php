@@ -35,7 +35,7 @@
 	trin_header_lastmod($t_lastmod);
 
 	$error = '';
-	$db = NULL;
+	$db = null;
 	$validation_failed_fields = array();
 
 	if (! trin_validate_session())
@@ -62,12 +62,12 @@
 				trin_get_sess(TRIN_SESS_DB_HOST));
 			if (!$db)
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Cannot connect to database';
 			}
 			else if (! trin_db_destroy_schema($db))
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Cannot destroy the database: '
 					. trin_db_get_last_error($db);
 			}
@@ -276,7 +276,7 @@ Sample queries:
 					for ($r = 0; $r < $nrows; $r++)
 					{
 						$row = trin_db_query_get_next_row($res);
-						if ($row !== FALSE)
+						if ($row !== false)
 						{
 							echo '<tr>';
 							for ($i = 0; $i < $ncolumns; $i++)
@@ -286,9 +286,9 @@ Sample queries:
 								if ($coltypes[$i] == 'bytea'
 									|| $coltypes[$i] == 'blob')
 								{
-									if ($row[$i] === NULL)
+									if ($row[$i] === null)
 									{
-										echo "NULL";
+										echo "null";
 									}
 									else
 									{

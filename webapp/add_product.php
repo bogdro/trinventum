@@ -34,9 +34,9 @@
 	$t_lastmod = getlastmod();
 	trin_header_lastmod($t_lastmod);
 
-	$display_form = FALSE;
+	$display_form = false;
 	$error = '';
-	$db = NULL;
+	$db = null;
 	$validation_failed_fields = array();
 
 	if (! trin_validate_session())
@@ -51,7 +51,7 @@
 			trin_get_sess(TRIN_SESS_DB_HOST));
 		if (!$db)
 		{
-			$display_form = TRUE;
+			$display_form = true;
 			$error = 'Cannot connect to database';
 		}
 		else if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
@@ -78,7 +78,7 @@
 			$validation_failed_fields = trin_validate_form($_POST, $form_validators);
 			if (count($validation_failed_fields) != 0)
 			{
-				$display_form = TRUE;
+				$display_form = true;
 				$error = 'Form validation failed - check field values: '
 					. implode(', ', $validation_failed_fields);
 			}
@@ -98,7 +98,7 @@
 					trin_get_post(TRIN_DB_PROD_PARAM_CATEGORY),
 					trin_get_post(TRIN_DB_PROD_PARAM_COST)))
 				{
-					$display_form = TRUE;
+					$display_form = true;
 					$error = 'Cannot add product to the database: '
 						. trin_db_get_last_error($db);
 				}
@@ -111,7 +111,7 @@
 		}
 		else
 		{
-			$display_form = TRUE;
+			$display_form = true;
 		}
 
 		if ($display_form)
@@ -241,7 +241,7 @@
 				TRIN_DB_PROD_PARAM_CATEGORY, $param_pd_category_id,
 				$param_category_option_names_values,
 				TRIN_DB_PROD_PARAM_VERSION, $param_pd_version,
-				$validation_failed_fields, FALSE
+				$validation_failed_fields, false
 			);
 ?>
 </div>

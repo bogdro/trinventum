@@ -34,10 +34,10 @@
 	$t_lastmod = getlastmod();
 	trin_header_lastmod($t_lastmod);
 
-	$display_form = FALSE;
+	$display_form = false;
 	$error = '';
 	$validation_failed_fields = array();
-	$db = NULL;
+	$db = null;
 
 	if (trin_isset_post(TRIN_SESS_DB_LOGIN)
 		&& trin_isset_post(TRIN_SESS_DB_PASS)
@@ -52,12 +52,12 @@
 			trin_get_post(TRIN_SESS_DB_PORT));
 		if (!$db)
 		{
-			$display_form = TRUE;
+			$display_form = true;
 			$error = 'Cannot connect to database';
 		}
 		else if (! trin_db_check($db))
 		{
-			$display_form = TRUE;
+			$display_form = true;
 			$error = 'Cannot check the database: ' . trin_db_get_last_error($db);
 			trin_db_close($db);
 		}
@@ -73,7 +73,7 @@
 	}
 	else
 	{
-		$display_form = TRUE;
+		$display_form = true;
 	}
 
 	if ($display_form)

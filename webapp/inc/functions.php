@@ -110,9 +110,9 @@
 			&& trin_isset_sess(TRIN_SESS_DB_DBNAME)
 			&& trin_isset_sess(TRIN_SESS_DB_HOST))
 		{
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function trin_create_text_input($type, $size, $name, $value,
@@ -239,7 +239,7 @@
 			echo "title=\"$title\"\n";
 		}
 		echo ">\n";
-		if ($add_reset === TRUE)
+		if ($add_reset === true)
 		{
 			trin_create_reset($name);
 		}
@@ -275,12 +275,12 @@
 		trin_create_text_input('text', '20', $param_name_name,
 			$param_name_value, $validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_name_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_name_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -303,12 +303,12 @@
 			$param_category_option_names, $param_category_option_values,
 			$validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_category_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_category_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -323,12 +323,12 @@
 		trin_create_file_input($param_photo_name, 'image/*',
 			$param_photo_value, $validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_photo_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_photo_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -343,12 +343,12 @@
 		trin_create_text_input('text', '20', $param_size_name,
 			$param_size_value, $validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_size_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_size_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -364,12 +364,12 @@
 			$param_length_value, $validation_failed_fields,
 			'Only decimal values allowed, no unit names');
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_length_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_length_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -385,12 +385,12 @@
 			$param_width_value, $validation_failed_fields,
 			'Only decimal values allowed, no unit names');
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_width_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_width_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -405,12 +405,12 @@
 		trin_create_text_input('text', '20', $param_colour_name,
 			$param_colour_value, $validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_colour_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_colour_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -425,12 +425,12 @@
 		trin_create_text_input('text', '20', $param_count_name,
 			$param_count_value, $validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_count_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_count_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -445,12 +445,12 @@
 		trin_create_text_input('text', '20', $param_brand_name,
 			$param_brand_value, $validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_brand_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_brand_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -467,12 +467,12 @@
 			array('M', 'F', 'C', '-'),
 			$validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_gender_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_gender_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -487,12 +487,12 @@
 		trin_create_textarea('5', '20', $param_comment_name,
 			$param_comment_value, $validation_failed_fields);
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_comment_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_comment_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <form enctype="multipart/form-data" action="<?php echo trin_html_escape($action); ?>" method="POST">
@@ -508,17 +508,17 @@
 			$param_cost_value, $validation_failed_fields,
 			'Only decimal values allowed, no currency names');
 
-		if ($separate_forms === TRUE)
+		if ($separate_forms === true)
 		{
 			trin_create_text_input('hidden', '', $param_cost_name . '_' . $param_version_name,
 				$param_version_value, $validation_failed_fields);
 			trin_create_submits(TRIN_FORM_FIELD_SUBMIT_PREFIX . $param_cost_name,
-				'Update', TRUE);
+				'Update', true);
 ?>
 </form>
 <?php
 		}
-		else //if ($separate_forms === FALSE)
+		else //if ($separate_forms === false)
 		{
 			trin_create_text_input('hidden', '', $param_version_name,
 				$param_version_value, $validation_failed_fields);

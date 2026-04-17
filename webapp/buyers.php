@@ -36,7 +36,7 @@
 
 	$error = '';
 	$validation_failed_fields = array();
-	$db = NULL;
+	$db = null;
 
 	if (! trin_validate_session())
 	{
@@ -185,20 +185,20 @@
 <tbody>
 <?php
 		$error = '';
-		$have_buyer = FALSE;
+		$have_buyer = false;
 		if ($db)
 		{
 			$buyers = trin_db_get_buyers($db);
-			if ($buyers !== FALSE)
+			if ($buyers !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_buyer = trin_db_get_next_buyer($db, $buyers);
-					if ($next_buyer === FALSE)
+					if ($next_buyer === false)
 					{
 						break;
 					}
-					$have_buyer = TRUE;
+					$have_buyer = true;
 					$buyer_det_link = 'mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
 						. '=' . $next_buyer[TRIN_DB_BUYER_PARAM_ID];
 					$buyer_email = '<a href="mailto:'
@@ -253,22 +253,22 @@
 <tbody>
 <?php
 		$error = '';
-		$have_sale = FALSE;
+		$have_sale = false;
 		if ($db)
 		{
 			$sales = trin_db_get_buyer_transactions($db);
-			if ($sales !== FALSE)
+			if ($sales !== false)
 			{
-				while (TRUE)
+				while (true)
 				{
 					$next_sale = trin_db_get_next_buyer_transaction($db, $sales);
-					if ($next_sale === FALSE)
+					if ($next_sale === false)
 					{
 						break;
 					}
 					$product_link = 'details.php?' . TRIN_PROD_DETAIL_PARAM
 						. '=' . $next_sale[TRIN_DB_PROD_DEF_FIELD_ID];
-					$have_sale = TRUE;
+					$have_sale = true;
 					echo '<tr class="c">' .
 						'<td>' . trin_html_escape($next_sale[TRIN_DB_BUYER_PARAM_NAME]) . '</td>' .
 						"<td><a href=\"$product_link\">"

@@ -71,7 +71,7 @@
 <p>Choose a product category to view:</p>
 <?php
 		$error = '';
-		$have_cat = FALSE;
+		$have_cat = false;
 		$db = trin_db_open(trin_get_sess(TRIN_SESS_DB_LOGIN),
 			trin_get_sess(TRIN_SESS_DB_PASS),
 			trin_get_sess(TRIN_SESS_DB_DBNAME),
@@ -79,19 +79,19 @@
 		if ($db)
 		{
 			$categories = trin_db_get_product_categories($db);
-			if ($categories !== FALSE)
+			if ($categories !== false)
 			{
 				echo "<ul>\n";
 				//$cat_det_link = 'cat_products.php?' . TRIN_CAT_DETAIL_PARAM . '=0';
 				//echo "<li><a href=\"$cat_det_link\">Uncategorised</a></li>\n";
-				while (TRUE)
+				while (true)
 				{
 					$next_cat = trin_db_get_next_product_category($db, $categories);
-					if ($next_cat === FALSE)
+					if ($next_cat === false)
 					{
 						break;
 					}
-					$have_cat = TRUE;
+					$have_cat = true;
 					$cat_det_link = 'cat_products.php?' . TRIN_CAT_DETAIL_PARAM
 						. '=' . $next_cat[TRIN_DB_PROD_CAT_FIELD_ID];
 					echo "<li><a href=\"$cat_det_link\">"
