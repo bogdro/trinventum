@@ -55,7 +55,7 @@
 			$display_form = true;
 			$error = 'Cannot connect to database';
 		}
-		else if (! trin_db_check($db))
+		elseif (! trin_db_check($db))
 		{
 			$display_form = true;
 			$error = 'Cannot check the database: ' . trin_db_get_last_error($db);

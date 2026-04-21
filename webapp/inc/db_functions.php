@@ -551,7 +551,7 @@
 			trin_db_set_last_error('Cannot read record before update');
 			return false;
 		}
-		else if ((int)$det[TRIN_DB_PROD_CAT_FIELD_VERSION] != (int)$version)
+		elseif ((int)$det[TRIN_DB_PROD_CAT_FIELD_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error("Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_CAT_FIELD_VERSION]
@@ -935,7 +935,7 @@
 			trin_db_set_last_error($db, 'Cannot read record before update');
 			return false;
 		}
-		else if ((int)$det[TRIN_DB_PROD_DEF_FIELD_VERSION] !=(int)$param_pd_version)
+		elseif ((int)$det[TRIN_DB_PROD_DEF_FIELD_VERSION] !=(int)$param_pd_version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_DEF_FIELD_VERSION]
@@ -1431,7 +1431,7 @@
 			trin_db_set_last_error($db, 'Cannot read record before update');
 			return false;
 		}
-		else if ((int)$det[TRIN_DB_PROD_INST_FIELD_VERSION] != (int)$version)
+		elseif ((int)$det[TRIN_DB_PROD_INST_FIELD_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_PROD_INST_FIELD_VERSION]
@@ -1554,7 +1554,7 @@
 			trin_db_set_last_error($db, 'Cannot read record before update');
 			return false;
 		}
-		else if ((int)$det[TRIN_DB_SELLER_PARAM_VERSION] != (int)$version)
+		elseif ((int)$det[TRIN_DB_SELLER_PARAM_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_SELLER_PARAM_VERSION]
@@ -1692,7 +1692,7 @@
 			trin_db_set_last_error($db, 'Cannot read record before update');
 			return false;
 		}
-		else if ((int)$det[TRIN_DB_BUYER_PARAM_VERSION] != (int)$version)
+		elseif ((int)$det[TRIN_DB_BUYER_PARAM_VERSION] != (int)$version)
 		{
 			trin_db_set_last_error($db, "Record version doesn't match: expected: "
 				. $det[TRIN_DB_BUYER_PARAM_VERSION]
@@ -1923,7 +1923,7 @@
 				pg_query($db, 'rollback');
 				return false;
 			}
-			else if ((int)$trans[TRIN_DB_TRANS_PARAM_VERSION] != (int)$t_version)
+			elseif ((int)$trans[TRIN_DB_TRANS_PARAM_VERSION] != (int)$t_version)
 			{
 				trin_db_set_last_error($db, "Record version doesn't match: expected: "
 					. $trans[TRIN_DB_TRANS_PARAM_VERSION]

@@ -65,7 +65,7 @@
 				$display_form = true;
 				$error = 'Cannot connect to database';
 			}
-			else if (! trin_db_destroy_schema($db))
+			elseif (! trin_db_destroy_schema($db))
 			{
 				$display_form = true;
 				$error = 'Cannot destroy the database: '

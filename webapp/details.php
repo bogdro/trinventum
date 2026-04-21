@@ -41,7 +41,7 @@
 	{
 		header('Location: login.php');
 	}
-	else if (! trin_isset_get(TRIN_PROD_DETAIL_PARAM))
+	elseif (! trin_isset_get(TRIN_PROD_DETAIL_PARAM))
 	{
 		header('Location: main.php');
 	}
@@ -64,12 +64,12 @@
 		{
 			$error = 'Cannot connect to database';
 		}
-		else if (count($validation_failed_fields) != 0)
+		elseif (count($validation_failed_fields) != 0)
 		{
 			$error = 'Form validation failed - check field values: '
 				. implode(', ', $validation_failed_fields);
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
 			&& isset($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_SIZE)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH)
@@ -107,7 +107,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_NAME)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_NAME . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -124,7 +124,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (isset($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
+		elseif (isset($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_PHOTO)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_PHOTO . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -141,7 +141,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_SIZE)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_SIZE)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_SIZE)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_SIZE . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -158,7 +158,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_LENGTH)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -175,7 +175,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_WIDTH)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_WIDTH)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_WIDTH)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_WIDTH . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -192,7 +192,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COLOUR)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_COLOUR)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COLOUR)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_COLOUR . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -209,7 +209,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COUNT)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_COUNT)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COUNT)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_COUNT . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -226,7 +226,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_BRAND)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_BRAND)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_BRAND)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_BRAND . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -243,7 +243,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_GENDER)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_GENDER)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_GENDER)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_GENDER . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -260,7 +260,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COMMENT)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_COMMENT)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COMMENT)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_COMMENT . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -277,7 +277,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_COST)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_COST)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_COST)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_COST . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{
@@ -294,7 +294,7 @@
 				$product_updated = true;
 			}
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_CATEGORY)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_CATEGORY)
 			&& trin_isset_post(TRIN_FORM_FIELD_SUBMIT_PREFIX . TRIN_DB_PROD_PARAM_CATEGORY)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_CATEGORY . '_' . TRIN_DB_PROD_PARAM_VERSION))
 		{

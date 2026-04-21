@@ -241,13 +241,13 @@ OR
 								. '</a></td>' .
 							'<td><a href="mod_seller.php?' . TRIN_DB_SELLER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_SELLER_PARAM_ID] . '">'
-								. trin_html_escape
-									($next_tran[TRIN_DB_SELLER_PARAM_NAME])
+								. trin_html_escape(
+									$next_tran[TRIN_DB_SELLER_PARAM_NAME])
 								. '</a></td>' .
 							'<td><a href="mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_BUYER_PARAM_ID] . '">'
-								. trin_html_escape
-									($next_tran[TRIN_DB_BUYER_PARAM_NAME])
+								. trin_html_escape(
+									$next_tran[TRIN_DB_BUYER_PARAM_NAME])
 								. '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .
@@ -351,20 +351,20 @@ OR
 						echo '<tr class="c">';
 						echo '<td>' . $next_tran[TRIN_DB_TRANS_PARAM_ID] . '</td>';
 						echo '<td><a href="' . $product_def_link . '">'
-								. trin_html_escape
-									($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
+								. trin_html_escape(
+									$next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
 								. '</a></td>' .
 							'<td><a href="' . $product_link . '">'
 							. $next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
 							'<td><a href="mod_seller.php?' . TRIN_DB_SELLER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_SELLER_PARAM_ID] . '">'
-								. trin_html_escape
-									($next_tran[TRIN_DB_SELLER_PARAM_NAME])
+								. trin_html_escape(
+									$next_tran[TRIN_DB_SELLER_PARAM_NAME])
 								. '</a></td>' .
 							'<td><a href="mod_buyer.php?' . TRIN_DB_BUYER_PARAM_ID
 								. '=' . $next_tran[TRIN_DB_BUYER_PARAM_ID] . '">'
-								. trin_html_escape
-									($next_tran[TRIN_DB_BUYER_PARAM_NAME])
+								. trin_html_escape(
+									$next_tran[TRIN_DB_BUYER_PARAM_NAME])
 								. '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .

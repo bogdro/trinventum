@@ -291,7 +291,7 @@
 								. trin_db_get_last_error($db);
 						}
 					}
-					else if (!$db)
+					elseif (!$db)
 					{
 						$error = 'Cannot connect to database to get product instances';
 					}

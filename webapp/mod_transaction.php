@@ -45,7 +45,7 @@
 		header('Location: login.php');
 	}
 	// GET = modify link, POST = modify button
-	else if ((! trin_isset_get(TRIN_DB_TRANS_PARAM_ID))
+	elseif ((! trin_isset_get(TRIN_DB_TRANS_PARAM_ID))
 		&& (! trin_isset_post(TRIN_DB_TRANS_PARAM_ID)))
 	{
 		header("Location: $return_link");
@@ -63,7 +63,7 @@
 		{
 			$t_id = trin_get_param(TRIN_DB_TRANS_PARAM_ID);
 		}
-		else if (trin_isset_post(TRIN_DB_TRANS_PARAM_ID))
+		elseif (trin_isset_post(TRIN_DB_TRANS_PARAM_ID))
 		{
 			$t_id = trin_get_post(TRIN_DB_TRANS_PARAM_ID);
 		}
@@ -247,7 +247,7 @@
 					{
 						$param_trans_paid = 'YES';
 					}
-					else if ($param_trans_paid == 'f')
+					elseif ($param_trans_paid == 'f')
 					{
 						$param_trans_paid = 'NO';
 					}
@@ -256,7 +256,7 @@
 					{
 						$param_trans_sent = 'YES';
 					}
-					else if ($param_trans_sent == 'f')
+					elseif ($param_trans_sent == 'f')
 					{
 						$param_trans_sent = 'NO';
 					}
@@ -438,7 +438,7 @@ Update details (warning - this updates ALL the given details):
 								. trin_db_get_last_error($db);
 						}
 					}
-					else if (!$db)
+					elseif (!$db)
 					{
 						$error = 'Cannot connect to database to get product instances';
 					}
@@ -554,7 +554,7 @@ Update details (warning - this updates ALL the given details):
 					{
 						$param_trans_selldate = trin_get_post(TRIN_DB_TRANS_PARAM_SELLDATE);
 					}
-					else if ($param_trans_selldate == '')
+					elseif ($param_trans_selldate == '')
 					{
 						$param_trans_selldate = trin_get_current_date_string();
 					}
@@ -581,7 +581,7 @@ Update details (warning - this updates ALL the given details):
 				{
 					$param_trans_paid = 'YES';
 				}
-				else if ($param_trans_paid == 'f')
+				elseif ($param_trans_paid == 'f')
 				{
 					$param_trans_paid = 'NO';
 				}
@@ -590,7 +590,7 @@ Update details (warning - this updates ALL the given details):
 				{
 					$param_trans_sent = 'YES';
 				}
-				else if ($param_trans_sent == 'f')
+				elseif ($param_trans_sent == 'f')
 				{
 					$param_trans_sent = 'NO';
 				}
@@ -735,15 +735,15 @@ Send cost:
 							TRIN_DB_PROD_INST_FIELD_ID . '=' .
 							$next_tran[TRIN_DB_PROD_INST_FIELD_ID];
 						echo '<tr class="c">' .
-							'<td><a href="' . $product_def_link . '">' . trin_html_escape
-								($next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
+							'<td><a href="' . $product_def_link . '">' . trin_html_escape(
+								$next_tran[TRIN_DB_PROD_DEF_FIELD_NAME])
 								. '</a></td>' .
 							'<td><a href="' . $product_link . '">' . 
 							$next_tran[TRIN_DB_PROD_INST_FIELD_ID] . '</a></td>' .
-							'<td><a href="sellers.php">' . trin_html_escape
-								($next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
-							'<td><a href="buyers.php">' . trin_html_escape
-								($next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
+							'<td><a href="sellers.php">' . trin_html_escape(
+								$next_tran[TRIN_DB_SELLER_PARAM_NAME]) . '</a></td>' .
+							'<td><a href="buyers.php">' . trin_html_escape(
+								$next_tran[TRIN_DB_BUYER_PARAM_NAME]) . '</a></td>' .
 							'<td>' . $next_tran[TRIN_DB_TRANS_PARAM_PRICE] . '</td>' .
 							'<td>' . $paid . '</td>' .
 							'<td>' . $sent . '</td>' .

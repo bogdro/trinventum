@@ -43,11 +43,11 @@
 	{
 		header('Location: login.php');
 	}
-	else if (! trin_isset_get(TRIN_CAT_DETAIL_PARAM))
+	elseif (! trin_isset_get(TRIN_CAT_DETAIL_PARAM))
 	{
 		header('Location: categories.php');
 	}
-	else if (trin_get_param(TRIN_CAT_DETAIL_PARAM) == '0')
+	elseif (trin_get_param(TRIN_CAT_DETAIL_PARAM) == '0')
 	{
 		header('Location: categories.php');
 	}

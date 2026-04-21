@@ -35,7 +35,7 @@
 	{
 		header('Location: login.php');
 	}
-	else if (! trin_isset_get(TRIN_CAT_DETAIL_PARAM))
+	elseif (! trin_isset_get(TRIN_CAT_DETAIL_PARAM))
 	{
 		header('Location: main.php');
 	}

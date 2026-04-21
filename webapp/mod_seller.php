@@ -43,7 +43,7 @@
 	{
 		header('Location: login.php');
 	}
-	else if (! trin_isset_get(TRIN_DB_SELLER_PARAM_ID))
+	elseif (! trin_isset_get(TRIN_DB_SELLER_PARAM_ID))
 	{
 		header('Location: sellers.php');
 	}

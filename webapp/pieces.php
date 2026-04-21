@@ -250,7 +250,7 @@ OR
 			{
 				echo 'this month';
 			}
-			else if ($m == 1)
+			elseif ($m == 1)
 			{
 				echo 'last month';
 			}

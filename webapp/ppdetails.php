@@ -40,7 +40,7 @@
 	{
 		header('Location: login.php');
 	}
-	else if (! trin_isset_get(TRIN_DB_PROD_INST_FIELD_ID))
+	elseif (! trin_isset_get(TRIN_DB_PROD_INST_FIELD_ID))
 	{
 		header('Location: main.php');
 	}

@@ -54,7 +54,7 @@
 			$display_form = true;
 			$error = 'Cannot connect to database';
 		}
-		else if (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
+		elseif (trin_isset_post(TRIN_DB_PROD_PARAM_NAME)
 			&& isset($_FILES[TRIN_DB_PROD_PARAM_PHOTO])
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_SIZE)
 			&& trin_isset_post(TRIN_DB_PROD_PARAM_LENGTH)

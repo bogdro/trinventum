@@ -777,7 +777,7 @@
 					}
 				}
 			}
-			else if ($field_flags == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
+			elseif ($field_flags == TRIN_VALIDATION_FIELD_TYPE_REQUIRED)
 			{
 				$failed_fields[] = $field_name;
 			}

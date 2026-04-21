@@ -41,7 +41,7 @@
 			{
 				$buf = trin_db_get_photo($db, trin_get_param(TRIN_PROD_PHOTO_PARAM));
 			}
-			else if (trin_isset_get(TRIN_PROD_PHOTO_PARAM_HIS)
+			elseif (trin_isset_get(TRIN_PROD_PHOTO_PARAM_HIS)
 				&& trin_isset_get(TRIN_PROD_PHOTO_PARAM_HIS_VERSION))
 			{
 				$buf = trin_db_get_history_photo($db,

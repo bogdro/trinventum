@@ -78,7 +78,7 @@
 					. ": can't read file sql/trinventum-full.pgsql";
 			}
 		}
-		else if ((int)$trin_db_ver < (int)TRIN_EXPECTED_DB_VERSION)
+		elseif ((int)$trin_db_ver < (int)TRIN_EXPECTED_DB_VERSION)
 		{
 			for ($i = (int)$trin_db_ver + 1; $i <= (int)TRIN_EXPECTED_DB_VERSION; $i++)
 			{
@@ -116,7 +116,7 @@
 				}
 			}
 		}
-		else if ((int)$trin_db_ver > (int)TRIN_EXPECTED_DB_VERSION)
+		elseif ((int)$trin_db_ver > (int)TRIN_EXPECTED_DB_VERSION)
 		{
 			$warning_msg = "Database version $trin_db_ver is newer than the expected version "
 				. TRIN_EXPECTED_DB_VERSION
