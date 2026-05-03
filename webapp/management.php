@@ -106,7 +106,7 @@
 
 		trin_display_error($error);
 
-		if (count($_POST) == 0 ||
+		if (empty($_POST) ||
 			trin_isset_post(TRIN_FORM_PARAM_DB_QUERY))
 		{
 ?>

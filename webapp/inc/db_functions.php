@@ -776,7 +776,8 @@
 		$param_pd_cost)
 	{
 		trin_db_clear_last_error();
-		if (is_uploaded_file($_FILES[$param_pd_photo]['tmp_name']))
+		if (isset($_FILES[$param_pd_photo])
+			&& is_uploaded_file($_FILES[$param_pd_photo]['tmp_name']))
 		{
 			//$photo_data = pg_escape_bytea(
 			//	file_get_contents($_FILES[$param_pd_photo]['tmp_name']));

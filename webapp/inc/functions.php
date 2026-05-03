@@ -37,7 +37,11 @@
 
 	function trin_get_sess($name)
 	{
-		return $_SESSION[$name];
+		if (isset($_SESSION[$name]))
+		{
+			return $_SESSION[$name];
+		}
+		return null;
 	}
 
 	function trin_set_sess($name, $value)
@@ -57,7 +61,11 @@
 
 	function trin_get_post($name)
 	{
-		return $_POST[$name];
+		if (isset($_POST[$name]))
+		{
+			return $_POST[$name];
+		}
+		return null;
 	}
 
 	function trin_isset_get($name)
@@ -67,7 +75,11 @@
 
 	function trin_get_param($name)
 	{
-		return $_GET[$name];
+		if (isset($_GET[$name]))
+		{
+			return $_GET[$name];
+		}
+		return null;
 	}
 
 	function trin_isset_server($name)
@@ -77,7 +89,11 @@
 
 	function trin_get_server($name)
 	{
-		return $_SERVER[$name];
+		if (isset($_SERVER[$name]))
+		{
+			return $_SERVER[$name];
+		}
+		return null;
 	}
 
 	function trin_header_lastmod($last_mod)
