@@ -5,6 +5,9 @@ webapp/rsrc/GNU-agpl-3.0-standalone.html
 .github/
 .gitlab*
 
+webapp/rsrc/js/flatpickr.js
+webapp/rsrc/js/jquery.min.js
+
 :include .gitignore
 
 # Semgrep rules folder
