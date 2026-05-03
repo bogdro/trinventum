@@ -523,7 +523,7 @@ Update product details:
 		trin_create_product_def_form(
 			trin_get_self_action(), 'Update product',
 			TRIN_DB_PROD_PARAM_NAME, $param_pd_name,
-			TRIN_DB_PROD_PARAM_PHOTO, $param_pd_photo,
+			TRIN_DB_PROD_PARAM_PHOTO,
 			TRIN_DB_PROD_PARAM_SIZE, $param_pd_size,
 			TRIN_DB_PROD_PARAM_LENGTH, $param_pd_length,
 			TRIN_DB_PROD_PARAM_WIDTH, $param_pd_width,

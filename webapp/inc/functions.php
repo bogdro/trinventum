@@ -213,7 +213,7 @@
 		echo "</select>\n";
 	}
 
-	function trin_create_file_input($name, $accept_type, $value,
+	function trin_create_file_input($name, $accept_type,
 		$validation_failed_fields, $title = '')
 	{
 		echo "<input type=\"file\"\n
@@ -264,7 +264,7 @@
 	function trin_create_product_def_form(
 		$action, $button_title,
 		$param_name_name, $param_name_value,
-		$param_photo_name, $param_photo_value,
+		$param_photo_name,
 		$param_size_name, $param_size_value,
 		$param_length_name, $param_length_value,
 		$param_width_name, $param_width_value,
@@ -337,7 +337,7 @@
 </p>
 <?php
 		trin_create_file_input($param_photo_name, 'image/*',
-			$param_photo_value, $validation_failed_fields);
+			$validation_failed_fields);
 
 		if ($separate_forms === true)
 		{
@@ -435,7 +435,7 @@
 ?>
 <hr>
 <p>
-<label for="<?php echo $param_count_name ?>">Count(number of pieces):</label>
+<label for="<?php echo $param_count_name ?>">Count (number of pieces):</label>
 </p>
 <?php
 		trin_create_text_input('text', '20', $param_count_name,
