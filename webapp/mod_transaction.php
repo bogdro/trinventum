@@ -200,6 +200,12 @@
 <META NAME="Language" CONTENT="en">
 <META NAME="Generator" CONTENT="KWrite/Kate; www.kate-editor.org">
 
+<?php
+			trin_add_jq();
+			trin_add_datepicker();
+?>
+<script type="text/javascript" src="rsrc/js/mod_transaction.js"></script>
+
 </HEAD><BODY>
 
 <?php
