@@ -74,11 +74,18 @@ $(NAME)-$(VER)$(PACK1_EXT)$(PACK2_EXT): $(EXTRA_DIST) \
 
 install: update_js
 	$(MKDIR) $(PREFIX)/$(NAME)
-	$(MKDIR) $(SERVERCONF)
 	$(COPY) webapp/* $(PREFIX)/$(NAME)/
+ifeq ($(LOCALINSTALL),)
+	$(MKDIR) $(SERVERCONF)
 	$(RMDIR) $(PREFIX)/$(NAME)/.htaccess $(PREFIX)/$(NAME)/inc/.htaccess
 	$(COPY) $(NAME)-app.conf $(SERVERCONF)/
-	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php $(SERVERCONF)/$(NAME)-app.conf \
+	$(CHMOD) 604 $(SERVERCONF)/$(NAME)-app.conf
+else
+	$(COPY) webapp/.htaccess $(PREFIX)/$(NAME)/.htaccess
+	$(COPY) webapp/inc/.htaccess $(PREFIX)/$(NAME)/inc/.htaccess
+	$(CHMOD) 604 $(PREFIX)/$(NAME)/.htaccess $(PREFIX)/$(NAME)/inc/.htaccess
+endif
+	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php \
 		$(PREFIX)/$(NAME)/inc/* $(PREFIX)/$(NAME)/rsrc/img/* \
 		$(PREFIX)/$(NAME)/rsrc/js/* $(PREFIX)/$(NAME)/rsrc/* \
 		$(PREFIX)/$(NAME)/sql/*
@@ -102,6 +109,9 @@ uninstall:
 	$(RMDIR) $(PREFIX)/$(NAME)/
 ifneq ($(DOCDIR),)
 	$(RMDIR) $(DOCDIR)/$(NAME)/
+endif
+ifeq ($(LOCALINSTALL),)
+	$(RMDIR) $(SERVERCONF)/$(NAME)-app.conf
 endif
 
 check:

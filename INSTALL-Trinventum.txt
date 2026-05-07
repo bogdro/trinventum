@@ -120,11 +120,15 @@ To install:
 
 	make install PREFIX=/srv/www/html SERVERCONF=/etc/httpd/conf/webapps.d
 	make install PREFIX=/var/www/html SERVERCONF=/etc/httpd/conf.d
-	make install PREFIX=$HOME/public_html SERVERCONF=$HOME/tmp
 
   The SERVERCONF parameter specifies where to put the global web server
-  configuration file. Can be ignored and set to any directory for local
-  installations.
+  configuration file.
+
+  For local installations, you can pass the LOCALINSTALL parameter with any
+  non-empty value and the SERVERCONF parameter can be ignored or set to any
+  directory. Example:
+
+	make install PREFIX=$HOME/public_html LOCALINSTALL=1
 
   To install the documentation, you can add a chosen directory as the DOCDIR
   parameter to 'make install'. Documentation will be installed in

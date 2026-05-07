@@ -171,12 +171,17 @@ To install the web application part:
   directory. Trinventum will be installed in <code>$(PREFIX)/trinventum</code>. Examples:</p>
 	<pre>
 	make install PREFIX=/srv/www/html SERVERCONF=/etc/httpd/conf/webapps.d
-	make install PREFIX=/var/www/html SERVERCONF=/etc/httpd/conf.d
-	make install PREFIX=$HOME/public_html SERVERCONF=$HOME/tmp</pre>
+	make install PREFIX=/var/www/html SERVERCONF=/etc/httpd/conf.d</pre>
 
   <p>The <code>SERVERCONF</code> parameter specifies where to put the global web server
-  configuration file. Can be ignored and set to any directory for local
-  installations.</p>
+  configuration file.</p>
+
+  <p>For local installations, you can pass the <code>LOCALINSTALL</code> parameter with any
+  non-empty value and the <code>SERVERCONF</code> parameter can be ignored or set to any
+  directory. Example:</p>
+
+	<pre>
+	make install PREFIX=$HOME/public_html LOCALINSTALL=1</pre>
 
   <p>To install the documentation, you can add a chosen directory as the <code>DOCDIR</code>
   parameter to <code>make install</code>. Documentation will be installed in
