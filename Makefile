@@ -80,10 +80,11 @@ install: update_js
 	$(COPY) $(NAME)-app.conf $(SERVERCONF)/
 	$(CHMOD) 604 $(PREFIX)/$(NAME)/*.php $(SERVERCONF)/$(NAME)-app.conf \
 		$(PREFIX)/$(NAME)/inc/* $(PREFIX)/$(NAME)/rsrc/img/* \
-		$(PREFIX)/$(NAME)/rsrc/* $(PREFIX)/$(NAME)/sql/*
+		$(PREFIX)/$(NAME)/rsrc/js/* $(PREFIX)/$(NAME)/rsrc/* \
+		$(PREFIX)/$(NAME)/sql/*
 	$(CHMOD) 755 $(PREFIX)/$(NAME) $(PREFIX)/$(NAME)/inc \
 		$(PREFIX)/$(NAME)/rsrc $(PREFIX)/$(NAME)/rsrc/img \
-		$(PREFIX)/$(NAME)/sql
+		$(PREFIX)/$(NAME)/rsrc/js $(PREFIX)/$(NAME)/sql
 ifneq ($(DOCDIR),)
 	$(MKDIR) $(DOCDIR)/$(NAME)
 	$(CHMOD) 755 $(DOCDIR)/$(NAME)

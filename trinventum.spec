@@ -91,11 +91,13 @@ BuildRequires:	make
 %attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/*.html
 %attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/*.css
 %attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/img/*
+%attr(644,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/js/*
 %attr(644,-,-) %{trin_server_app_path}/%{trin_name}/sql/*
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/inc
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/rsrc
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/img
+%dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/rsrc/js
 %dir %attr(755,-,-) %{trin_server_app_path}/%{trin_name}/sql
 
 %changelog
