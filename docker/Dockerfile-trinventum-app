@@ -24,8 +24,9 @@
 
 # https://docs.docker.com/engine/reference/builder/
 
-# https://hub.docker.com/_/php/ ("-apache")
-FROM php:apache
+# https://hub.docker.com/_/php/ ("-apache-bookworm").
+# NOTE: bookworm works, trixie fails on all "chmod" commands.
+FROM php:apache-bookworm
 
 # webapp (NOTE: do NOT use "../webapp/*" - the subdirs don't get copied):
 COPY webapp /var/www/html/
@@ -44,4 +45,4 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions pgsql
 
 USER nobody
-EXPOSE 80
+EXPOSE 80 443
