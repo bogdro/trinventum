@@ -348,7 +348,7 @@ Sample queries:
 			echo ' <li>integer_datetimes = ' . pg_parameter_status($db, 'integer_datetimes') . "</li>\n";
 			echo "</ul>\n";
 
-			echo '<p>Host and port(if applicable): ' . pg_host($db)
+			echo '<p>Host and port (if applicable): ' . pg_host($db)
 				. ':' . pg_port($db) . "</p>\n";
 
 			echo "<p>Version information:</p>\n<pre>";
