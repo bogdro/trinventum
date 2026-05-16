@@ -1,3 +1,39 @@
+2026-05-08	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
+
+	* Trinventum version 1.1:
+	  Added a datepicker for the "Register new transaction" and "Modify
+	  transaction" pages. Improved photo file type compatibility. Added
+	  separate page titles. Code quality improvements. Build system
+	  improvements (including specfile and Docker). Other minor
+	  improvements. Documentation updates.
+	* webapp/{get_photo.php,inc/db_functions.php}: Try to provide the
+	  right MIME type when getting images.
+	* webapp/{add_transaction.php,rsrc/js/add_transaction.js,
+	  inc/functions.php}: Added a datepicker functionality.
+	* webapp/rsrc/js/, webapp/rsrc/flatpickr.min.css: Added the files
+	  needed for the datepicker.
+	* functions.php (trin_validate_form): Use the field type as a flag
+	  where more than one validation type can be set.
+	* webapp/*.php, webapp/inc/header.php: Added separate page titles.
+	* webapp/{*php,inc/*}: Code quality improvements (SonarQube Cloud,
+	  Codacy).
+	* Makefile: Added a target to download the datepicker files. Added
+	  installing the JS files. Allow local installations with .htaccess
+	  and without trinventum-app.conf.
+	* webapp/.htaccess, trinventum-app.conf: Allowed script execution.
+	* trinventum-app.conf: Fixed files' regular expression.
+	* docker/Dockerfile-trinventum-db: Updated version.
+	* docker/Dockerfile-trinventum-app: Explicitly choose the "bookworm"
+	  image (the other one didn't work). Expose also port 443.
+	* docker/docker.sh: Run as root to prevent startup problems with logs.
+	* trinventum.spec: Added the JS directories and files.
+	* INSTALL-Trinventum.txt, webapp/help.php: Added information about
+	  the SERVERCONF parameter to 'make'. Added information about local
+	  installations.
+	* webapp/{*php,inc/*,sql/*,rsrc/trinventum.css,.htaccess},scripts/*,
+	  trinventum.spec,trinventum-app.conf,tests/*,Makefile,docker/*:
+	  Updated or added license blocks.
+
 2024-05-23	Bogdan Drozdowski <bogdro /AT/ users . sourceforge . net>
 
 	* Trinventum version 1.0:
